@@ -4,7 +4,7 @@
 #SBATCH --gpus=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
-#SBATCH --time=03:00:00
+#SBATCH --time=05:00:00
 #SBATCH --output=university_gpu/logs/official_ttt_denoise_%j.out
 #SBATCH --error=university_gpu/logs/official_ttt_denoise_%j.err
 
@@ -58,8 +58,8 @@ export OPENPROBLEMS_CACHE_DIR="$(pwd)/.openproblems_cache"
 
 export LOCAL_TTT_MODEL="Qwen/Qwen2.5-Coder-1.5B-Instruct"
 export LOCAL_TTT_EVAL_MODE="official"
-export LOCAL_TTT_STEPS="1"
-export LOCAL_TTT_ROLLOUTS="1"
+export LOCAL_TTT_STEPS="3"
+export LOCAL_TTT_ROLLOUTS="3"
 export LOCAL_TTT_MAX_NEW_TOKENS="1024"
 export LOCAL_TTT_LORA_RANK="8"
 export LOCAL_TTT_LR="1e-4"
