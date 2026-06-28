@@ -44,6 +44,7 @@ echo "Install official denoising requirements"
 echo "========================================"
 
 python -m pip install -r requirements/denoising/requirements-denoising.txt
+python -m pip install accelerate peft sentencepiece
 
 echo ""
 echo "========================================"
