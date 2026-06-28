@@ -4,10 +4,91 @@ import torch
 
 def build_denoising_prompt(current_code: str, history=None):
     """
-    Build a prompt for the local LLM.
+    Build the denoising prompt.
 
-    The prompt asks the model to improve the current magic_denoise function.
-    It also gives the model previous good results if available.
+    This function first tries to use the official Section 4.4 denoising prompt:
+    - examples.denoising.prompt.SYSTEM_PROMPT
+    - examples.denoising.utils.EVALUATE_MSE_FUNC
+    - examples.denoising.utils.EVALUATE_POISSON_FUNC
+
+    If those imports fail, it falls back to a simpler local prompt.
+    """
+    if history is None:
+        history = []
+
+    try:
+        return build_official_denoising_prompt(
+            current_code=current_code,
+            history=history,
+        )
+    except Exception as error:
+        print("Warning: failed to build official denoising prompt.")
+        print("Falling back to simplified local prompt.")
+        print("Error:", repr(error))
+
+        return build_simple_denoising_prompt(
+            current_code=current_code,
+            history=history,
+        )
+
+
+def build_official_denoising_prompt(current_code: str, history=None):
+    """
+    Build a prompt that is much closer to the official examples/denoising/env.py logic.
+
+    Official denoising prompt components:
+    - SYSTEM_PROMPT from examples.denoising.prompt
+    - evaluate_mse source code
+    - evaluate_poisson source code
+    - current implementation
+    - current / previous metrics
+    """
+    if history is None:
+        history = []
+
+    from examples.denoising.prompt import SYSTEM_PROMPT
+    from examples.denoising.utils import EVALUATE_MSE_FUNC, EVALUATE_POISSON_FUNC
+
+    prompt = SYSTEM_PROMPT
+
+    prompt = prompt.replace("<<>>", EVALUATE_MSE_FUNC, 1)
+    prompt = prompt.replace("<<>>", EVALUATE_POISSON_FUNC, 1)
+
+    metrics_text = build_history_text(history)
+
+    clean_code = clean_generated_code_block(current_code)
+
+    prompt = prompt + """
+
+CURRENT_IMPLEMENTATION_BEGIN
+
+""" + clean_code + """
+
+CURRENT_IMPLEMENTATION_END
+
+You are iteratively improving the denoising algorithm.
+
+Previous evaluation results:
+""" + metrics_text + """
+
+Now write an improved version of magic_denoise.
+
+Requirements:
+- Return only Python code.
+- The code must define a function named magic_denoise.
+- Do not include explanations outside the code.
+- The output of magic_denoise must have the same shape as the input X.
+- The output must be finite and non-negative.
+"""
+
+    return prompt.strip()
+
+
+def build_simple_denoising_prompt(current_code: str, history=None):
+    """
+    Fallback prompt.
+
+    This is only used if the official denoising prompt cannot be imported.
     """
     if history is None:
         history = []
@@ -49,14 +130,14 @@ Important rules:
 - The code must define a function called magic_denoise.
 - Try to improve MSE while keeping Poisson loss reasonable.
 
-Best previous results:
+Previous evaluation results:
 {history_text}
 
-Current implementation starts here:
+CURRENT_IMPLEMENTATION_BEGIN
 
 {current_code}
 
-Current implementation ends here.
+CURRENT_IMPLEMENTATION_END
 
 Now write an improved version of magic_denoise.
 Return only Python code.
@@ -74,6 +155,7 @@ def build_history_text(history):
     - mse
     - poisson
     - reward
+    - metrics
     """
     if not history:
         return "No previous generated results yet."
@@ -91,14 +173,46 @@ def build_history_text(history):
     top = successful[:3]
 
     lines = []
+
     for i, item in enumerate(top, start=1):
-        lines.append(
+        metrics = item.get("metrics", {})
+
+        mse_normalized = metrics.get("mse_normalized")
+        poisson_normalized = metrics.get("poisson_normalized")
+
+        line = (
             f"{i}. mse={item.get('mse')}, "
             f"poisson={item.get('poisson')}, "
             f"reward={item.get('reward')}"
         )
 
+        if mse_normalized is not None:
+            line += f", mse_normalized={mse_normalized}"
+
+        if poisson_normalized is not None:
+            line += f", poisson_normalized={poisson_normalized}"
+
+        lines.append(line)
+
     return "\n".join(lines)
+
+
+def clean_generated_code_block(text: str):
+    """
+    Remove markdown code fences if they are present.
+    """
+    text = text.strip()
+
+    if text.startswith("```python"):
+        text = text[len("```python"):].strip()
+
+    if text.startswith("```"):
+        text = text[3:].strip()
+
+    if text.endswith("```"):
+        text = text[:-3].strip()
+
+    return text.strip()
 
 
 def apply_chat_template_if_available(tokenizer, prompt: str):
@@ -159,7 +273,7 @@ def generate_candidate_code(
         rendered_prompt,
         return_tensors="pt",
         truncation=True,
-        max_length=4096,
+        max_length=8192,
     )
 
     device = next(model.parameters()).device
@@ -235,10 +349,6 @@ def extract_first_python_code_block(text: str):
 def remove_trailing_explanation(text: str):
     """
     Remove obvious trailing explanation after code.
-
-    This is a simple heuristic. It avoids keeping text such as:
-    'Explanation: ...'
-    after the generated function.
     """
     markers = [
         "\nExplanation:",
@@ -262,4 +372,4 @@ def remove_trailing_explanation(text: str):
 
 if __name__ == "__main__":
     print("This file provides local generation helper functions.")
-    print("It is not meant to run the full experiment by itself.")
+    print("It now tries to use the official denoising prompt first.")
