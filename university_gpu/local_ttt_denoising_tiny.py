@@ -58,11 +58,6 @@ def evaluate_candidate_dummy(code: str):
 
     This is only for debugging the local TTT loop.
     It does not reproduce the paper's Section 4.4 denoising evaluator.
-
-    Use this first on the server to check:
-    - model loading
-    - code generation
-    - reward-weighted LoRA update
     """
     if "def magic_denoise" not in code:
         return {
@@ -70,6 +65,8 @@ def evaluate_candidate_dummy(code: str):
             "mse": None,
             "poisson": None,
             "reward": -1.0,
+            "raw_score": None,
+            "metrics": {},
             "error": "No magic_denoise function found.",
         }
 
@@ -93,6 +90,13 @@ def evaluate_candidate_dummy(code: str):
         "mse": mse,
         "poisson": poisson,
         "reward": reward,
+        "raw_score": mse,
+        "metrics": {
+            "mse": mse,
+            "poisson": poisson,
+            "mse_normalized": None,
+            "poisson_normalized": None,
+        },
         "error": None,
     }
 
@@ -104,8 +108,11 @@ def evaluate_candidate_official(code: str, timeout_seconds: int = 900):
     This uses:
         examples.denoising.utils.run_denoising_eval
 
-    It may take much longer than dummy mode because it loads data and runs
-    the actual single-cell denoising benchmark.
+    Then it applies the official validity logic from examples.denoising.env:
+        verify_denoising((mse, poisson))
+
+    If the generated result violates the official Poisson hard constraint,
+    the candidate is treated as invalid.
     """
     if "def magic_denoise" not in code:
         return {
@@ -113,6 +120,8 @@ def evaluate_candidate_official(code: str, timeout_seconds: int = 900):
             "mse": None,
             "poisson": None,
             "reward": -1.0,
+            "raw_score": None,
+            "metrics": {},
             "error": "Generated code does not define magic_denoise.",
         }
 
@@ -168,15 +177,12 @@ try:
     if not math.isfinite(mse) or not math.isfinite(poisson):
         raise RuntimeError(f"Non-finite result: mse={{mse}}, poisson={{poisson}}")
 
-    reward = 1.0 / max(mse, 1e-8)
-
     print("JSON_RESULT_START")
     print(json.dumps({{
         "ok": True,
         "mse": mse,
         "poisson": poisson,
-        "reward": reward,
-        "error": None,
+        "error": None
     }}))
     print("JSON_RESULT_END")
 
@@ -186,9 +192,8 @@ except Exception as e:
         "ok": False,
         "mse": None,
         "poisson": None,
-        "reward": -1.0,
         "error": repr(e),
-        "traceback": traceback.format_exc(),
+        "traceback": traceback.format_exc()
     }}))
     print("JSON_RESULT_END")
 """
@@ -215,6 +220,8 @@ except Exception as e:
                 "mse": None,
                 "poisson": None,
                 "reward": -1.0,
+                "raw_score": None,
+                "metrics": {},
                 "error": f"Evaluation timeout after {timeout_seconds} seconds.",
             }
 
@@ -229,17 +236,95 @@ except Exception as e:
         start = stdout.index("JSON_RESULT_START") + len("JSON_RESULT_START")
         end = stdout.index("JSON_RESULT_END")
         payload = stdout[start:end].strip()
-        return json.loads(payload)
+        parsed = json.loads(payload)
     except Exception:
         return {
             "ok": False,
             "mse": None,
             "poisson": None,
             "reward": -1.0,
+            "raw_score": None,
+            "metrics": {},
             "error": "Could not parse evaluator output.",
             "stdout_tail": stdout[-4000:],
             "stderr_tail": stderr[-4000:],
         }
+
+    if not parsed.get("ok"):
+        return {
+            "ok": False,
+            "mse": None,
+            "poisson": None,
+            "reward": -1.0,
+            "raw_score": None,
+            "metrics": {},
+            "error": parsed.get("error"),
+            "traceback": parsed.get("traceback"),
+        }
+
+    mse = float(parsed["mse"])
+    poisson = float(parsed["poisson"])
+
+    try:
+        from examples.denoising.env import verify_denoising, BASELINES
+    except Exception as error:
+        return {
+            "ok": False,
+            "mse": mse,
+            "poisson": poisson,
+            "reward": -1.0,
+            "raw_score": mse,
+            "metrics": {},
+            "error": f"Could not import official verify_denoising: {repr(error)}",
+        }
+
+    is_valid = verify_denoising((mse, poisson))
+
+    baseline = BASELINES["pancreas"]
+
+    mse_range = baseline["baseline_mse"] - baseline["perfect_mse"]
+    poisson_range = baseline["baseline_poisson"] - baseline["perfect_poisson"]
+
+    mse_normalized = None
+    poisson_normalized = None
+
+    if mse_range > 0:
+        mse_normalized = (baseline["baseline_mse"] - mse) / mse_range
+        mse_normalized = max(0.0, min(1.0, mse_normalized))
+
+    if poisson_range > 0:
+        poisson_normalized = (baseline["baseline_poisson"] - poisson) / poisson_range
+        poisson_normalized = max(0.0, min(1.0, poisson_normalized))
+
+    metrics = {
+        "mse": mse,
+        "poisson": poisson,
+        "mse_normalized": mse_normalized,
+        "poisson_normalized": poisson_normalized,
+    }
+
+    if not is_valid:
+        return {
+            "ok": False,
+            "mse": mse,
+            "poisson": poisson,
+            "reward": -1.0,
+            "raw_score": mse,
+            "metrics": metrics,
+            "error": "Invalid solution under official verify_denoising check.",
+        }
+
+    reward = 1.0 / max(mse, 1e-8)
+
+    return {
+        "ok": True,
+        "mse": mse,
+        "poisson": poisson,
+        "reward": reward,
+        "raw_score": mse,
+        "metrics": metrics,
+        "error": None,
+    }
 
 
 def evaluate_candidate(code: str, eval_mode: str):
@@ -339,6 +424,8 @@ def main():
         "mse": None,
         "poisson": None,
         "reward": -1.0,
+        "raw_score": None,
+        "metrics": {},
         "code": current_code,
         "source": "initial",
     }
@@ -354,7 +441,6 @@ def main():
         rollout_prompts = []
         rollout_responses = []
         rollout_rewards = []
-        step_records = []
 
         for rollout_id in range(1, args.rollouts_per_step + 1):
             print_section(f"Step {step} Rollout {rollout_id}/{args.rollouts_per_step}")
@@ -388,6 +474,8 @@ def main():
                 "mse": eval_result.get("mse"),
                 "poisson": eval_result.get("poisson"),
                 "reward": eval_result.get("reward"),
+                "raw_score": eval_result.get("raw_score"),
+                "metrics": eval_result.get("metrics", {}),
                 "error": eval_result.get("error"),
                 "elapsed_seconds": elapsed,
                 "code": code,
@@ -395,7 +483,6 @@ def main():
             }
 
             history.append(record)
-            step_records.append(record)
 
             rollout_prompts.append(generation["rendered_prompt"])
             rollout_responses.append(code)
@@ -448,6 +535,8 @@ def main():
         "mse": best_record.get("mse"),
         "poisson": best_record.get("poisson"),
         "reward": best_record.get("reward"),
+        "raw_score": best_record.get("raw_score"),
+        "metrics": best_record.get("metrics", {}),
         "source": best_record.get("source"),
     }
     print(json.dumps(summary, indent=2))
