@@ -8,6 +8,9 @@ import tempfile
 import time
 from pathlib import Path
 
+from ttt_discover.tinker_utils.sampler import PUCTSampler
+from examples.denoising.env import DenoisingState
+
 from university_gpu.local_hf_lora_model import (
     load_tokenizer_and_lora_model,
     make_optimizer,
@@ -22,34 +25,40 @@ from university_gpu.local_reward_training import train_lora_on_rollouts
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
+class LocalDenoisingEnvForPUCT:
+    """
+    Minimal environment wrapper for official PUCTSampler.
+
+    We use the official DenoisingState class, but we define the initial
+    state value as -MSE because PUCT assumes higher value is better.
+
+    Denoising minimizes MSE, so:
+        value = -mse
+    """
+
+    state_type = DenoisingState
+
+    @classmethod
+    def create_initial_state(cls, problem_type: str):
+        from examples.denoising.utils import MAGIC_FUNC
+
+        initial_mse = 0.2316
+        initial_poisson = 0.0370
+
+        return DenoisingState(
+            timestep=-1,
+            construction=[],
+            code=MAGIC_FUNC,
+            value=-initial_mse,
+            mse=initial_mse,
+            poisson=initial_poisson,
+        )
+
+
 def print_section(title):
     print("\n" + "=" * 80)
     print(title)
     print("=" * 80)
-
-
-def load_initial_magic_code():
-    """
-    Load the official MAGIC baseline code from examples.denoising.utils.
-
-    This is the initial state for the denoising task.
-    If the import fails, we use a very simple fallback function.
-    """
-    try:
-        from examples.denoising.utils import MAGIC_FUNC
-
-        return MAGIC_FUNC
-    except Exception as error:
-        print("Could not import MAGIC_FUNC from examples.denoising.utils.")
-        print("Using fallback baseline.")
-        print("Error:", repr(error))
-
-        return """
-def magic_denoise(X, **kwargs):
-    import numpy as np
-    X = np.asarray(X, dtype=float)
-    return np.maximum(X, 0.0)
-""".strip()
 
 
 def evaluate_candidate_dummy(code: str):
@@ -110,9 +119,6 @@ def evaluate_candidate_official(code: str, timeout_seconds: int = 900):
 
     Then it applies the official validity logic from examples.denoising.env:
         verify_denoising((mse, poisson))
-
-    If the generated result violates the official Poisson hard constraint,
-    the candidate is treated as invalid.
     """
     if "def magic_denoise" not in code:
         return {
@@ -328,9 +334,6 @@ except Exception as e:
 
 
 def evaluate_candidate(code: str, eval_mode: str):
-    """
-    Choose between dummy evaluator and official evaluator.
-    """
     if eval_mode == "dummy":
         return evaluate_candidate_dummy(code)
 
@@ -340,9 +343,51 @@ def evaluate_candidate(code: str, eval_mode: str):
     raise ValueError(f"Unknown eval_mode: {eval_mode}")
 
 
+def make_child_state(step: int, code: str, eval_result: dict):
+    """
+    Create official DenoisingState child for PUCT.
+
+    Official denoising minimizes MSE.
+    PUCT maximizes value.
+    Therefore:
+        value = -mse
+    """
+    mse = eval_result.get("mse")
+    poisson = eval_result.get("poisson")
+
+    if mse is None:
+        value = None
+    else:
+        value = -float(mse)
+
+    return DenoisingState(
+        timestep=step,
+        construction=[],
+        code=code,
+        value=value,
+        mse=mse,
+        poisson=poisson,
+        observation="",
+    )
+
+
 def save_json(path: Path, data):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, indent=2), encoding="utf-8")
+
+
+def create_puct_sampler(output_dir: Path, rollouts_per_step: int):
+    sampler_path = output_dir / "puct_sampler.json"
+
+    return PUCTSampler(
+        file_path=str(sampler_path),
+        env_type=LocalDenoisingEnvForPUCT,
+        problem_type="",
+        max_buffer_size=1000,
+        batch_size=rollouts_per_step,
+        puct_c=1.0,
+        topk_children=2,
+    )
 
 
 def main():
@@ -365,7 +410,7 @@ def main():
     parser.add_argument(
         "--rollouts-per-step",
         type=int,
-        default=int(os.environ.get("LOCAL_TTT_ROLLOUTS", "2")),
+        default=int(os.environ.get("LOCAL_TTT_ROLLOUTS", "1")),
     )
     parser.add_argument(
         "--max-new-tokens",
@@ -392,7 +437,7 @@ def main():
 
     args = parser.parse_args()
 
-    print_section("Tiny Local TTT-Denoising Experiment")
+    print_section("Tiny Local TTT-Denoising with Official Prompt, Reward Check, and PUCT")
     print("Repo root:", REPO_ROOT)
     print("Model:", args.model_name)
     print("Eval mode:", args.eval_mode)
@@ -405,17 +450,21 @@ def main():
     output_dir = REPO_ROOT / args.output_dir
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    print_section("Create PUCT Sampler")
+    sampler = create_puct_sampler(
+        output_dir=output_dir,
+        rollouts_per_step=args.rollouts_per_step,
+    )
+
+    print("Initial PUCT stats:")
+    print(json.dumps(sampler.get_sample_stats(), indent=2))
+
     print_section("Load Local LLM + LoRA")
     tokenizer, model = load_tokenizer_and_lora_model(
         model_name=args.model_name,
         lora_rank=args.lora_rank,
     )
     optimizer = make_optimizer(model, learning_rate=args.learning_rate)
-
-    print_section("Load Initial MAGIC Baseline")
-    current_code = load_initial_magic_code()
-    print("Initial code preview:")
-    print(current_code[:1200])
 
     history = []
 
@@ -426,26 +475,38 @@ def main():
         "reward": -1.0,
         "raw_score": None,
         "metrics": {},
-        "code": current_code,
-        "source": "initial",
+        "code": None,
+        "source": None,
     }
 
     for step in range(1, args.steps + 1):
         print_section(f"Step {step}/{args.steps}")
 
-        prompt = build_denoising_prompt(
-            current_code=current_code,
-            history=history,
-        )
+        parent_states = sampler.sample_states(args.rollouts_per_step)
 
         rollout_prompts = []
         rollout_responses = []
         rollout_rewards = []
 
-        for rollout_id in range(1, args.rollouts_per_step + 1):
+        valid_child_states = []
+        valid_parent_states = []
+
+        for rollout_id, parent_state in enumerate(parent_states, start=1):
             print_section(f"Step {step} Rollout {rollout_id}/{args.rollouts_per_step}")
 
+            print("Parent state:")
+            print("  id:", parent_state.id)
+            print("  timestep:", parent_state.timestep)
+            print("  value:", parent_state.value)
+            print("  mse:", getattr(parent_state, "mse", None))
+            print("  poisson:", getattr(parent_state, "poisson", None))
+
             start_time = time.time()
+
+            prompt = build_denoising_prompt(
+                current_code=parent_state.code,
+                history=history,
+            )
 
             generation = generate_candidate_code(
                 model=model,
@@ -470,6 +531,11 @@ def main():
             record = {
                 "step": step,
                 "rollout": rollout_id,
+                "parent_id": parent_state.id,
+                "parent_timestep": parent_state.timestep,
+                "parent_value": parent_state.value,
+                "parent_mse": getattr(parent_state, "mse", None),
+                "parent_poisson": getattr(parent_state, "poisson", None),
                 "ok": eval_result.get("ok"),
                 "mse": eval_result.get("mse"),
                 "poisson": eval_result.get("poisson"),
@@ -492,12 +558,42 @@ def main():
             print(json.dumps(eval_result, indent=2))
             print(f"Elapsed seconds: {elapsed:.2f}")
 
-            if record["ok"] and record["reward"] > best_record["reward"]:
-                best_record = {
-                    **record,
-                    "source": f"step_{step}_rollout_{rollout_id}",
-                }
-                current_code = code
+            if record["ok"]:
+                child_state = make_child_state(
+                    step=step,
+                    code=code,
+                    eval_result=eval_result,
+                )
+
+                valid_child_states.append(child_state)
+                valid_parent_states.append(parent_state)
+
+                if record["reward"] > best_record["reward"]:
+                    best_record = {
+                        **record,
+                        "source": f"step_{step}_rollout_{rollout_id}",
+                    }
+            else:
+                sampler.record_failed_rollout(parent_state)
+
+        print_section("Update PUCT Sampler")
+
+        if valid_child_states:
+            sampler.update_states(
+                states=valid_child_states,
+                parent_states=valid_parent_states,
+                save=True,
+                step=step,
+            )
+            print(f"Added {len(valid_child_states)} valid child states to PUCT.")
+        else:
+            sampler.flush(step=step)
+            print("No valid child states. Flushed PUCT sampler only.")
+
+        puct_stats = sampler.get_sample_stats()
+
+        print("PUCT stats:")
+        print(json.dumps(puct_stats, indent=2))
 
         print_section("LoRA Update")
         train_result = train_lora_on_rollouts(
@@ -520,6 +616,7 @@ def main():
                 "args": vars(args),
                 "history": history,
                 "best_record": best_record,
+                "puct_stats": puct_stats,
             },
         )
 
@@ -530,6 +627,7 @@ def main():
         print("Saved LoRA adapter to:", adapter_dir)
 
     print_section("Final Best Record")
+
     summary = {
         "ok": best_record.get("ok"),
         "mse": best_record.get("mse"),
@@ -539,13 +637,17 @@ def main():
         "metrics": best_record.get("metrics", {}),
         "source": best_record.get("source"),
     }
+
     print(json.dumps(summary, indent=2))
 
-    best_code_path = output_dir / "best_magic_denoise.py"
-    best_code_path.write_text(best_record["code"], encoding="utf-8")
-    print("Saved best code to:", best_code_path)
-
     save_json(output_dir / "summary.json", summary)
+
+    if best_record.get("code"):
+        best_code_path = output_dir / "best_magic_denoise.py"
+        best_code_path.write_text(best_record["code"], encoding="utf-8")
+        print("Saved best code to:", best_code_path)
+    else:
+        print("No valid best code was found.")
 
 
 if __name__ == "__main__":
