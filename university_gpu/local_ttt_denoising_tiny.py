@@ -551,7 +551,7 @@ def main():
             history.append(record)
 
             rollout_prompts.append(generation["rendered_prompt"])
-            rollout_responses.append(code)
+            rollout_responses.append(generation["raw_text"])
             rollout_rewards.append(float(eval_result.get("reward", -1.0)))
 
             print("Evaluation result:")
