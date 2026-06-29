@@ -8,8 +8,13 @@ import tempfile
 import time
 from pathlib import Path
 
-from ttt_discover.tinker_utils.sampler import PUCTSampler
-from examples.denoising.env import DenoisingState
+from university_gpu.local_puct_sampler import (
+    DEFAULT_MAGIC_FUNC,
+    LOCAL_BASELINES,
+    LocalDenoisingState,
+    LocalPUCTSampler,
+    local_verify_denoising,
+)
 
 from university_gpu.local_hf_lora_model import (
     load_tokenizer_and_lora_model,
@@ -27,20 +32,18 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 
 class LocalDenoisingEnvForPUCT:
     """
-    Minimal environment wrapper for official PUCTSampler.
+    Minimal environment wrapper for local PUCTSampler.
 
-    We use the official DenoisingState class, but we define the initial
-    state value as -MSE because PUCT assumes higher value is better.
-
-    Denoising minimizes MSE, so:
+    Denoising minimizes MSE, so we use:
         value = -mse
+
+    PUCT assumes higher value is better.
     """
 
-    state_type = DenoisingState
+    state_type = LocalDenoisingState
 
     @classmethod
     def create_initial_state(cls, problem_type: str):
-        from examples.denoising.utils import MAGIC_FUNC
 
         initial_mse = 0.2316
         initial_poisson = 0.0370
@@ -48,7 +51,7 @@ class LocalDenoisingEnvForPUCT:
         return DenoisingState(
             timestep=-1,
             construction=[],
-            code=MAGIC_FUNC,
+            code=DEFAULT_MAGIC_FUNC,
             value=-initial_mse,
             mse=initial_mse,
             poisson=initial_poisson,
@@ -271,22 +274,8 @@ except Exception as e:
     mse = float(parsed["mse"])
     poisson = float(parsed["poisson"])
 
-    try:
-        from examples.denoising.env import verify_denoising, BASELINES
-    except Exception as error:
-        return {
-            "ok": False,
-            "mse": mse,
-            "poisson": poisson,
-            "reward": -1.0,
-            "raw_score": mse,
-            "metrics": {},
-            "error": f"Could not import official verify_denoising: {repr(error)}",
-        }
-
-    is_valid = verify_denoising((mse, poisson))
-
-    baseline = BASELINES["pancreas"]
+    is_valid = local_verify_denoising((mse, poisson))
+    baseline = LOCAL_BASELINES["pancreas"]
 
     mse_range = baseline["baseline_mse"] - baseline["perfect_mse"]
     poisson_range = baseline["baseline_poisson"] - baseline["perfect_poisson"]
@@ -345,10 +334,11 @@ def evaluate_candidate(code: str, eval_mode: str):
 
 def make_child_state(step: int, code: str, eval_result: dict):
     """
-    Create official DenoisingState child for PUCT.
+    Create local DenoisingState child for PUCT.
 
     Official denoising minimizes MSE.
     PUCT maximizes value.
+
     Therefore:
         value = -mse
     """
@@ -360,7 +350,7 @@ def make_child_state(step: int, code: str, eval_result: dict):
     else:
         value = -float(mse)
 
-    return DenoisingState(
+    return LocalDenoisingState(
         timestep=step,
         construction=[],
         code=code,
@@ -379,7 +369,7 @@ def save_json(path: Path, data):
 def create_puct_sampler(output_dir: Path, rollouts_per_step: int):
     sampler_path = output_dir / "puct_sampler.json"
 
-    return PUCTSampler(
+    return LocalPUCTSampler(
         file_path=str(sampler_path),
         env_type=LocalDenoisingEnvForPUCT,
         problem_type="",
