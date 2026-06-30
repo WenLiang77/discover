@@ -66,7 +66,7 @@ echo "========================================"
 echo "Installing current repo in editable mode"
 echo "========================================"
 
-python -m pip install -e .
+python -m export PYTHONPATH="$(pwd):$PYTHONPATH"
 
 echo ""
 echo "========================================"
