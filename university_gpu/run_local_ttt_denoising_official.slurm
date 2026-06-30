@@ -56,7 +56,7 @@ echo "========================================"
 
 export OPENPROBLEMS_CACHE_DIR="$(pwd)/.openproblems_cache"
 
-export LOCAL_TTT_MODEL="Qwen/Qwen2.5-Coder-1.5B-Instruct"
+export LOCAL_TTT_MODEL="Qwen/Qwen2.5-Coder-0.5B-Instruct"
 export LOCAL_TTT_EVAL_MODE="official"
 export LOCAL_TTT_STEPS="2"
 export LOCAL_TTT_ROLLOUTS="2"
