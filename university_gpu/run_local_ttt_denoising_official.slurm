@@ -80,7 +80,9 @@ echo "========================================"
 echo "Run official tiny local TTT denoising"
 echo "========================================"
 
-python university_gpu/local_ttt_denoising_tiny.py \
+export PYTHONPATH="$(pwd):$PYTHONPATH"
+
+python -m university_gpu.local_ttt_denoising_tiny \
     --model-name "$LOCAL_TTT_MODEL" \
     --eval-mode "$LOCAL_TTT_EVAL_MODE" \
     --steps "$LOCAL_TTT_STEPS" \
