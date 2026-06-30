@@ -48,7 +48,7 @@ class LocalDenoisingEnvForPUCT:
         initial_mse = 0.2316
         initial_poisson = 0.0370
 
-        return DenoisingState(
+        return LocalDenoisingState(
             timestep=-1,
             construction=[],
             code=DEFAULT_MAGIC_FUNC,
