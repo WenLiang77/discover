@@ -8,7 +8,7 @@ from peft import LoraConfig, TaskType, get_peft_model
 
 DEFAULT_MODEL_NAME = os.environ.get(
     "LOCAL_TTT_MODEL",
-    "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+    "Qwen/Qwen2.5-Coder-0.5B-Instruct",
 )
 
 
