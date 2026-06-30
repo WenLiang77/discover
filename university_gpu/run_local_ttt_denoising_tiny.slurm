@@ -52,7 +52,7 @@ echo "========================================"
 echo "Experiment configuration"
 echo "========================================"
 
-export LOCAL_TTT_MODEL="Qwen/Qwen2.5-Coder-1.5B-Instruct"
+export LOCAL_TTT_MODEL="Qwen/Qwen2.5-Coder-0.5B-Instruct"
 export LOCAL_TTT_EVAL_MODE="dummy"
 export LOCAL_TTT_STEPS="1"
 export LOCAL_TTT_ROLLOUTS="2"
