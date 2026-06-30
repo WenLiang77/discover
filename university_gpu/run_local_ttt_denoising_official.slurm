@@ -9,6 +9,7 @@
 #SBATCH --error=university_gpu/logs/official_ttt_denoise_%j.err
 
 set -e
+module load cray-python/3.11.7
 
 echo "========================================"
 echo "Official Tiny Local TTT-Denoising"
@@ -38,10 +39,10 @@ fi
 source .venv/bin/activate
 
 echo "Python executable:"
-which python
+which python3
 
 echo "Python version:"
-python --version
+python3 --version
 
 echo ""
 echo "========================================"
@@ -56,14 +57,14 @@ echo "========================================"
 
 export OPENPROBLEMS_CACHE_DIR="$(pwd)/.openproblems_cache"
 
-export LOCAL_TTT_MODEL="Qwen/Qwen2.5-Coder-0.5B-Instruct"
+export LOCAL_TTT_MODEL="Qwen/Qwen2.5-Coder-1.5B-Instruct"
 export LOCAL_TTT_EVAL_MODE="official"
-export LOCAL_TTT_STEPS="1"
-export LOCAL_TTT_ROLLOUTS="2"
-export LOCAL_TTT_MAX_NEW_TOKENS="1024"
+export LOCAL_TTT_STEPS="5"
+export LOCAL_TTT_ROLLOUTS="10"
+export LOCAL_TTT_MAX_NEW_TOKENS="1536"
 export LOCAL_TTT_LORA_RANK="8"
 export LOCAL_TTT_LR="1e-4"
-export LOCAL_TTT_OUTPUT_DIR="university_gpu/outputs/local_ttt_denoising_official"
+export LOCAL_TTT_OUTPUT_DIR="university_gpu/outputs/local_ttt_denoising_official_${SLURM_JOB_ID}"
 
 echo "OPENPROBLEMS_CACHE_DIR=$OPENPROBLEMS_CACHE_DIR"
 echo "LOCAL_TTT_MODEL=$LOCAL_TTT_MODEL"
@@ -82,7 +83,7 @@ echo "========================================"
 
 export PYTHONPATH="$(pwd):$PYTHONPATH"
 
-python -m university_gpu.local_ttt_denoising_tiny \
+python3 -m university_gpu.local_ttt_denoising_tiny \
     --model-name "$LOCAL_TTT_MODEL" \
     --eval-mode "$LOCAL_TTT_EVAL_MODE" \
     --steps "$LOCAL_TTT_STEPS" \

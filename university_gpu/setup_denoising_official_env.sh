@@ -8,7 +8,7 @@ echo "========================================"
 
 echo "Current directory: $(pwd)"
 echo "Python:"
-python --version || true
+python3 --version || true
 
 echo ""
 echo "========================================"
@@ -16,43 +16,43 @@ echo "Create / activate virtual environment"
 echo "========================================"
 
 if [ ! -d ".venv" ]; then
-    python -m venv .venv
+    python3 -m venv .venv
 fi
 
 source .venv/bin/activate
 
-python --version
-which python
+python3 --version
+which python3
 
 echo ""
 echo "========================================"
 echo "Upgrade pip"
 echo "========================================"
 
-python -m pip install --upgrade pip setuptools wheel
+python3 -m pip install --upgrade pip setuptools wheel
 
 echo ""
 echo "========================================"
 echo "Install current repo"
 echo "========================================"
 
-python -m pip install -e .
+# python3 -m pip install -e .
 
 echo ""
 echo "========================================"
 echo "Install official denoising requirements"
 echo "========================================"
 
-python -m pip install -r requirements/denoising/requirements-denoising.txt
-python -m pip install accelerate peft sentencepiece
+python3 -m pip install -r requirements/denoising/requirements-denoising.txt
+python3 -m pip install accelerate peft sentencepiece
 
 echo ""
 echo "========================================"
 echo "Install git dependencies"
 echo "========================================"
 
-python -m pip install git+https://github.com/czbiohub/simscity.git
-python -m pip install --no-deps git+https://github.com/czbiohub/molecular-cross-validation.git
+python3 -m pip install git+https://github.com/czbiohub/simscity.git
+python3 -m pip install --no-deps git+https://github.com/czbiohub/molecular-cross-validation.git
 
 echo ""
 echo "========================================"
@@ -73,7 +73,7 @@ echo "========================================"
 echo "Install openproblems without dependencies"
 echo "========================================"
 
-python -m pip install --no-deps -e ./openproblems
+python3 -m pip install --no-deps -e ./openproblems
 
 echo ""
 echo "========================================"
@@ -90,14 +90,14 @@ echo "========================================"
 
 export OPENPROBLEMS_CACHE_DIR="$(pwd)/.openproblems_cache"
 
-python -c "import torch; print('torch:', torch.__version__)"
-python -c "import transformers; print('transformers:', transformers.__version__)"
-python -c "import peft; print('peft:', peft.__version__)"
-python -c "import scanpy; print('scanpy:', scanpy.__version__)"
-python -c "import anndata; print('anndata:', anndata.__version__)"
-python -c "import scprep; print('scprep import ok')"
-python -c "import graphtools; print('graphtools import ok')"
-python -c "import openproblems; print('openproblems import ok')"
+python3 -c "import torch; print('torch:', torch.__version__)"
+python3 -c "import transformers; print('transformers:', transformers.__version__)"
+python3 -c "import peft; print('peft:', peft.__version__)"
+python3 -c "import scanpy; print('scanpy:', scanpy.__version__)"
+python3 -c "import anndata; print('anndata:', anndata.__version__)"
+python3 -c "import scprep; print('scprep import ok')"
+python3 -c "import graphtools; print('graphtools import ok')"
+python3 -c "import openproblems; print('openproblems import ok')"
 
 echo ""
 echo "========================================"
