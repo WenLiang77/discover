@@ -73,12 +73,22 @@ Previous evaluation results:
 
 Now write an improved version of magic_denoise.
 
-Requirements:
-- Return only Python code.
-- The code must define a function named magic_denoise.
-- Do not include explanations outside the code.
-- The output of magic_denoise must have the same shape as the input X.
+Strict code requirements:
+- Return only executable Python code.
+- Do not include explanations, markdown fences, or comments outside the code.
+- Do not repeat CURRENT_IMPLEMENTATION_BEGIN, CURRENT_IMPLEMENTATION_END, or previous history text.
+- The code must be self-contained.
+- Include all required imports explicitly in the generated code.
+- At minimum, include `import numpy as np` if you use `np`.
+- The function signature must be exactly:
+  def magic_denoise(X, **kwargs):
+- Do not introduce required positional arguments other than X.
+- Do not use undefined variables or undefined functions.
+- If you use sklearn, scipy, scanpy, scprep, or graphtools objects, import them explicitly.
+- The output must be a numpy array with the same shape as X.
 - The output must be finite and non-negative.
+- Avoid file I/O, network access, and external datasets.
+- Keep the implementation reasonably simple and robust.
 """
 
     return prompt.strip()
