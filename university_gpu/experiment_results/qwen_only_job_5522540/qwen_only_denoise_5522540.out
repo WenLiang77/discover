@@ -1,0 +1,382 @@
+=== Qwen-only official denoising baseline ===
+Job ID: 5522540
+Job name: qwen_only_denoise
+Node: nid010024
+Start time: Mon Jul  6 06:13:13 PM UTC 2026
+Current directory: /scratch/b6ao/wenliang.b6ao/discover
+Python:
+/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/bin/python3
+Python 3.11.7
+GPU:
+Mon Jul  6 18:13:13 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 565.57.01              Driver Version: 565.57.01      CUDA Version: 12.7     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GH200 120GB             On  |   00000019:01:00.0 Off |                    0 |
+| N/A   35C    P0             94W /  900W |       2MiB /  97871MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+Experiment config:
+LOCAL_TTT_MODEL=Qwen/Qwen2.5-Coder-1.5B-Instruct
+LOCAL_QWEN_ONLY_ATTEMPTS=50
+LOCAL_TTT_MAX_NEW_TOKENS=1536
+LOCAL_QWEN_ONLY_TEMPERATURE=0.7
+LOCAL_QWEN_ONLY_TOP_P=0.95
+LOCAL_QWEN_ONLY_SEED=42
+LOCAL_QWEN_ONLY_OUTPUT_DIR=university_gpu/outputs/qwen_only_denoising_official_5522540
+=== Qwen-only denoising baseline ===
+Model: Qwen/Qwen2.5-Coder-1.5B-Instruct
+Eval mode: official
+Attempts: 50
+Max new tokens: 1536
+Temperature: 0.7
+Top-p: 0.95
+Seed: 42
+Output dir: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/university_gpu/outputs/qwen_only_denoising_official_5522540
+Loading base model without LoRA: Qwen/Qwen2.5-Coder-1.5B-Instruct
+Using dtype: torch.bfloat16
+
+=== Attempt 1/50 ===
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmpmfophzmn/eval_candidate.py", line 63, in <module>
+    CURRENT_IMPLEMENTATION_END
+NameError: name 'CURRENT_IMPLEMENTATION_END' is not defined
+
+ok=False mse=None poisson=None reward=-1.0 error=Could not parse evaluator output.
+
+=== Attempt 2/50 ===
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmp7kpr8w_q/eval_candidate.py", line 65, in <module>
+    CURRENT_IMPLEMENTATION_END
+NameError: name 'CURRENT_IMPLEMENTATION_END' is not defined
+
+ok=False mse=None poisson=None reward=-1.0 error=Could not parse evaluator output.
+
+=== Attempt 3/50 ===
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmp4b1y3pxv/eval_candidate.py", line 73, in <module>
+    CURRENT_IMPLEMENTATION_END
+NameError: name 'CURRENT_IMPLEMENTATION_END' is not defined
+
+ok=False mse=None poisson=None reward=-1.0 error=Could not parse evaluator output.
+
+=== Attempt 4/50 ===
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmp2b2c_rf7/eval_candidate.py", line 60, in <module>
+    CURRENT_IMPLEMENTATION_END
+NameError: name 'CURRENT_IMPLEMENTATION_END' is not defined
+
+ok=False mse=None poisson=None reward=-1.0 error=Could not parse evaluator output.
+
+=== Attempt 5/50 ===
+ok=False mse=None poisson=None reward=-1.0 error=NameError("name 'PCA' is not defined")
+
+=== Attempt 6/50 ===
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmpbo6758vh/eval_candidate.py", line 73, in <module>
+    CURRENT_IMPLEMENTATION_END
+NameError: name 'CURRENT_IMPLEMENTATION_END' is not defined
+
+ok=False mse=None poisson=None reward=-1.0 error=Could not parse evaluator output.
+
+=== Attempt 7/50 ===
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmpc88j6irk/eval_candidate.py", line 59, in <module>
+    CURRENT_IMPLEMENTATION_END
+NameError: name 'CURRENT_IMPLEMENTATION_END' is not defined
+
+ok=False mse=None poisson=None reward=-1.0 error=Could not parse evaluator output.
+
+=== Attempt 8/50 ===
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmpr2ebaz7h/eval_candidate.py", line 66, in <module>
+    CURRENT_IMPLEMENTATION_END
+NameError: name 'CURRENT_IMPLEMENTATION_END' is not defined
+
+ok=False mse=None poisson=None reward=-1.0 error=Could not parse evaluator output.
+
+=== Attempt 9/50 ===
+Evaluator STDERR tail:
+/local/user/1483806620/tmpsdpov3bk/eval_candidate.py:49: RuntimeWarning: divide by zero encountered in log
+  y_log = np.log(X)
+
+ok=False mse=None poisson=None reward=-1.0 error=NameError("name 'minimize_scalar' is not defined")
+
+=== Attempt 10/50 ===
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmp_wsqlnpr/eval_candidate.py", line 58, in <module>
+    CURRENT_IMPLEMENTATION_END
+NameError: name 'CURRENT_IMPLEMENTATION_END' is not defined
+
+ok=False mse=None poisson=None reward=-1.0 error=Could not parse evaluator output.
+
+=== Attempt 11/50 ===
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmp597k_b4a/eval_candidate.py", line 61, in <module>
+    CURRENT_IMPLEMENTATION_END
+NameError: name 'CURRENT_IMPLEMENTATION_END' is not defined
+
+ok=False mse=None poisson=None reward=-1.0 error=Could not parse evaluator output.
+
+=== Attempt 12/50 ===
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmp3siwawi9/eval_candidate.py", line 63, in <module>
+    CURRENT_IMPLEMENTATION_END
+NameError: name 'CURRENT_IMPLEMENTATION_END' is not defined
+
+ok=False mse=None poisson=None reward=-1.0 error=Could not parse evaluator output.
+
+=== Attempt 13/50 ===
+ok=False mse=None poisson=None reward=-1.0 error=NameError("name 'StandardScaler' is not defined")
+
+=== Attempt 14/50 ===
+ok=False mse=None poisson=None reward=-1.0 error=IndexError('boolean index did not match indexed array along axis 0; size of axis is 1937 but size of corresponding boolean axis is 15501')
+
+=== Attempt 15/50 ===
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmpx6avrw6f/eval_candidate.py", line 96, in <module>
+    data[0] += np.sin(data[:, 0]) * 10
+ValueError: operands could not be broadcast together with shapes (100,) (1000,) (100,) 
+
+ok=False mse=None poisson=None reward=-1.0 error=Could not parse evaluator output.
+
+=== Attempt 16/50 ===
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmp3dn_00wg/eval_candidate.py", line 85, in <module>
+    CURRENT_IMPLEMENTATION_END
+NameError: name 'CURRENT_IMPLEMENTATION_END' is not defined
+
+ok=False mse=None poisson=None reward=-1.0 error=Could not parse evaluator output.
+
+=== Attempt 17/50 ===
+ok=True mse=0.4021363015190825 poisson=0.0369656408850835 reward=2.48671904581225 error=None
+New best valid candidate: attempt_17
+
+=== Attempt 18/50 ===
+ok=False mse=None poisson=None reward=-1.0 error=NameError("name 'norm' is not defined")
+
+=== Attempt 19/50 ===
+ok=False mse=None poisson=None reward=-1.0 error=NameError("name 'minimize' is not defined")
+
+=== Attempt 20/50 ===
+ok=False mse=None poisson=None reward=-1.0 error=NameError("name 'time' is not defined")
+
+=== Attempt 21/50 ===
+ok=False mse=None poisson=None reward=-1.0 error=NameError("name 'StandardScaler' is not defined")
+
+=== Attempt 22/50 ===
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmpjkh14uj0/eval_candidate.py", line 122, in <module>
+    CURRENT_IMPLEMENTATION_END
+NameError: name 'CURRENT_IMPLEMENTATION_END' is not defined
+
+ok=False mse=None poisson=None reward=-1.0 error=Could not parse evaluator output.
+
+=== Attempt 23/50 ===
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmphc9oz2az/eval_candidate.py", line 79, in <module>
+    CURRENT_IMPLEMENTATION_END
+NameError: name 'CURRENT_IMPLEMENTATION_END' is not defined
+
+ok=False mse=None poisson=None reward=-1.0 error=Could not parse evaluator output.
+
+=== Attempt 24/50 ===
+ok=False mse=None poisson=None reward=-1.0 error=TypeError("magic_denoise() missing 8 required positional arguments: 'budget_s', 'knn', 't', 'n_pca', 'solver', 'decay', 'knn_max', and 'n_jobs'")
+
+=== Attempt 25/50 ===
+ok=False mse=None poisson=None reward=-1.0 error=NameError("name 'StandardScaler' is not defined")
+
+=== Attempt 26/50 ===
+ok=False mse=None poisson=None reward=-1.0 error=NameError("name 'PCA' is not defined")
+
+=== Attempt 27/50 ===
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmp8dtrdls5/eval_candidate.py", line 148, in <module>
+    CURRENT_IMPLEMENTATION_END
+NameError: name 'CURRENT_IMPLEMENTATION_END' is not defined
+
+ok=False mse=None poisson=None reward=-1.0 error=Could not parse evaluator output.
+
+=== Attempt 28/50 ===
+ok=False mse=None poisson=None reward=-1.0 error=NameError("name 'StandardScaler' is not defined")
+
+=== Attempt 29/50 ===
+Evaluator STDERR tail:
+/local/user/1483806620/tmptm9b6io4/eval_candidate.py:51: RuntimeWarning: divide by zero encountered in log
+  poisson_loss = np.mean((X * np.log(X) - X) ** 2)
+/local/user/1483806620/tmptm9b6io4/eval_candidate.py:51: RuntimeWarning: invalid value encountered in multiply
+  poisson_loss = np.mean((X * np.log(X) - X) ** 2)
+
+ok=False mse=0.4021381564561625 poisson=0.22310209875552814 reward=-1.0 error=Invalid solution under official verify_denoising check.
+
+=== Attempt 30/50 ===
+Evaluator STDERR tail:
+/local/user/1483806620/tmp6kknws4c/eval_candidate.py:50: RuntimeWarning: invalid value encountered in sqrt
+  X_transformed = np.sqrt(X_standardized + 1e-6)
+
+ok=False mse=None poisson=None reward=-1.0 error=NameError("name 'PCA' is not defined")
+
+=== Attempt 31/50 ===
+ok=False mse=None poisson=None reward=-1.0 error=NameError("name 'PCA' is not defined")
+
+=== Attempt 32/50 ===
+ok=False mse=None poisson=None reward=-1.0 error=NameError("name 'minimize' is not defined")
+
+=== Attempt 33/50 ===
+ok=False mse=None poisson=None reward=-1.0 error=NameError("name 'PCA' is not defined")
+
+=== Attempt 34/50 ===
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmp2zle4n5f/eval_candidate.py", line 56, in <module>
+    CURRENT_IMPLEMENTATION_END
+NameError: name 'CURRENT_IMPLEMENTATION_END' is not defined
+
+ok=False mse=None poisson=None reward=-1.0 error=Could not parse evaluator output.
+
+=== Attempt 35/50 ===
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmp2nklb8d4/eval_candidate.py", line 89, in <module>
+    CURRENT_IMPLEMENTATION_END
+NameError: name 'CURRENT_IMPLEMENTATION_END' is not defined
+
+ok=False mse=None poisson=None reward=-1.0 error=Could not parse evaluator output.
+
+=== Attempt 36/50 ===
+ok=False mse=None poisson=None reward=-1.0 error=NameError("name 'minimize_scalar' is not defined")
+
+=== Attempt 37/50 ===
+ok=False mse=None poisson=None reward=-1.0 error=NameError("name 'StandardScaler' is not defined")
+
+=== Attempt 38/50 ===
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmpwd2yix11/eval_candidate.py", line 60, in <module>
+    CURRENT_IMPLEMENTATION_END
+NameError: name 'CURRENT_IMPLEMENTATION_END' is not defined
+
+ok=False mse=None poisson=None reward=-1.0 error=Could not parse evaluator output.
+
+=== Attempt 39/50 ===
+ok=False mse=None poisson=None reward=-1.0 error=NameError("name 'poisson' is not defined")
+
+=== Attempt 40/50 ===
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmpajjv7e1h/eval_candidate.py", line 65, in <module>
+    CURRENT_IMPLEMENTATION_END
+NameError: name 'CURRENT_IMPLEMENTATION_END' is not defined
+
+ok=False mse=None poisson=None reward=-1.0 error=Could not parse evaluator output.
+
+=== Attempt 41/50 ===
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmp90eszrlb/eval_candidate.py", line 63, in <module>
+    CURRENT_IMPLEMENTATION_END
+NameError: name 'CURRENT_IMPLEMENTATION_END' is not defined
+
+ok=False mse=None poisson=None reward=-1.0 error=Could not parse evaluator output.
+
+=== Attempt 42/50 ===
+Evaluator STDERR tail:
+/local/user/1483806620/tmp2lewltju/eval_candidate.py:48: RuntimeWarning: invalid value encountered in sqrt
+  X_sqrt = np.sqrt(X_log)
+
+ok=False mse=None poisson=None reward=-1.0 error=TypeError("LassoCV.__init__() got an unexpected keyword argument 'alpha'")
+
+=== Attempt 43/50 ===
+Evaluator STDERR tail:
+/local/user/1483806620/tmpnzdaz002/eval_candidate.py:58: RuntimeWarning: invalid value encountered in sqrt
+  X_noisy_sqrt = np.sqrt(X_noisy + 1e-6)
+
+ok=False mse=None poisson=None reward=-1.0 error=NameError("name 'stats' is not defined")
+
+=== Attempt 44/50 ===
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmpehncq4kj/eval_candidate.py", line 59, in <module>
+    CURRENT_IMPLEMENTATION_END
+NameError: name 'CURRENT_IMPLEMENTATION_END' is not defined
+
+ok=False mse=None poisson=None reward=-1.0 error=Could not parse evaluator output.
+
+=== Attempt 45/50 ===
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmpsyxxc4k6/eval_candidate.py", line 70, in <module>
+    CURRENT_IMPLEMENTATION_END
+NameError: name 'CURRENT_IMPLEMENTATION_END' is not defined
+
+ok=False mse=None poisson=None reward=-1.0 error=Could not parse evaluator output.
+
+=== Attempt 46/50 ===
+ok=False mse=None poisson=None reward=-1.0 error=NameError("name 'StandardScaler' is not defined")
+
+=== Attempt 47/50 ===
+ok=False mse=None poisson=None reward=-1.0 error=NameError("name 'poisson' is not defined")
+
+=== Attempt 48/50 ===
+ok=False mse=None poisson=None reward=-1.0 error=Generated code does not define magic_denoise.
+
+=== Attempt 49/50 ===
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmpba8u5zie/eval_candidate.py", line 106, in <module>
+    CURRENT_IMPLEMENTATION_END
+NameError: name 'CURRENT_IMPLEMENTATION_END' is not defined
+
+ok=False mse=None poisson=None reward=-1.0 error=Could not parse evaluator output.
+
+=== Attempt 50/50 ===
+ok=False mse=None poisson=None reward=-1.0 error=Generated code does not define magic_denoise.
+
+=== Final summary ===
+{
+  "ok": true,
+  "method": "qwen_only_no_ttt",
+  "total_candidates": 50,
+  "valid_candidates": 1,
+  "valid_rate": 0.02,
+  "best_mse": 0.4021363015190825,
+  "best_poisson": 0.0369656408850835,
+  "best_reward": 2.48671904581225,
+  "best_raw_score": 0.4021363015190825,
+  "best_metrics": {
+    "mse": 0.4021363015190825,
+    "poisson": 0.0369656408850835,
+    "mse_normalized": 0.0,
+    "poisson_normalized": 0.9768564760043417
+  },
+  "source": "attempt_17"
+}
+End time: Mon Jul  6 06:34:19 PM UTC 2026
+Done.

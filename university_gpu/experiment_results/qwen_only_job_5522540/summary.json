@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "method": "qwen_only_no_ttt",
+  "total_candidates": 50,
+  "valid_candidates": 1,
+  "valid_rate": 0.02,
+  "best_mse": 0.4021363015190825,
+  "best_poisson": 0.0369656408850835,
+  "best_reward": 2.48671904581225,
+  "best_raw_score": 0.4021363015190825,
+  "best_metrics": {
+    "mse": 0.4021363015190825,
+    "poisson": 0.0369656408850835,
+    "mse_normalized": 0.0,
+    "poisson_normalized": 0.9768564760043417
+  },
+  "source": "attempt_17"
+}
