@@ -85,6 +85,11 @@ Strict code requirements:
 - Do not introduce required positional arguments other than X.
 - Do not use undefined variables or undefined functions.
 - If you use sklearn, scipy, scanpy, scprep, or graphtools objects, import them explicitly.
+- Common tools must be imported explicitly if used: `from sklearn.decomposition import PCA, TruncatedSVD`, `from sklearn.preprocessing import StandardScaler, normalize`, `from sklearn.neighbors import NearestNeighbors`, `from scipy.optimize import minimize`, `from scipy.stats import poisson`, and `from scipy.spatial import distance_matrix`.
+- Do not assume helper names such as PCA, StandardScaler, minimize, poisson, distance_matrix, normalize, cdist, or NearestNeighbors already exist.
+- Prefer robust improvements to the current implementation rather than rewriting everything from scratch.
+- Avoid algorithms that return NaN, inf, negative values, or outputs with unstable scale.
+- Passing the Poisson constraint is required; do not optimize MSE by producing unrealistic count values.
 - The output must be a numpy array with the same shape as X.
 - The output must be finite and non-negative.
 - Avoid file I/O, network access, and external datasets.
@@ -137,6 +142,10 @@ Important rules:
 - Do not use network access.
 - Do not print explanations.
 - Return only Python code.
+The code must be self-contained and include all required imports.
+Do not use undefined names such as PCA, StandardScaler, minimize, poisson, distance_matrix, normalize, cdist, or NearestNeighbors unless you import them explicitly.
+The function must return finite, non-negative output with the same shape as X.
+Prefer simple, stable numpy/scipy/sklearn/scprep/graphtools code.
 - The code must define a function called magic_denoise.
 - Try to improve MSE while keeping Poisson loss reasonable.
 

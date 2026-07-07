@@ -170,6 +170,56 @@ try:
 except Exception:
     pass
 
+# Original-style denoising sandbox imports.
+# The official TTT-Discover denoising evaluator prepends common scientific imports
+# before executing generated magic_denoise code.
+try:
+    import scipy
+    import scipy.sparse
+    from scipy import linalg
+    from scipy.spatial.distance import cdist, pdist, squareform
+    from scipy.spatial import distance_matrix
+    from scipy.sparse import csr_matrix, issparse
+    from scipy.optimize import minimize
+    from scipy.stats import poisson
+except Exception:
+    pass
+
+try:
+    import sklearn
+    import sklearn.metrics
+    from sklearn.neighbors import NearestNeighbors
+    from sklearn.decomposition import PCA, TruncatedSVD
+    from sklearn.cluster import KMeans
+    from sklearn.preprocessing import StandardScaler, normalize
+except Exception:
+    pass
+
+try:
+    import graphtools
+except Exception:
+    pass
+
+try:
+    import scprep
+except Exception:
+    pass
+
+try:
+    import anndata
+except Exception:
+    pass
+
+try:
+    import scanpy as sc
+except Exception:
+    pass
+
+try:
+    from molecular_cross_validation.mcv_sweep import poisson_nll_loss
+except Exception:
+    pass
+
 from examples.denoising.utils import run_denoising_eval
 
 {code}
