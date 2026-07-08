@@ -168,20 +168,79 @@ def build_history_text(history):
     """
     Convert previous rollout records into a short text summary.
 
-    history is expected to be a list of dictionaries.
-    Each dictionary may contain:
-    - ok
-    - mse
-    - poisson
-    - reward
-    - metrics
+    Diversity-aware version:
+    - repeated valid behavior is not shown as a success to imitate
+    - repeated metric plateaus are listed as behaviors to avoid
     """
     if not history:
         return "No previous generated results yet."
 
-    successful = [item for item in history if item.get("ok")]
+    duplicate_valid = [
+        item for item in history
+        if item.get("ok") and item.get("duplicate_valid_behavior")
+    ]
+
+    avoid_mse_values = []
+    avoid_metric_signatures = set()
+
+    for item in duplicate_valid:
+        mse = item.get("mse")
+        metrics = item.get("metrics", {}) or {}
+        poisson_norm = metrics.get("poisson_normalized")
+
+        if mse is not None:
+            mse_sig = round(float(mse), 12)
+            avoid_mse_values.append(mse_sig)
+
+            if poisson_norm is not None:
+                avoid_metric_signatures.add((mse_sig, round(float(poisson_norm), 12)))
+
+    avoid_mse_values = sorted(set(avoid_mse_values))
+
+    successful = []
+    for item in history:
+        if not item.get("ok"):
+            continue
+
+        mse = item.get("mse")
+        metrics = item.get("metrics", {}) or {}
+        poisson_norm = metrics.get("poisson_normalized")
+
+        is_avoided_plateau = False
+        if mse is not None:
+            mse_sig = round(float(mse), 12)
+            if mse_sig in avoid_mse_values:
+                is_avoided_plateau = True
+
+            if poisson_norm is not None:
+                sig = (mse_sig, round(float(poisson_norm), 12))
+                if sig in avoid_metric_signatures:
+                    is_avoided_plateau = True
+
+        if item.get("duplicate_valid_behavior"):
+            is_avoided_plateau = True
+
+        if not is_avoided_plateau:
+            successful.append(item)
+
+    lines = []
+
+    if avoid_mse_values:
+        avoid_text = ", ".join(str(x) for x in avoid_mse_values[:5])
+        lines.append(
+            "Avoid repeating already-discovered plateau behaviors. "
+            f"In particular, do not generate another implementation likely to obtain these MSE values again: {avoid_text}. "
+            "Try a substantially different denoising strategy instead."
+        )
 
     if not successful:
+        if lines:
+            lines.append(
+                "No non-duplicate successful improvement is available yet. "
+                "Explore a different robust algorithm while keeping the output finite, non-negative, and Poisson-valid."
+            )
+            return "\n".join(lines)
+
         return "Previous attempts failed. Please produce simple, valid, robust Python code."
 
     successful = sorted(
@@ -191,7 +250,8 @@ def build_history_text(history):
 
     top = successful[:3]
 
-    lines = []
+    if lines:
+        lines.append("Non-duplicate successful results so far:")
 
     for i, item in enumerate(top, start=1):
         metrics = item.get("metrics", {})

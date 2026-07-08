@@ -1,5 +1,6 @@
 import argparse
 import json
+import hashlib
 import math
 import os
 import subprocess
@@ -507,6 +508,8 @@ def main():
     optimizer = make_optimizer(model, learning_rate=args.learning_rate)
 
     history = []
+    seen_valid_code_hashes = set()
+    seen_valid_metric_signatures = set()
 
     best_record = {
         "ok": False,
@@ -553,10 +556,12 @@ def main():
                 tokenizer=tokenizer,
                 prompt=prompt,
                 max_new_tokens=args.max_new_tokens,
-                temperature=0.7,
+                temperature=0.9,
             )
 
             code = generation["code"]
+            code_hash = hashlib.sha256(code.encode("utf-8")).hexdigest()
+            print("Generated code hash:", code_hash[:12])
 
             print("Generated code preview:")
             print(code[:1200])
@@ -567,6 +572,19 @@ def main():
             )
 
             elapsed = time.time() - start_time
+            metric_signature = None
+            if eval_result.get("ok"):
+                metrics = eval_result.get("metrics", {}) or {}
+                mse_sig = round(float(eval_result.get("mse")), 12)
+                poisson_sig = round(float(metrics.get("poisson_normalized", eval_result.get("poisson", 0.0))), 12)
+                metric_signature = (mse_sig, poisson_sig)
+
+            is_duplicate_valid_code = bool(eval_result.get("ok")) and code_hash in seen_valid_code_hashes
+            is_duplicate_valid_metric = bool(eval_result.get("ok")) and metric_signature in seen_valid_metric_signatures
+            is_duplicate_valid_behavior = is_duplicate_valid_code or is_duplicate_valid_metric
+            include_for_lora_training = not is_duplicate_valid_behavior
+            if is_duplicate_valid_code:
+                print("Duplicate valid code found. Recording it, but skipping PUCT child creation and LoRA training.")
 
             record = {
                 "step": step,
@@ -581,6 +599,13 @@ def main():
                 "poisson": eval_result.get("poisson"),
                 "reward": eval_result.get("reward"),
                 "raw_score": eval_result.get("raw_score"),
+                "code_hash": code_hash,
+                "duplicate_valid_code": is_duplicate_valid_code,
+                "duplicate_valid_metric": is_duplicate_valid_metric,
+                "duplicate_valid_behavior": is_duplicate_valid_behavior,
+                "used_as_duplicate_penalty": is_duplicate_valid_behavior,
+                "metric_signature": list(metric_signature) if metric_signature is not None else None,
+                "included_for_lora_training": include_for_lora_training,
                 "metrics": eval_result.get("metrics", {}),
                 "error": eval_result.get("error"),
                 "elapsed_seconds": elapsed,
@@ -590,29 +615,42 @@ def main():
 
             history.append(record)
 
-            rollout_prompts.append(generation["rendered_prompt"])
-            rollout_responses.append(generation["raw_text"])
-            rollout_rewards.append(float(eval_result.get("reward", -1.0)))
+            if include_for_lora_training:
+                rollout_prompts.append(generation["rendered_prompt"])
+                rollout_responses.append(generation["raw_text"])
+                rollout_rewards.append(float(eval_result.get("reward", -1.0)))
+            else:
+                print("Added duplicate valid behavior as low-reward anti-repeat example for LoRA training.")
+                rollout_prompts.append(generation["rendered_prompt"])
+                rollout_responses.append(generation["raw_text"])
+                rollout_rewards.append(-1.0)
 
             print("Evaluation result:")
             print(json.dumps(eval_result, indent=2))
             print(f"Elapsed seconds: {elapsed:.2f}")
 
             if record["ok"]:
-                child_state = make_child_state(
-                    step=step,
-                    code=code,
-                    eval_result=eval_result,
-                )
+                if is_duplicate_valid_behavior:
+                    print("Skipped duplicate valid behavior from PUCT child states.")
+                    sampler.record_failed_rollout(parent_state)
+                else:
+                    seen_valid_code_hashes.add(code_hash)
+                    if metric_signature is not None:
+                        seen_valid_metric_signatures.add(metric_signature)
+                    child_state = make_child_state(
+                        step=step,
+                        code=code,
+                        eval_result=eval_result,
+                    )
 
-                valid_child_states.append(child_state)
-                valid_parent_states.append(parent_state)
+                    valid_child_states.append(child_state)
+                    valid_parent_states.append(parent_state)
 
-                if record["reward"] > best_record["reward"]:
-                    best_record = {
-                        **record,
-                        "source": f"step_{step}_rollout_{rollout_id}",
-                    }
+                    if record["reward"] > best_record["reward"]:
+                        best_record = {
+                            **record,
+                            "source": f"step_{step}_rollout_{rollout_id}",
+                        }
             else:
                 sampler.record_failed_rollout(parent_state)
 
@@ -636,16 +674,22 @@ def main():
         print(json.dumps(puct_stats, indent=2))
 
         print_section("LoRA Update")
-        train_result = train_lora_on_rollouts(
-            model=model,
-            tokenizer=tokenizer,
-            optimizer=optimizer,
-            prompts=rollout_prompts,
-            responses=rollout_responses,
-            rewards=rollout_rewards,
-            beta=2.0,
-            max_length=4096,
-        )
+        if rollout_prompts:
+            train_result = train_lora_on_rollouts(
+                model=model,
+                tokenizer=tokenizer,
+                optimizer=optimizer,
+                prompts=rollout_prompts,
+                responses=rollout_responses,
+                rewards=rollout_rewards,
+                beta=2.0,
+                max_length=2048,
+            )
+        else:
+            train_result = {
+                "skipped": True,
+                "reason": "No non-duplicate rollouts available for LoRA training.",
+            }
 
         print("Train result:")
         print(json.dumps(train_result, indent=2))
