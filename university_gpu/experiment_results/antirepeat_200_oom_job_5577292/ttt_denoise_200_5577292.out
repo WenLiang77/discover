@@ -1,0 +1,57 @@
+========================================
+Official Tiny Local TTT-Denoising
+========================================
+Job ID: 5577292
+Job name: ttt_denoise_200
+Node: nid011026
+Start time: Wed Jul  8 02:56:01 PM UTC 2026
+Current directory: /scratch/b6ao/wenliang.b6ao/discover
+
+========================================
+Activate Python environment
+========================================
+Python executable:
+/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/bin/python3
+Python version:
+Python 3.11.7
+
+========================================
+GPU information
+========================================
+Wed Jul  8 14:56:01 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 565.57.01              Driver Version: 565.57.01      CUDA Version: 12.7     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GH200 120GB             On  |   00000029:01:00.0 Off |                    0 |
+| N/A   33C    P0             85W /  900W |       1MiB /  97871MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+
+========================================
+Experiment configuration
+========================================
+OPENPROBLEMS_CACHE_DIR=/scratch/b6ao/wenliang.b6ao/discover/.openproblems_cache
+LOCAL_TTT_MODEL=Qwen/Qwen2.5-Coder-1.5B-Instruct
+LOCAL_TTT_EVAL_MODE=official
+LOCAL_TTT_STEPS=20
+LOCAL_TTT_ROLLOUTS=10
+LOCAL_TTT_MAX_NEW_TOKENS=1536
+LOCAL_TTT_LORA_RANK=8
+LOCAL_TTT_LR=1e-4
+LOCAL_TTT_OUTPUT_DIR=university_gpu/outputs/local_ttt_denoising_official_200_5577292
+
+========================================
+Run official tiny local TTT denoising
+========================================

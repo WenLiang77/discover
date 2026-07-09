@@ -1,0 +1,3476 @@
+========================================
+Official Tiny Local TTT-Denoising
+========================================
+Job ID: 5580264
+Job name: ttt_denoise_antirepeat_10x5
+Node: nid010689
+Start time: Wed Jul  8 11:28:10 PM UTC 2026
+Current directory: /scratch/b6ao/wenliang.b6ao/discover
+
+========================================
+Activate Python environment
+========================================
+Python executable:
+/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/bin/python3
+Python version:
+Python 3.11.7
+
+========================================
+GPU information
+========================================
+Wed Jul  8 23:28:10 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 565.57.01              Driver Version: 565.57.01      CUDA Version: 12.7     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GH200 120GB             On  |   00000019:01:00.0 Off |                    0 |
+| N/A   36C    P0             83W /  900W |       3MiB /  97871MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+
+========================================
+Experiment configuration
+========================================
+OPENPROBLEMS_CACHE_DIR=/scratch/b6ao/wenliang.b6ao/discover/.openproblems_cache
+LOCAL_TTT_MODEL=Qwen/Qwen2.5-Coder-1.5B-Instruct
+LOCAL_TTT_EVAL_MODE=official
+LOCAL_TTT_STEPS=10
+LOCAL_TTT_ROLLOUTS=5
+LOCAL_TTT_MAX_NEW_TOKENS=1536
+LOCAL_TTT_LORA_RANK=8
+LOCAL_TTT_LR=1e-4
+LOCAL_TTT_OUTPUT_DIR=university_gpu/outputs/local_ttt_denoising_antirepeat_10x5_5580264
+
+========================================
+Run official tiny local TTT denoising
+========================================
+
+================================================================================
+Tiny Local TTT-Denoising with Official Prompt, Reward Check, and PUCT
+================================================================================
+Repo root: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover
+Model: Qwen/Qwen2.5-Coder-1.5B-Instruct
+Eval mode: official
+Steps: 10
+Rollouts per step: 5
+Max new tokens: 1536
+LoRA rank: 8
+Learning rate: 0.0001
+
+================================================================================
+Create PUCT Sampler
+================================================================================
+Initial PUCT stats:
+{
+  "puct/buffer_size": 5,
+  "puct/sampled_size": 0,
+  "puct/T": 0,
+  "puct/scale_last": 1.0,
+  "puct/buffer_value/mean": -0.23159999999999997,
+  "puct/buffer_value/std": 2.7755575615628914e-17,
+  "puct/buffer_value/min": -0.2316,
+  "puct/buffer_value/max": -0.2316
+}
+
+================================================================================
+Load Local LLM + LoRA
+================================================================================
+================================================================================
+Loading tokenizer and local LoRA model
+================================================================================
+Model name: Qwen/Qwen2.5-Coder-1.5B-Instruct
+LoRA rank: 8
+Compute dtype: torch.bfloat16
+LoRA target modules: ['q_proj', 'k_proj', 'v_proj', 'o_proj', 'gate_proj', 'up_proj', 'down_proj']
+
+Trainable parameters:
+trainable params: 9,232,384 || all params: 1,552,946,688 || trainable%: 0.5945
+================================================================================
+Creating optimizer
+================================================================================
+Number of trainable parameter tensors: 392
+Learning rate: 0.0001
+
+================================================================================
+Step 1/10
+================================================================================
+
+================================================================================
+Step 1 Rollout 1/5
+================================================================================
+Parent state:
+  id: de327d72-9209-4d93-9633-40dd8e7438e0
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: f94d0599184c
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.array(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    # Calculate log-normalized counts
+    log_normalized_counts = lognormalize_counts(X)
+    
+    # Fit poisson model
+    params = fit_poisson_model(log_normalized_counts)
+
+    # Predict denoised counts
+    denoised_counts = log_normalized_counts.copy()
+    for i in range(denoised_counts.shape[0]):
+        # Adjusted count matrix for each cell
+        adjusted_counts = np.exp(params + denoised_counts[i])
+        # Update log-normalized counts
+        log_normalized_counts[i] = np.log(adjusted_counts / denoised_counts[i])
+
+    # Remove negative values
+    denoised_counts = np.where(denoised_counts < 0, 0, denoised_counts)
+
+    return denoised_counts
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "NameError(\"name 'lognormalize_counts' is not defined\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpre4kax3a/eval_candidate.py\", line 117, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpre4kax3a/eval_candidate.py\", line 95, in magic_denoise\n    log_normalized_counts = lognormalize_counts(X)\n                            ^^^^^^^^^^^^^^^^^^^\nNameError: name 'lognormalize_counts' is not defined\n"
+}
+Elapsed seconds: 143.61
+
+================================================================================
+Step 1 Rollout 2/5
+================================================================================
+Parent state:
+  id: 05ccc44d-c000-462e-afa6-52700d8cbcb7
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 107d7a40a1a9
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    # Convert input to numpy array
+    X = np.asarray(X, dtype=float)
+    
+    # Check for invalid values
+    if np.any(np.isnan(X)):
+        raise ValueError("Input contains NaN values")
+    if np.any(np.isinf(X)):
+        raise ValueError("Input contains infinity values")
+    
+    # Reverse the transformation if necessary
+    if 'reverse' in kwargs and kwargs['reverse']:
+        X = _apply_reversion_and_normalization(X, reverse=True)
+    else:
+        X = _apply_reversion_and_normalization(X)
+    
+    # Normalize the data
+    scaled_X = StandardScaler(with_mean=True, with_std=True).fit_transform(X)
+    
+    # Perform PCA for dimensionality reduction
+    pca = PCA(n_components=2, random_state=42)
+    reduced_X = pca.fit_transform(scaled_X)
+    
+    # Train a nearest neighbors model to find potential outliers
+    knn = NearestNeighbors(n_neighbors=5, metric='euclidean', n_jobs=-1)
+    knn.fit(reduced_X)
+    
+    # Calculate the noise scale
+    noise_scale = 1.0
+    while True:
+        reconstructed_counts = _reconstruct_counts(reduced_X, noise_scale)
+        
+        # Remove outliers using the nearest neighbors model
+        outlier_mask = ~knn.radi
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "NameError(\"name '_apply_reversion_and_normalization' is not defined\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpy3z1ctus/eval_candidate.py\", line 150, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpy3z1ctus/eval_candidate.py\", line 103, in magic_denoise\n    X = _apply_reversion_and_normalization(X)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nNameError: name '_apply_reversion_and_normalization' is not defined\n"
+}
+Elapsed seconds: 326.38
+
+================================================================================
+Step 1 Rollout 3/5
+================================================================================
+Parent state:
+  id: 99fff8dd-e4cd-4835-8a64-5228d24a8fae
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 88c8db43a26e
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    
+    # Revert from normalized data back to raw count data
+    raw_data = normalize(X.T, norm='l2', axis=1).T
+    
+    # Apply the MAGIC transformation to revert from normal count data to raw count data
+    denoised_X = np.exp(raw_data - np.log(np.sqrt(2 * np.pi)))
+    
+    # Apply the second step of the MAGIC transformation to reverse the square root transform
+    denoised_X = np.square(denoised_X)
+    
+    # Apply Poisson loss penalty to ensure the counts remain positive
+    poisson_loss = np.zeros_like(denoised_X)
+    poisson_loss[denoised_X < 1] = -np.log(poisson.pmf(denoised_X[denoised_X < 1], 1))
+    poisson_loss += np.max(poisson_loss)
+    
+    # Ensure Poisson loss does not drop below 0.97
+    poisson_loss = np.maximum(poisson_loss, 0.97)
+    
+    # Solve the optimization problem to find the new denoised counts
+    _, denoised_X = spsolve(poisson_loss, denoised_X)
+    
+    # Clip negative values to zero
+    denoised_X[denoised_X < 0] = 0
+    
+    # Clip very large values
+    denoised_X[denoised_X > 2000000] = 2000000
+    
+    return denoised_X
+Evaluator STDERR tail:
+/local/user/1483806620/tmpx5fxo_2z/eval_candidate.py:104: RuntimeWarning: divide by zero encountered in log
+  poisson_loss[denoised_X < 1] = -np.log(poisson.pmf(denoised_X[denoised_X < 1], 1))
+
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "NameError(\"name 'spsolve' is not defined\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpx5fxo_2z/eval_candidate.py\", line 125, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpx5fxo_2z/eval_candidate.py\", line 111, in magic_denoise\n    _, denoised_X = spsolve(poisson_loss, denoised_X)\n                    ^^^^^^^\nNameError: name 'spsolve' is not defined\n"
+}
+Elapsed seconds: 34.01
+
+================================================================================
+Step 1 Rollout 4/5
+================================================================================
+Parent state:
+  id: 1669122c-db9a-4aa0-b8ed-ee27e0cb2142
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: ec7b36e6d136
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    # Initialize parameters
+    budget_s = kwargs.get('budget_s', 400.0)
+    random_state = kwargs.get('random_state', 42)
+    knn = kwargs.get('knn', 5)
+    t = kwargs.get('t', 0.5)
+    n_pca = kwargs.get('n_pca', None)
+    solver = kwargs.get('solver', 'lbfgs')
+    decay = kwargs.get('decay', 1.0)
+    knn_max = kwargs.get('knn_max', None)
+    n_jobs = kwargs.get('n_jobs', 1)
+
+    # Ensure the input is a float array
+    X = np.array(X, dtype=float)
+
+    # Remove NA, infinity, and negative values
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    # Normalize counts
+    scaler = StandardScaler()
+    normalized_counts = scaler.fit_transform(X)
+
+    # Principal Component Analysis (PCA)
+    if n_pca:
+        pca = PCA(n_components=n_pca, random_state=random_state)
+        normalized_counts = pca.transform(normalized_counts)
+
+    # Find nearest neighbors
+    nbrs = NearestNeighbors(n_neighbors=knn, metric='euclidean', n_jobs=n_jobs).fit(normalized_counts)
+
+    # Define the objective function for Poisson loss
+    def objective_func(params):
+        # Reshape params to the number of genes
+        beta = params.reshape(
+Evaluator STDERR tail:
+/local/user/1483806620/tmp4sugy_hi/eval_candidate.py:140: RuntimeWarning: Method lbfgs cannot handle constraints.
+  result = minimize(objective_func, initial_guess, method=solver, constraints=constraints, bounds=(0.0, None), tol=1e-6, options={'maxiter': int(budget_s/decay)})
+/local/user/1483806620/tmp4sugy_hi/eval_candidate.py:140: RuntimeWarning: Method lbfgs cannot handle bounds.
+  result = minimize(objective_func, initial_guess, method=solver, constraints=constraints, bounds=(0.0, None), tol=1e-6, options={'maxiter': int(budget_s/decay)})
+
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "TypeError(\"'float' object is not iterable\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmp4sugy_hi/eval_candidate.py\", line 155, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmp4sugy_hi/eval_candidate.py\", line 140, in magic_denoise\n    result = minimize(objective_func, initial_guess, method=solver, constraints=constraints, bounds=(0.0, None), tol=1e-6, options={'maxiter': int(budget_s/decay)})\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_minimize.py\", line 704, in minimize\n    bounds = standardize_bounds(bounds, x0, 'new')\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_minimize.py\", line 1126, in standardize_bounds\n    lb, ub = old_bound_to_new(bounds)\n             ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_constraints.py\", line 446, in old_bound_to_new\n    lb, ub = zip(*bounds)\n             ^^^^^^^^^^^^\nTypeError: 'float' object is not iterable\n"
+}
+Elapsed seconds: 47.02
+
+================================================================================
+Step 1 Rollout 5/5
+================================================================================
+Parent state:
+  id: cfa23feb-0607-43d5-ab47-4aa87c9600d3
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: e135023b2b0a
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.array(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    # Apply square root transformation to stabilize Poisson distribution
+    X = np.sqrt(X)
+
+    # Normalize the data
+    X /= X.sum(axis=1, keepdims=True)
+
+    # Denoise by subtracting the mean
+    denoised_X = X - X.mean(axis=0)
+
+    # Apply square root transformation again to stabilize Poisson distribution
+    denoised_X = np.sqrt(denoised_X)
+
+    # Ensure positive values (reduces bias)
+    denoised_X = np.where(denoised_X < 1e-6, 0.0, denoised_X)
+
+    # Reapply mean normalization
+    denoised_X /= denoised_X.mean(axis=0)
+
+    # Ensure the output is finite and non-negative
+    denoised_X = np.where(denoised_X <= 0.0, 1e-6, denoised_X)
+
+    # Apply Poisson loss constraints (not included in this script but necessary in practice)
+    # This step would typically involve solving a minimization problem based on Poisson loss
+    # which is beyond the scope of this script and is not implemented here
+
+    return denoised_X
+Evaluator STDERR tail:
+/local/user/1483806620/tmpp5wrs5h1/eval_candidate.py:104: RuntimeWarning: invalid value encountered in sqrt
+  denoised_X = np.sqrt(denoised_X)
+
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "RuntimeError('Non-finite result: mse=inf, poisson=inf')",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpp5wrs5h1/eval_candidate.py\", line 131, in <module>\n    raise RuntimeError(f\"Non-finite result: mse={mse}, poisson={poisson}\")\nRuntimeError: Non-finite result: mse=inf, poisson=inf\n"
+}
+Elapsed seconds: 25.90
+
+================================================================================
+Update PUCT Sampler
+================================================================================
+No valid child states. Flushed PUCT sampler only.
+PUCT stats:
+{
+  "puct/buffer_size": 5,
+  "puct/sampled_size": 5,
+  "puct/T": 5,
+  "puct/scale_last": 1e-06,
+  "puct/buffer_value/mean": -0.23159999999999997,
+  "puct/buffer_value/std": 2.7755575615628914e-17,
+  "puct/buffer_value/min": -0.2316,
+  "puct/buffer_value/max": -0.2316,
+  "puct/sampled_value/mean": -0.23159999999999997,
+  "puct/sampled_value/std": 2.7755575615628914e-17,
+  "puct/sampled_value/min": -0.2316,
+  "puct/sampled_value/max": -0.2316
+}
+
+================================================================================
+LoRA Update
+================================================================================
+Train result:
+{
+  "ok": false,
+  "loss": null,
+  "message": "All rewards are equal or only one rollout was available; advantages are zero.",
+  "rewards": [
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0
+  ],
+  "advantages": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ]
+}
+Saved LoRA adapter to: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/university_gpu/outputs/local_ttt_denoising_antirepeat_10x5_5580264/lora_adapter_step_1
+
+================================================================================
+Step 2/10
+================================================================================
+
+================================================================================
+Step 2 Rollout 1/5
+================================================================================
+Parent state:
+  id: de327d72-9209-4d93-9633-40dd8e7438e0
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: a7fdd99cd58d
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    # Normalize count data
+    X_mean = X.mean(axis=1, keepdims=True)
+    X_std = X.std(axis=1, keepdims=True)
+    X_normalized = (X - X_mean) / X_std
+    
+    # Fit a Gaussian Mixture Model (GMM) to the normalized data
+    from sklearn.mixture import GaussianMixture
+    gmm = GaussianMixture(n_components=X_normalized.shape[1], covariance_type='full')
+    gmm.fit(X_normalized)
+    
+    # Reconstruct the original counts using the GMM means
+    reconstructions = gmm.means_ + np.zeros_like(X_normalized).T
+    
+    # Denoise the reconstructed counts
+    denoised_counts = np.clip(reconstructions, 0, None)
+    
+    # Evaluate MSE and Poisson loss
+    mse_score = calculate_mse(denoised_counts, X)
+    poisson_loss_val = evaluate_poisson_loss(denoised_counts, X)
+    
+    return denoised_counts, mse_score, poisson_loss_val
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "ValueError('Expected n_samples >= n_components but got n_components = 15501, n_samples = 1937')",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpdhrigeks/eval_candidate.py\", line 116, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpdhrigeks/eval_candidate.py\", line 98, in magic_denoise\n    gmm.fit(X_normalized)\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/mixture/_base.py\", line 199, in fit\n    self.fit_predict(X, y)\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/base.py\", line 1336, in wrapper\n    return fit_method(estimator, *args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/mixture/_base.py\", line 233, in fit_predict\n    raise ValueError(\nValueError: Expected n_samples >= n_components but got n_components = 15501, n_samples = 1937\n"
+}
+Elapsed seconds: 29.47
+
+================================================================================
+Step 2 Rollout 2/5
+================================================================================
+Parent state:
+  id: 05ccc44d-c000-462e-afa6-52700d8cbcb7
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 1d2ea8891993
+Generated code preview:
+def magic_denoise(X, budget_s, random_state=42, knn=10, t=3, n_pca=None, solver='lbfgs', decay=0.01, knn_max=50, n_jobs=-1):
+    """
+    Magic denoising algorithm for single-cell RNA-seq count data.
+    
+    Parameters:
+    - X: numpy array of shape (n_cells, n_genes) - raw count data
+    - budget_s: int - total budget for optimization
+    - random_state: int - seed for reproducibility
+    - knn: int - number of nearest neighbors for Poisson noise reduction
+    - t: float - threshold for filtering low-count genes
+    - n_pca: int or None - number of principal components for dimensionality reduction
+    - solver: str - optimization solver
+    - decay: float - learning rate decay factor for optimizer
+    - knn_max: int - maximum number of neighbors to consider
+    - n_jobs: int or None - number of jobs for parallel processing
+    
+    Returns:
+    - numpy array of shape (n_cells, n_genes) - denoised count data
+    """
+    # Step 1: Scale count data
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+    
+    # Step 2: Filter low-count genes
+    gene_counts = np.sum(X_scaled, axis=0)
+    mask = gene_counts >= t
+    X_filtered = X_scaled[:, mask]
+    
+    # Step 3: App
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "TypeError(\"magic_denoise() missing 1 required positional argument: 'budget_s'\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmp6_qr2a3r/eval_candidate.py\", line 155, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: magic_denoise() missing 1 required positional argument: 'budget_s'\n"
+}
+Elapsed seconds: 53.73
+
+================================================================================
+Step 2 Rollout 3/5
+================================================================================
+Parent state:
+  id: 99fff8dd-e4cd-4835-8a64-5228d24a8fae
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 5318aa61172c
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    # Normalization
+    X_normalized = StandardScaler().fit_transform(np.log1p(X))
+
+    # Principal Component Analysis (PCA)
+    pca = PCA(n_components=2, random_state=42)
+    X_pca = pca.fit_transform(X_normalized)
+
+    # Nearest Neighbors (KNN) to find nearest neighbors
+    knn = NearestNeighbors(n_neighbors=5, metric='euclidean', algorithm='auto')
+    _, indices = knn.fit_predict(X_pca)
+
+    # Poisson noise calculation
+    poisson_noise = (0.257575 - minimize(lambda x: sum(poisson.pmf(y, x)), np.mean(X_normalized.flatten())).x) / (0.257575 - 0.031739)
+
+    # Denoised data
+    denoised_data = X_normalized.copy()
+    denoised_data[indices] *= 1 / (1 + poisson_noise * np.exp(-X_normalized[indices]))
+
+    # Postprocessing
+    denoised_data = normalize(denoised_data, axis=0)
+    
+    return denoised_data
+
+CURRENT_IMPLEMENTATION_END
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmpv67c3v26/eval_candidate.py", line 113, in <module>
+    CURRENT_IMPLEMENTATION_END
+NameError: name 'CURRENT_IMPLEMENTATION_END' is not defined
+
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "Could not parse evaluator output.",
+  "stdout_tail": "",
+  "stderr_tail": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpv67c3v26/eval_candidate.py\", line 113, in <module>\n    CURRENT_IMPLEMENTATION_END\nNameError: name 'CURRENT_IMPLEMENTATION_END' is not defined\n"
+}
+Elapsed seconds: 24.07
+
+================================================================================
+Step 2 Rollout 4/5
+================================================================================
+Parent state:
+  id: 1669122c-db9a-4aa0-b8ed-ee27e0cb2142
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 2756659bced8
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    """
+    Magic denoising method using principal component analysis and nearest neighbors.
+    
+    Parameters:
+    - X: numpy array of shape (n_cells, n_genes) - raw count data
+    
+    Returns:
+    - numpy array of same shape - denoised counts
+    """
+    # Step 1: Principal Component Analysis (PCA)
+    pca = PCA(n_components=min(100, X.shape[1]), svd_solver='randomized')
+    X_pca = pca.fit_transform(X)
+    
+    # Step 2: Nearest Neighbors
+    knn = NearestNeighbors(n_neighbors=5, metric='euclidean').fit(X_pca)
+    
+    # Step 3: Predictive Denoising
+    def objective(x):
+        X_tilde = pca.inverse_transform(np.exp(x))
+        pred_counts = knn.kneighbors(X_tilde.T, return_distance=False)[0].sum(axis=0)
+        predicted_poisson = poisson.pmf(pred_counts, np.mean(X_pca))
+        return -(predicted_poisson * (pred_counts > 0)).mean()
+    
+    initial_guess = np.zeros_like(X_pca.ravel())
+    result = minimize(objective, initial_guess)
+    denoised_counts = pca.inverse_transform(np.exp(result.x))
+    denoised_counts = np.clip(denoised_counts, 0, None)
+    
+    # Check Poisson constraint
+    poisson_norm = np.abs((0.257575 - poisson(denoised_coun
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "ValueError('Expected 2D array, got 1D array instead:\\narray=[1. 1. 1. ... 1. 1. 1.].\\nReshape your data either using array.reshape(-1, 1) if your data has a single feature or array.reshape(1, -1) if it contains a single sample.')",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmp5_23emj7/eval_candidate.py\", line 129, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmp5_23emj7/eval_candidate.py\", line 114, in magic_denoise\n    result = minimize(objective, initial_guess)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_minimize.py\", line 779, in minimize\n    res = _minimize_bfgs(fun, x0, args, jac, callback, **options)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_optimize.py\", line 1416, in _minimize_bfgs\n    sf = _prepare_scalar_function(fun, x0, jac, args=args, epsilon=eps,\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_optimize.py\", line 310, in _prepare_scalar_function\n    sf = ScalarFunction(fun, x0, args, grad, hess,\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_differentiable_functions.py\", line 283, in __init__\n    self._update_fun()\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_differentiable_functions.py\", line 362, in _update_fun\n    fx = self._wrapped_fun(self.x)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/_lib/_util.py\", line 603, in __call__\n    fx = self.f(np.copy(x), *self.args)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmp5_23emj7/eval_candidate.py\", line 108, in objective\n    X_tilde = pca.inverse_transform(np.exp(x))\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/decomposition/_base.py\", line 197, in inverse_transform\n    X = check_array(X, input_name=\"X\", dtype=[xp.float64, xp.float32])\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/utils/validation.py\", line 1060, in check_array\n    raise ValueError(msg)\nValueError: Expected 2D array, got 1D array instead:\narray=[1. 1. 1. ... 1. 1. 1.].\nReshape your data either using array.reshape(-1, 1) if your data has a single feature or array.reshape(1, -1) if it contains a single sample.\n"
+}
+Elapsed seconds: 33.03
+
+================================================================================
+Step 2 Rollout 5/5
+================================================================================
+Parent state:
+  id: cfa23feb-0607-43d5-ab47-4aa87c9600d3
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: b21fac60caa5
+Generated code preview:
+def magic_denoise(X, budget_s=400, random_state=None, knn=10, t=0.01, n_pca=10, solver='lbfgs', decay=0.9, knn_max=50, n_jobs=-1):
+    """
+    Performs magic denoising on single-cell RNA-seq data.
+
+    Parameters:
+        X (numpy.ndarray): Input raw count data of shape (n_cells, n_genes).
+        budget_s (int): Time budget for the optimization process.
+        random_state (int or None): Seed for random number generation.
+        knn (int): Number of nearest neighbors to consider when denoising.
+        t (float): Smoothing parameter for the Poisson loss.
+        n_pca (int): Number of principal components to use for PCA pre-processing.
+        solver (str): Optimization solver method ('lbfgs' or 'newton-cg').
+        decay (float): Decay factor for the exponential moving average.
+        knn_max (int): Maximum number of nearest neighbors to consider.
+        n_jobs (int): Number of jobs to run in parallel.
+
+    Returns:
+        numpy.ndarray: Denoised count data of shape (n_cells, n_genes).
+    """
+
+    # Setup random seed for reproducibility
+    if random_state is not None:
+        np.random.seed(random_state)
+
+    # Standardize the input data
+    scaler = StandardScaler()
+    
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "ValueError(\"'x0' must only have one dimension.\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpge3wus_7/eval_candidate.py\", line 160, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpge3wus_7/eval_candidate.py\", line 140, in magic_denoise\n    result = minimize(obj, initial_guess, args=(t,), method=solver, bounds=bounds, tol=1e-6, options={'maxiter': budget_s, 'disp': True, 'n_jobs': n_jobs})\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_minimize.py\", line 591, in minimize\n    raise ValueError(\"'x0' must only have one dimension.\")\nValueError: 'x0' must only have one dimension.\n"
+}
+Elapsed seconds: 48.80
+
+================================================================================
+Update PUCT Sampler
+================================================================================
+No valid child states. Flushed PUCT sampler only.
+PUCT stats:
+{
+  "puct/buffer_size": 5,
+  "puct/sampled_size": 5,
+  "puct/T": 10,
+  "puct/scale_last": 1e-06,
+  "puct/buffer_value/mean": -0.23159999999999997,
+  "puct/buffer_value/std": 2.7755575615628914e-17,
+  "puct/buffer_value/min": -0.2316,
+  "puct/buffer_value/max": -0.2316,
+  "puct/sampled_value/mean": -0.23159999999999997,
+  "puct/sampled_value/std": 2.7755575615628914e-17,
+  "puct/sampled_value/min": -0.2316,
+  "puct/sampled_value/max": -0.2316
+}
+
+================================================================================
+LoRA Update
+================================================================================
+Train result:
+{
+  "ok": false,
+  "loss": null,
+  "message": "All rewards are equal or only one rollout was available; advantages are zero.",
+  "rewards": [
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0
+  ],
+  "advantages": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ]
+}
+Saved LoRA adapter to: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/university_gpu/outputs/local_ttt_denoising_antirepeat_10x5_5580264/lora_adapter_step_2
+
+================================================================================
+Step 3/10
+================================================================================
+
+================================================================================
+Step 3 Rollout 1/5
+================================================================================
+Parent state:
+  id: de327d72-9209-4d93-9633-40dd8e7438e0
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: a28da7f2ec64
+Generated code preview:
+def magic_denoise(X, budget_s=None, random_state=None, knn=5, t=1.0, n_pca=None, solver="full", decay=0.1, knn_max=None, n_jobs=-1):
+    """
+    Denoise scRNA-seq count data
+    :param X: numpy array of shape (n_cells, n_genes) - raw count data
+    :param budget_s: int, optional, the maximum allowed budget for denoising
+    :param random_state: int, optional, the random seed for reproducibility
+    :param knn: int, optional, the number of nearest neighbors to consider
+    :param t: float, optional, the temperature parameter for softmax activation
+    :param n_pca: int, optional, the number of principal components to use
+    :param solver: str, optional, the optimization solver ("full", "lbfgs", "newton-cg")
+    :param decay: float, optional, the learning rate decay factor
+    :param knn_max: int, optional, the maximum number of neighbors to consider
+    :param n_jobs: int, optional, the number of jobs for parallel processing
+    :return: numpy array of same shape - the denoised counts
+    """
+    # Convert input data to numpy array
+    X = np.asarray(X, dtype=float)
+    
+    # Normalization
+    X = normalize_data(X)
+    
+    # Principal Component Analysis
+    if n_pca is not None:
+
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "NameError(\"name 'normalize_data' is not defined\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmp9j3e0frv/eval_candidate.py\", line 153, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmp9j3e0frv/eval_candidate.py\", line 108, in magic_denoise\n    X = normalize_data(X)\n        ^^^^^^^^^^^^^^\nNameError: name 'normalize_data' is not defined\n"
+}
+Elapsed seconds: 74.06
+
+================================================================================
+Step 3 Rollout 2/5
+================================================================================
+Parent state:
+  id: 05ccc44d-c000-462e-afa6-52700d8cbcb7
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 3a217a170210
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    
+    # Preprocess
+    # Normalization first
+    scaler = StandardScaler()
+    X_normalized = scaler.fit_transform(X)
+    
+    # Remove low-scoring cells using nearest neighbors
+    nn = NearestNeighbors(n_neighbors=5).fit(X_normalized)
+    distances, indices = nn.kneighbors(X_normalized, return_distance=True)
+    
+    cell_scores = 1.0 / (distances + 1e-6)
+    cell_scores[np.isnan(cell_scores)] = 0.0
+    cell_scores /= np.sum(cell_scores, axis=1, keepdims=True)
+    filtered_indices = np.any(cell_scores > 0.05, axis=1)
+    
+    X_denoised = X[filtered_indices]
+    
+    # Principal Component Analysis (PCA)
+    pca = PCA(n_components=None, svd_solver='full', random_state=kwargs.get('random_state', None))
+    X_denoised_pca = pca.fit_transform(X_denoised)
+    
+    # Reconstruction using truncated SVD
+    ssvd = TruncatedSVD(n_components=X_denoised_pca.shape[1], random_state=kwargs.get('random_state', None))
+    X_reconstructed = ssvd.fit_transform(X_denoised_pca)
+    
+    # Normalize reconstructed data back to the original scaling
+    X_denoised_renormed = no
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "RuntimeError('Non-finite result: mse=inf, poisson=inf')",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpnqrl1exa/eval_candidate.py\", line 132, in <module>\n    raise RuntimeError(f\"Non-finite result: mse={mse}, poisson={poisson}\")\nRuntimeError: Non-finite result: mse=inf, poisson=inf\n"
+}
+Elapsed seconds: 34.73
+
+================================================================================
+Step 3 Rollout 3/5
+================================================================================
+Parent state:
+  id: 99fff8dd-e4cd-4835-8a64-5228d24a8fae
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 87e12c73378a
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    """
+    Denoise single-cell RNA-seq count data
+    :param X: numpy array of shape (n_cells, n_genes) - raw count data
+    :return: numpy array of same shape - denoised counts
+    """
+
+    n_cells, n_genes = X.shape
+
+    # Reverse the normalization order
+    X = X * np.sqrt(n_genes)
+
+    # Normalize counts
+    scaler = StandardScaler()
+    X_normalized = scaler.fit_transform(X)
+
+    # Apply PCA
+    pca = PCA(n_components=min(100, n_genes))
+    X_pca = pca.fit_transform(X_normalized)
+
+    # Estimate the noise standard deviation
+    sigma_squared = reduce(np.dot, X_pca.T @ X_pca) / n_cells / n_genes
+
+    # Define objective function
+    def objective(denoised_counts):
+        scaled_denoised_counts = denoised_counts * np.sqrt(n_genes)
+        normalized_scaled_denoised_counts = normalize(scaled_denoised_counts)
+        distances = distance_matrix(normalized_scaled_denoised_counts, normalized_scaled_denoised_counts, 'euclidean')
+        noiseless_distances = distances + sigma_squared / 2
+        return poisson.logpmf(distances, noiseless_distances).sum()
+
+    # Initial guess
+    initial_guess = np.zeros((n_genes,))
+
+    # Constraints for poisson loss
+
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "NameError(\"name 'reduce' is not defined\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpm1hzwww1/eval_candidate.py\", line 140, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpm1hzwww1/eval_candidate.py\", line 110, in magic_denoise\n    sigma_squared = reduce(np.dot, X_pca.T @ X_pca) / n_cells / n_genes\n                    ^^^^^^\nNameError: name 'reduce' is not defined\n"
+}
+Elapsed seconds: 39.18
+
+================================================================================
+Step 3 Rollout 4/5
+================================================================================
+Parent state:
+  id: 1669122c-db9a-4aa0-b8ed-ee27e0cb2142
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 8d034741962d
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    # Normalize raw counts first
+    scaler = StandardScaler()
+    X_normalized = scaler.fit_transform(np.log2(X + 1))
+    
+    # Remove zero counts
+    mask = X_normalized > 0
+    X_cleaned = X_normalized[mask]
+    
+    # Perform PCA on the cleaned data
+    pca = PCA(n_components=100)  # Adjust based on the number of genes
+    X_pca = pca.fit_transform(X_cleaned)
+    
+    # Perform SVD on the PCA-transformed data
+    svd = TruncatedSVD(n_components=100)  # Adjust based on the number of genes
+    U, s, Vt = svd.fit_transform(X_pca)
+    
+    # Reconstruct the data from PCA and SVD
+    reconstruction = np.dot(U, np.dot(np.diag(s), Vt))
+    
+    # Apply inverse normalization (since we squared our counts earlier)
+    denoised_counts = scaler.inverse_transform(reconstruction).astype(int)
+    
+    return denoised_counts
+
+CURRENT_IMPLEMENTATION_END
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmpjd7mddoc/eval_candidate.py", line 114, in <module>
+    CURRENT_IMPLEMENTATION_END
+NameError: name 'CURRENT_IMPLEMENTATION_END' is not defined
+
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "Could not parse evaluator output.",
+  "stdout_tail": "",
+  "stderr_tail": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpjd7mddoc/eval_candidate.py\", line 114, in <module>\n    CURRENT_IMPLEMENTATION_END\nNameError: name 'CURRENT_IMPLEMENTATION_END' is not defined\n"
+}
+Elapsed seconds: 20.82
+
+================================================================================
+Step 3 Rollout 5/5
+================================================================================
+Parent state:
+  id: cfa23feb-0607-43d5-ab47-4aa87c9600d3
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 90f7062d2a32
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    """
+    Denoise scRNA-seq count data using a combination of PCA, nearest neighbors, and Poisson regression.
+
+    Args:
+        X (np.ndarray): Raw count data of shape (n_cells, n_genes).
+        **kwargs: Optional keyword arguments:
+            budget_s (float): Time budget in seconds.
+            random_state (int): Random seed for reproducibility.
+            knn (int): Number of nearest neighbors for neighborhood search.
+            t (float): Threshold for detecting outlier points.
+            n_pca (int): Number of principal components to retain.
+            solver (str): Optimization solver for Poisson regression.
+            decay (float): Decay factor for Poisson regression.
+            knn_max (int): Maximum number of neighbors to consider in the neighborhood search.
+            n_jobs (int): Number of jobs for parallel processing.
+
+    Returns:
+        np.ndarray: Denoised count data of shape (n_cells, n_genes).
+    """
+    # Step 1: Center and normalize count data
+    scaler = StandardScaler(with_mean=True, with_std=False)
+    X_normalized = scaler.fit_transform(X)
+
+    # Step 2: Apply PCA for dimensionality reduction
+    pca = PCA(n_c
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmpzhzk4hc_/eval_candidate.py", line 141, in <module>
+    CURRENT_IMPLEMENTATION_END
+NameError: name 'CURRENT_IMPLEMENTATION_END' is not defined
+
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "Could not parse evaluator output.",
+  "stdout_tail": "",
+  "stderr_tail": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpzhzk4hc_/eval_candidate.py\", line 141, in <module>\n    CURRENT_IMPLEMENTATION_END\nNameError: name 'CURRENT_IMPLEMENTATION_END' is not defined\n"
+}
+Elapsed seconds: 38.33
+
+================================================================================
+Update PUCT Sampler
+================================================================================
+No valid child states. Flushed PUCT sampler only.
+PUCT stats:
+{
+  "puct/buffer_size": 5,
+  "puct/sampled_size": 5,
+  "puct/T": 15,
+  "puct/scale_last": 1e-06,
+  "puct/buffer_value/mean": -0.23159999999999997,
+  "puct/buffer_value/std": 2.7755575615628914e-17,
+  "puct/buffer_value/min": -0.2316,
+  "puct/buffer_value/max": -0.2316,
+  "puct/sampled_value/mean": -0.23159999999999997,
+  "puct/sampled_value/std": 2.7755575615628914e-17,
+  "puct/sampled_value/min": -0.2316,
+  "puct/sampled_value/max": -0.2316
+}
+
+================================================================================
+LoRA Update
+================================================================================
+Train result:
+{
+  "ok": false,
+  "loss": null,
+  "message": "All rewards are equal or only one rollout was available; advantages are zero.",
+  "rewards": [
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0
+  ],
+  "advantages": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ]
+}
+Saved LoRA adapter to: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/university_gpu/outputs/local_ttt_denoising_antirepeat_10x5_5580264/lora_adapter_step_3
+
+================================================================================
+Step 4/10
+================================================================================
+
+================================================================================
+Step 4 Rollout 1/5
+================================================================================
+Parent state:
+  id: de327d72-9209-4d93-9633-40dd8e7438e0
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 4764bf966f99
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    """
+    Magic denoising of scRNA-seq data.
+
+    Parameters
+    ----------
+    X : numpy.ndarray of shape (n_cells, n_genes), dtype=float
+        Raw count data.
+
+    Returns
+    -------
+    numpy.ndarray of shape (n_cells, n_genes), dtype=float
+        Denoised count data.
+    """
+    if len(np.unique(X)) <= 1:
+        return np.zeros_like(X)
+
+    # Normalize raw counts
+    scaler = StandardScaler()
+    X = scaler.fit_transform(X)
+
+    # Apply Poisson normalization
+    X = X / np.mean(X, axis=0, keepdims=True)
+
+    # Compute neighbors
+    nn = NearestNeighbors(n_neighbors=20, metric='euclidean').fit(X)
+    D = nn.kneighbors_graph()
+
+    # Compute connectivity matrix
+    conn_mat, _ = connected_components(D)
+
+    # Compute degrees
+    degs = np.sum(D, axis=0)
+    degs[degs == 0] = 1
+
+    # Construct Laplacian matrix
+    L = Diagonal(degs).toarray() - D
+
+    # Solve for denoised counts using Poisson regression
+    y = np.sum(X, axis=0)
+    A_inv = np.diag(1 / degs)
+    alpha = 1e-6
+    beta = 1e-6
+    initial_guess = np.ones(y.shape[0]) * 1 / (y.shape[0])
+    result = minimize(lambda x: sum((-x[connected_mat[i]] + 1) / y[i] ** 2) for i in range(len
+Evaluator STDERR tail:
+  File "/local/user/1483806620/tmph7fwvg4c/eval_candidate.py", line 134
+    x0=initial_guess,
+IndentationError: unexpected indent
+
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "Could not parse evaluator output.",
+  "stdout_tail": "",
+  "stderr_tail": "  File \"/local/user/1483806620/tmph7fwvg4c/eval_candidate.py\", line 134\n    x0=initial_guess,\nIndentationError: unexpected indent\n"
+}
+Elapsed seconds: 28.99
+
+================================================================================
+Step 4 Rollout 2/5
+================================================================================
+Parent state:
+  id: 05ccc44d-c000-462e-afa6-52700d8cbcb7
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: a71a44fe025e
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    # Normalize raw count data
+    normalized_X = StandardScaler().fit_transform(np.log2(X + 1))
+
+    # Dimensionality reduction
+    n_pca = kwargs.get('n_pca', 50)
+    if n_pca > 0:
+        pca_model = PCA(n_components=n_pca).fit(normalized_X)
+        reduced_X = pca_model.transform(normalized_X)
+    else:
+        reduced_X = normalized_X
+
+    # Denoise using Lasso on reduced data
+    penalty = kwargs.get('penalty', 1e-6)
+    alpha = penalty * np.sum(reduced_X[reduced_X != 0] / reduced_X.shape[0])
+    lasso_mask = np.abs(lasso.coef_) >= alpha
+    denoised_reduced_X = lasso_mask * reduced_X
+
+    # Reconstruct original data
+    denoised_X = pca_model.inverse_transform(denoised_reduced_X)
+
+    # Normalize reconstructed data back to log-count space
+    denoised_counts = denoised_X.T
+
+    return denoised_counts
+
+CURRENT_IMPLEMENTATION_END
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmpwd_jt7ov/eval_candidate.py", line 115, in <module>
+    CURRENT_IMPLEMENTATION_END
+NameError: name 'CURRENT_IMPLEMENTATION_END' is not defined
+
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "Could not parse evaluator output.",
+  "stdout_tail": "",
+  "stderr_tail": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpwd_jt7ov/eval_candidate.py\", line 115, in <module>\n    CURRENT_IMPLEMENTATION_END\nNameError: name 'CURRENT_IMPLEMENTATION_END' is not defined\n"
+}
+Elapsed seconds: 21.65
+
+================================================================================
+Step 4 Rollout 3/5
+================================================================================
+Parent state:
+  id: 99fff8dd-e4cd-4835-8a64-5228d24a8fae
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 0ada9dca9baf
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.array(X, dtype=float)
+    # Normalize data
+    mean = np.mean(X, axis=0)
+    std = np.std(X, axis=0)
+    X_normalized = (X - mean) / std
+    
+    # Apply Laplacian smoothing to reduce noise
+    laplacian_filter = np.ones((3, 3), dtype=float) / 9
+    smoothed_X = np.zeros_like(X_normalized)
+    
+    for i in range(1, X_normalized.shape[0] - 1):
+        for j in range(1, X_normalized.shape[1] - 1):
+            smoothed_X[i, j] = (
+                X_normalized[i-1, j-1] + 
+                X_normalized[i-1, j] + 
+                X_normalized[i-1, j+1] +
+                X_normalized[i, j-1] + 
+                2 * X_normalized[i, j] + 
+                X_normalized[i, j+1] +
+                X_normalized[i+1, j-1] +
+                X_normalized[i+1, j] +
+                X_normalized[i+1, j+1]
+            ) / 16
+    
+    # Re-normalize after smoothing
+    smoothed_mean = np.mean(smoothed_X, axis=0)
+    smoothed_std = np.std(smoothed_X, axis=0)
+    smoothed_X_normalized = (smoothed_X - smoothed_mean) / smoothed_std
+    
+    # Apply square root transformation for Poisson distribution stability
+    normalized_X = np.sqrt(smoothed_X_normalized)
+    
+  
+Evaluator STDERR tail:
+/local/user/1483806620/tmpj0m6r4jy/eval_candidate.py:117: RuntimeWarning: invalid value encountered in divide
+  smoothed_X_normalized = (smoothed_X - smoothed_mean) / smoothed_std
+/local/user/1483806620/tmpj0m6r4jy/eval_candidate.py:120: RuntimeWarning: invalid value encountered in sqrt
+  normalized_X = np.sqrt(smoothed_X_normalized)
+
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "RuntimeError('Non-finite result: mse=inf, poisson=inf')",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpj0m6r4jy/eval_candidate.py\", line 137, in <module>\n    raise RuntimeError(f\"Non-finite result: mse={mse}, poisson={poisson}\")\nRuntimeError: Non-finite result: mse=inf, poisson=inf\n"
+}
+Elapsed seconds: 57.51
+
+================================================================================
+Step 4 Rollout 4/5
+================================================================================
+Parent state:
+  id: 1669122c-db9a-4aa0-b8ed-ee27e0cb2142
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 15431b2f8db2
+Generated code preview:
+def magic_denoise(X, budget_s=None, random_state=None, knn=10, t=None, n_pca=None, solver='lbfgs', decay=0.001, knn_max=None, n_jobs=1):
+    X = np.asarray(X, dtype=float)
+
+    if budget_s is None or not isinstance(budget_s, (int, float)):
+        raise ValueError("budget_s must be a number")
+
+    if random_state is None or not isinstance(random_state, int):
+        raise ValueError("random_state must be an integer")
+
+    if knn is None or not isinstance(knn, int):
+        raise ValueError("knn must be an integer")
+
+    if t is None or not isinstance(t, float):
+        raise ValueError("t must be a number")
+
+    if n_pca is None or not isinstance(n_pca, int):
+        raise ValueError("n_pca must be an integer")
+
+    if solver is None or solver not in ['lbfgs', 'newton-cg']:
+        raise ValueError("solver must be one of 'lbfgs' or 'newton-cg'")
+
+    if decay is None or not isinstance(decay, float):
+        raise ValueError("decay must be a number")
+
+    if knn_max is None or not isinstance(knn_max, int):
+        knn_max = knn
+
+    if n_jobs is None or not isinstance(n_jobs, int):
+        n_jobs = 1
+
+    # Reverse normalization order
+    X = np.log2(1 + X)
+
+    # PCA transformation
+Evaluator STDERR tail:
+  File "/local/user/1483806620/tmpwtlrpade/eval_candidate.py", line 140
+    'callback': lambda x: update_progress(x, X.shape[0], random_state, budget_s)),
+                                                                                ^
+SyntaxError: closing parenthesis ')' does not match opening parenthesis '{' on line 139
+
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "Could not parse evaluator output.",
+  "stdout_tail": "",
+  "stderr_tail": "  File \"/local/user/1483806620/tmpwtlrpade/eval_candidate.py\", line 140\n    'callback': lambda x: update_progress(x, X.shape[0], random_state, budget_s)),\n                                                                                ^\nSyntaxError: closing parenthesis ')' does not match opening parenthesis '{' on line 139\n"
+}
+Elapsed seconds: 50.10
+
+================================================================================
+Step 4 Rollout 5/5
+================================================================================
+Parent state:
+  id: cfa23feb-0607-43d5-ab47-4aa87c9600d3
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 9d90722a36fd
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    # Step 1: Remove negative values
+    X[X < 0] = 0
+    
+    # Step 2: Apply square root transformation
+    X = np.sqrt(X)
+    
+    # Step 3: Perform PCA to reduce dimensionality
+    pca = PCA(n_components=100)
+    X_pca = pca.fit_transform(X)
+    
+    # Step 4: Train KNN model to identify outliers
+    nn = NearestNeighbors(n_neighbors=5, metric='euclidean')
+    nn.fit(X_pca)
+    distances, _ = nn.kneighbors(X_pca)
+    threshold = np.percentile(distances.mean(axis=1), q=5)
+    outlier_mask = distances.mean(axis=1) > threshold
+    
+    # Step 5: Replace outliers with their medians
+    X[outlier_mask] = np.median(X[~outlier_mask], axis=1)[None]
+    
+    # Step 6: Normalize the denoised data
+    X_normalized = normalize(X)
+    
+    # Step 7: Apply Poisson loss to calculate MSE
+    def poisson_loss(y_pred, y_true):
+        return np.sum(np.log(y_pred + 1) - y_true * y_pred) / len(y_true)
+    
+    poisson_norm = np.sum(poisson.pmf(np.round(X_normalized).astype(int), y_true))
+    poisson_loss_value = poisson_loss(np.round(X_normalized).astype(int), y_true)
+    
+    # Step 8: Ensure Poisson loss meets the baseline criteria
+    if poisson_loss_value < 0.97
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmpbuj20xh7/eval_candidate.py", line 129, in <module>
+    denoised_X = magic_denoise(X)
+                 ^^^^^^^^^^^^^^^^
+  File "/local/user/1483806620/tmpbuj20xh7/eval_candidate.py", line 108, in magic_denoise
+    X[outlier_mask] = np.median(X[~outlier_mask], axis=1)[None]
+    ~^^^^^^^^^^^^^^
+ValueError: shape mismatch: value array of shape (1,5) could not be broadcast to indexing result of shape (95,500)
+
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "Could not parse evaluator output.",
+  "stdout_tail": "",
+  "stderr_tail": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpbuj20xh7/eval_candidate.py\", line 129, in <module>\n    denoised_X = magic_denoise(X)\n                 ^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpbuj20xh7/eval_candidate.py\", line 108, in magic_denoise\n    X[outlier_mask] = np.median(X[~outlier_mask], axis=1)[None]\n    ~^^^^^^^^^^^^^^\nValueError: shape mismatch: value array of shape (1,5) could not be broadcast to indexing result of shape (95,500)\n"
+}
+Elapsed seconds: 33.83
+
+================================================================================
+Update PUCT Sampler
+================================================================================
+No valid child states. Flushed PUCT sampler only.
+PUCT stats:
+{
+  "puct/buffer_size": 5,
+  "puct/sampled_size": 5,
+  "puct/T": 20,
+  "puct/scale_last": 1e-06,
+  "puct/buffer_value/mean": -0.23159999999999997,
+  "puct/buffer_value/std": 2.7755575615628914e-17,
+  "puct/buffer_value/min": -0.2316,
+  "puct/buffer_value/max": -0.2316,
+  "puct/sampled_value/mean": -0.23159999999999997,
+  "puct/sampled_value/std": 2.7755575615628914e-17,
+  "puct/sampled_value/min": -0.2316,
+  "puct/sampled_value/max": -0.2316
+}
+
+================================================================================
+LoRA Update
+================================================================================
+Train result:
+{
+  "ok": false,
+  "loss": null,
+  "message": "All rewards are equal or only one rollout was available; advantages are zero.",
+  "rewards": [
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0
+  ],
+  "advantages": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ]
+}
+Saved LoRA adapter to: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/university_gpu/outputs/local_ttt_denoising_antirepeat_10x5_5580264/lora_adapter_step_4
+
+================================================================================
+Step 5/10
+================================================================================
+
+================================================================================
+Step 5 Rollout 1/5
+================================================================================
+Parent state:
+  id: de327d72-9209-4d93-9633-40dd8e7438e0
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: ec35484aa157
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    # Step 1: Normalize raw count data
+    scaler = StandardScaler()
+    X_normalized = scaler.fit_transform(X)
+
+    # Step 2: Apply square root transformation for variance stabilization
+    X_normalized = np.sqrt(X_normalized)
+
+    # Step 3: Apply Poisson transformation
+    def poisson_loss(y_true, y_pred):
+        y_pred = np.clip(y_pred, 1e-6, None)
+        return -np.sum(poisson.logpmf(y_true, y_pred))
+
+    def optimize_poisson(y):
+        objective = lambda x: poisson_loss(y, np.exp(x))
+        initial_guess = np.zeros_like(y)
+        result = minimize(objective, initial_guess, bounds=(0.0, None))
+        return result.x
+
+    X_poisson = np.apply_along_axis(optimize_poisson, axis=1, arr=X_normalized)
+
+    # Ensure the result remains within [1, inf)
+    X_denoised = np.maximum(X_poisson, 1.0)
+
+    return X_denoised
+Evaluator STDERR tail:
+/local/user/1483806620/tmp32s2vi4w/eval_candidate.py:99: RuntimeWarning: invalid value encountered in sqrt
+  X_normalized = np.sqrt(X_normalized)
+
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "TypeError(\"'float' object is not iterable\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmp32s2vi4w/eval_candidate.py\", line 123, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmp32s2vi4w/eval_candidate.py\", line 112, in magic_denoise\n    X_poisson = np.apply_along_axis(optimize_poisson, axis=1, arr=X_normalized)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/numpy/lib/_shape_base_impl.py\", line 393, in apply_along_axis\n    res = asanyarray(func1d(inarr_view[ind0], *args, **kwargs))\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmp32s2vi4w/eval_candidate.py\", line 109, in optimize_poisson\n    result = minimize(objective, initial_guess, bounds=(0.0, None))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_minimize.py\", line 704, in minimize\n    bounds = standardize_bounds(bounds, x0, 'new')\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_minimize.py\", line 1126, in standardize_bounds\n    lb, ub = old_bound_to_new(bounds)\n             ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_constraints.py\", line 446, in old_bound_to_new\n    lb, ub = zip(*bounds)\n             ^^^^^^^^^^^^\nTypeError: 'float' object is not iterable\n"
+}
+Elapsed seconds: 22.51
+
+================================================================================
+Step 5 Rollout 2/5
+================================================================================
+Parent state:
+  id: 05ccc44d-c000-462e-afa6-52700d8cbcb7
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 725cc3b93294
+Generated code preview:
+import numpy as np
+from sklearn.decomposition import PCA, TruncatedSVD
+from sklearn.preprocessing import StandardScaler, normalize
+from sklearn.neighbors import NearestNeighbors
+from scipy.optimize import minimize
+from scipy.stats import poisson
+from scipy.spatial import distance_matrix
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "Generated code does not define magic_denoise."
+}
+Elapsed seconds: 15.95
+
+================================================================================
+Step 5 Rollout 3/5
+================================================================================
+Parent state:
+  id: 99fff8dd-e4cd-4835-8a64-5228d24a8fae
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 5bda39562815
+Generated code preview:
+import numpy as np
+from sklearn.decomposition import PCA, TruncatedSVD
+from sklearn.preprocessing import StandardScaler, normalize
+from sklearn.neighbors import NearestNeighbors
+from scipy.optimize import minimize
+from scipy.stats import poisson
+from scipy.spatial import distance_matrix
+from typing import *
+from abc import ABC, abstractmethod
+
+class SingleCellDenoiser(ABC):
+    @abstractmethod
+    def fit(self, X: np.ndarray) -> None:
+        pass
+
+    @abstractmethod
+    def transform(self, X: np.ndarray) -> np.ndarray:
+        pass
+
+class Denoiser(SingleCellDenoiser):
+    def __init__(self, n_components: int, max_iter: int = 1000, tol: float = 1e-6):
+        self.n_components = n_components
+        self.max_iter = max_iter
+        self.tol = tol
+
+    def fit(self, X: np.ndarray) -> None:
+        self.pca_ = PCA(n_components=self.n_components)
+        self.X_transformed = self.pca_.fit_transform(X)
+
+    def transform(self, X: np.ndarray) -> np.ndarray:
+        return self.pca_.transform(X)
+
+class DenoiserVarianceStabilizer(Denoiser):
+    def __init__(self, n_components: int, max_iter: int = 1000, tol: float = 1e-6, sqrt_transform: bool = True):
+        super().__init__(n_component
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "Generated code does not define magic_denoise."
+}
+Elapsed seconds: 97.73
+
+================================================================================
+Step 5 Rollout 4/5
+================================================================================
+Parent state:
+  id: 1669122c-db9a-4aa0-b8ed-ee27e0cb2142
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: c8976a594453
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.array(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    # Normalization and scaling
+    scaler = StandardScaler()
+    scaled_X = scaler.fit_transform(X)
+
+    # PCA transformation
+    pca = PCA(n_components=50)
+    principalComponents = pca.fit_transform(scaled_X)
+
+    # Reconstructing the counts after PCA
+    reconstructed_counts = pca.transform(principalComponents)
+
+    # Poisson loss minimization
+    initial_guess = np.random.rand(X.shape[1])
+    constraints = {'type': 'eq', 'fun': lambda x: x.sum()}
+    result = minimize(poisson_loss, initial_guess, args=(reconstructed_counts,), method='BFGS', constraints=constraints)
+
+    # Inverse scaling and applying the Poisson correction
+    inv_scaler = StandardScaler().inverse_transform(scaler.transform(X))
+    denoised_X = inv_scaler * np.exp(result.x)
+
+    # Check Poisson constraint
+    poisson_norm = (0.257575 - result.fun) / (0.257575 - 0.031739)
+    if poisson_norm < 0.97:
+        raise ValueError("Poisson constraint violated. Score ~ {:.4f}".format(poisson_norm))
+
+    return denoised_X
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "ValueError('X has 50 features, but PCA is expecting 15501 features as input.')",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpxkeqfljw/eval_candidate.py\", line 125, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpxkeqfljw/eval_candidate.py\", line 103, in magic_denoise\n    reconstructed_counts = pca.transform(principalComponents)\n                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/utils/_set_output.py\", line 316, in wrapped\n    data_to_wrap = f(self, X, *args, **kwargs)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/decomposition/_base.py\", line 142, in transform\n    X = validate_data(\n        ^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/utils/validation.py\", line 2923, in validate_data\n    _check_n_features(_estimator, X, reset=reset)\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/utils/validation.py\", line 2787, in _check_n_features\n    raise ValueError(\nValueError: X has 50 features, but PCA is expecting 15501 features as input.\n"
+}
+Elapsed seconds: 30.08
+
+================================================================================
+Step 5 Rollout 5/5
+================================================================================
+Parent state:
+  id: cfa23feb-0607-43d5-ab47-4aa87c9600d3
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 67cce6363ffa
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    """
+    Magic Denoising Algorithm for Single-Cell RNA-seq Count Data
+
+    Parameters:
+        X (np.ndarray): Raw count matrix of shape (n_cells, n_genes)
+
+    Returns:
+        np.ndarray: Denoised count matrix of shape (n_cells, n_genes)
+    """
+    n_cells, n_genes = X.shape
+    X = np.maximum(X, 0.0)
+
+    # Normalize raw counts
+    mean = np.mean(X, axis=1, keepdims=True)
+    std_dev = np.std(X, axis=1, keepdims=True)
+    normalized_X = (X - mean) / std_dev
+
+    # Initialize the denoised matrix
+    denoised_X = normalized_X.copy()
+
+    # Define the objective function (poisson loss with Poisson constraint)
+    def objective_function(x):
+        return poisson_loss(denoised_X @ x.T + X - x.T @ denoised_X) + poisson_loss(denoised_X.T @ x + X - x.T @ denoised_X).T
+
+    # Define the constraints
+    constraints = [
+        {'type': 'ineq', 'fun': lambda x: np.prod(x)}  # Total sum must be at least 1
+    ]
+
+    # Minimize the objective function with the constraints
+    result = minimize(objective_function, np.ones(n_genes), method='SLSQP', bounds=[(0, None)] * n_genes, constraints=constraints)
+
+    # Denoise the data using the optimized weights
+    d
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "ValueError('operands could not be broadcast together with shapes (1937,) (1937,15501) ')",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpl63xrbir/eval_candidate.py\", line 160, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpl63xrbir/eval_candidate.py\", line 120, in magic_denoise\n    result = minimize(objective_function, np.ones(n_genes), method='SLSQP', bounds=[(0, None)] * n_genes, constraints=constraints)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_minimize.py\", line 796, in minimize\n    res = _minimize_slsqp(fun, x0, args, jac, bounds,\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_slsqp_py.py\", line 423, in _minimize_slsqp\n    sf = _prepare_scalar_function(func, x, jac=jac, args=args, epsilon=eps,\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_optimize.py\", line 310, in _prepare_scalar_function\n    sf = ScalarFunction(fun, x0, args, grad, hess,\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_differentiable_functions.py\", line 283, in __init__\n    self._update_fun()\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_differentiable_functions.py\", line 362, in _update_fun\n    fx = self._wrapped_fun(self.x)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/_lib/_util.py\", line 603, in __call__\n    fx = self.f(np.copy(x), *self.args)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpl63xrbir/eval_candidate.py\", line 112, in objective_function\n    return poisson_loss(denoised_X @ x.T + X - x.T @ denoised_X) + poisson_loss(denoised_X.T @ x + X - x.T @ denoised_X).T\n                        ~~~~~~~~~~~~~~~~~^~~\nValueError: operands could not be broadcast together with shapes (1937,) (1937,15501) \n"
+}
+Elapsed seconds: 41.21
+
+================================================================================
+Update PUCT Sampler
+================================================================================
+No valid child states. Flushed PUCT sampler only.
+PUCT stats:
+{
+  "puct/buffer_size": 5,
+  "puct/sampled_size": 5,
+  "puct/T": 25,
+  "puct/scale_last": 1e-06,
+  "puct/buffer_value/mean": -0.23159999999999997,
+  "puct/buffer_value/std": 2.7755575615628914e-17,
+  "puct/buffer_value/min": -0.2316,
+  "puct/buffer_value/max": -0.2316,
+  "puct/sampled_value/mean": -0.23159999999999997,
+  "puct/sampled_value/std": 2.7755575615628914e-17,
+  "puct/sampled_value/min": -0.2316,
+  "puct/sampled_value/max": -0.2316
+}
+
+================================================================================
+LoRA Update
+================================================================================
+Train result:
+{
+  "ok": false,
+  "loss": null,
+  "message": "All rewards are equal or only one rollout was available; advantages are zero.",
+  "rewards": [
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0
+  ],
+  "advantages": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ]
+}
+Saved LoRA adapter to: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/university_gpu/outputs/local_ttt_denoising_antirepeat_10x5_5580264/lora_adapter_step_5
+
+================================================================================
+Step 6/10
+================================================================================
+
+================================================================================
+Step 6 Rollout 1/5
+================================================================================
+Parent state:
+  id: de327d72-9209-4d93-9633-40dd8e7438e0
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 49a5637e72f3
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    # Reverse normalization
+    mean_ = np.mean(X, axis=1).reshape(-1, 1)
+    std_ = np.std(X, axis=1).reshape(-1, 1)
+    X_normalized = (X - mean_) / std_
+
+    # Apply square root transform to stabilize Poisson distribution
+    X_stabilized = np.sqrt(X_normalized + 1e-6) - 1e-6
+
+    # Normalize the transformed data
+    X_normalized_stabilized = normalize(X_stabilized, norm='l2', axis=0)
+
+    # Perform PCA to reduce dimensionality
+    pca = PCA(n_components=min(50, X.shape[1]), svd_solver='full')
+    X_pca = pca.fit_transform(X_normalized_stabilized)
+
+    # Add Gaussian noise to simulate dropout
+    noise = np.random.normal(loc=0, scale=1, size=X_pca.shape)
+    X_noisy = X_pca + noise
+
+    # Fit Poisson regression
+    model = poisson()
+    result = minimize(lambda x: -model.logpdf(x), X_noisy.flatten(), method='BFGS')
+
+    # Recover denoised counts
+    denoised_counts = result.x.reshape(X_noisy.shape[1], -1)
+
+    # Post-processing steps
+    denoised_counts = denoised_counts.astype(int)
+
+    # Ensure non-negative counts
+    denoised
+Evaluator STDERR tail:
+/local/user/1483806620/tmplf0ur88z/eval_candidate.py:100: RuntimeWarning: invalid value encountered in sqrt
+  X_stabilized = np.sqrt(X_normalized + 1e-6) - 1e-6
+
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "ValueError('Input contains NaN.')",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmplf0ur88z/eval_candidate.py\", line 132, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmplf0ur88z/eval_candidate.py\", line 103, in magic_denoise\n    X_normalized_stabilized = normalize(X_stabilized, norm='l2', axis=0)\n                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/utils/_param_validation.py\", line 218, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/preprocessing/_data.py\", line 2028, in normalize\n    X = check_array(\n        ^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/utils/validation.py\", line 1074, in check_array\n    _assert_all_finite(\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/utils/validation.py\", line 133, in _assert_all_finite\n    _assert_all_finite_element_wise(\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/utils/validation.py\", line 182, in _assert_all_finite_element_wise\n    raise ValueError(msg_err)\nValueError: Input contains NaN.\n"
+}
+Elapsed seconds: 42.58
+
+================================================================================
+Step 6 Rollout 2/5
+================================================================================
+Parent state:
+  id: 05ccc44d-c000-462e-afa6-52700d8cbcb7
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 73fe6347bb8a
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    # Step 1: Centering and scaling the data
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+
+    # Step 2: Principal Component Analysis (PCA) for noise reduction
+    pca = PCA(n_components=0.95)
+    X_pca = pca.fit_transform(X_scaled)
+
+    # Step 3: Reconstructing the data
+    reconstructed_X = pca.inverse_transform(X_pca)
+
+    # Step 4: Applying Poisson transformation
+    reconstructed_counts = np.array([poisson.pmf(count).real for count in reconstructed_X])
+
+    # Step 5: Scaling back to the original range
+    reconstructed_counts = scaler.inverse_transform(reconstructed_counts.reshape(-1, 1)).flatten()
+
+    # Step 6: Ensuring the output is finite, non-negative, and in the correct range
+    reconstructed_counts = np.clip(reconstructed_counts, 0, None)
+    reconstructed_counts = np.log1p(reconstructed_counts)
+
+    # Step 7: Applying the Poisson constraint
+    poisson_norm = sum(np.exp(reconstructed_counts))
+    poisson_loss = poisson_norm - 0.97
+    if poisson_loss < 0:
+        raise ValueError("The Poisson l
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "TypeError(\"_parse_args() missing 1 required positional argument: 'mu'\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpk0jq7394/eval_candidate.py\", line 127, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpk0jq7394/eval_candidate.py\", line 106, in magic_denoise\n    reconstructed_counts = np.array([poisson.pmf(count).real for count in reconstructed_X])\n                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpk0jq7394/eval_candidate.py\", line 106, in <listcomp>\n    reconstructed_counts = np.array([poisson.pmf(count).real for count in reconstructed_X])\n                                     ^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/stats/_distn_infrastructure.py\", line 3522, in pmf\n    args, loc, _ = self._parse_args(*args, **kwds)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: _parse_args() missing 1 required positional argument: 'mu'\n"
+}
+Elapsed seconds: 31.22
+
+================================================================================
+Step 6 Rollout 3/5
+================================================================================
+Parent state:
+  id: 99fff8dd-e4cd-4835-8a64-5228d24a8fae
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 8fe38143ccc1
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    """
+    Magic denoiser for scRNA-seq count data.
+    
+    This implementation takes raw count data (X), performs preprocessing steps,
+    applies a denoising step, and finally normalizes the result.
+    
+    Parameters:
+        X: numpy.ndarray, shape (n_cells, n_genes) - raw count data.
+        **kwargs: additional keyword arguments for the denoising process.
+        
+    Returns:
+        numpy.ndarray, shape (n_cells, n_genes) - denoised count data.
+    """
+
+    # Normalize data to zero mean, unit variance
+    scaled_data = StandardScaler().fit_transform(X)
+
+    # Perform PCA to reduce dimensionality
+    pca = PCA(n_components=50)
+    transformed_data = pca.fit_transform(scaled_data)
+
+    # Apply denoising algorithm
+    denoised_data = apply_denoising(transformed_data, **kwargs)
+    
+    # Reverse normalization to the original scale
+    inv_pca = TruncatedSVD(n_components=50).inverse_transform(denoised_data)
+    denoised_scaled = inverse_scale(inv_pca)
+    
+    # Convert back to integer counts if necessary
+    denoised_counts = np.round(denoised_scaled)
+    
+    return denoised_counts
+
+def apply_denoising(data, **kwargs):
+    """
+    Apply deno
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "AttributeError(\"'TruncatedSVD' object has no attribute 'components_'\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpkk9_zgas/eval_candidate.py\", line 156, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpkk9_zgas/eval_candidate.py\", line 115, in magic_denoise\n    inv_pca = TruncatedSVD(n_components=50).inverse_transform(denoised_data)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/decomposition/_truncated_svd.py\", line 311, in inverse_transform\n    return np.dot(X, self.components_)\n                     ^^^^^^^^^^^^^^^^\nAttributeError: 'TruncatedSVD' object has no attribute 'components_'\n"
+}
+Elapsed seconds: 40.85
+
+================================================================================
+Step 6 Rollout 4/5
+================================================================================
+Parent state:
+  id: 1669122c-db9a-4aa0-b8ed-ee27e0cb2142
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 7c3224dfba58
+Generated code preview:
+def magic_denoise(X, budget_s=None, random_state=None, knn_max=None, n_jobs=-1):
+    """
+    Magic denoising approach for single-cell RNA-seq data.
+    
+    Args:
+        X (numpy.ndarray): raw count data of shape (n_cells, n_genes)
+        budget_s (float, optional): maximum amount of scaling applied in the denoising process
+        random_state (int, optional): random seed for reproducibility
+        knn_max (int, optional): max number of nearest neighbors used in the denoising process
+        n_jobs (int, optional): number of jobs to run in parallel
+        
+    Returns:
+        numpy.ndarray: denoised data
+    """
+    # Ensure input is a numpy array
+    X = np.asarray(X, dtype=float)
+
+    # Handle missing values
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+
+    # Scale the data
+    scaler = StandardScaler()
+    scaled_X = scaler.fit_transform(X)
+
+    # Apply PCA to reduce dimensionality
+    pca = PCA(n_components=min(scaled_X.shape[0], 100))
+    reduced_X = pca.fit_transform(scaled_X)
+
+    # Train a nearest neighbor model
+    knn = NearestNeighbors(n_neighbors=knn_max, metric='euclidean', n_jobs=n_jobs)
+    knn.fit(reduced_X)
+
+    # Define the objective function
+  
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "ValueError(\"non-broadcastable output operand with shape (30025437,1) doesn't match the broadcast shape (30025437,15501)\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpdn47ij78/eval_candidate.py\", line 164, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpdn47ij78/eval_candidate.py\", line 148, in magic_denoise\n    result = minimize(objective, initial_guess, bounds=[(0, None)] * scaled_X.flatten().shape[0],\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_minimize.py\", line 784, in minimize\n    res = _minimize_lbfgsb(fun, x0, args, jac, bounds,\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_lbfgsb_py.py\", line 413, in _minimize_lbfgsb\n    sf = _prepare_scalar_function(fun, x0, jac=jac, args=args, epsilon=eps,\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_optimize.py\", line 310, in _prepare_scalar_function\n    sf = ScalarFunction(fun, x0, args, grad, hess,\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_differentiable_functions.py\", line 283, in __init__\n    self._update_fun()\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_differentiable_functions.py\", line 362, in _update_fun\n    fx = self._wrapped_fun(self.x)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/_lib/_util.py\", line 603, in __call__\n    fx = self.f(np.copy(x), *self.args)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpdn47ij78/eval_candidate.py\", line 124, in objective\n    scaled_denoised = scaler.inverse_transform(denoised_data.reshape(-1, 1)).flatten()\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/preprocessing/_data.py\", line 1159, in inverse_transform\n    X *= xp.astype(self.scale_, X.dtype)\nValueError: non-broadcastable output operand with shape (30025437,1) doesn't match the broadcast shape (30025437,15501)\n"
+}
+Elapsed seconds: 85.07
+
+================================================================================
+Step 6 Rollout 5/5
+================================================================================
+Parent state:
+  id: cfa23feb-0607-43d5-ab47-4aa87c9600d3
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 1b6e91cf1d1e
+Generated code preview:
+def magic_denoise(X, beta=0.5, budget_s=400, random_state=None, **kwargs):
+    # Normalize raw data
+    if random_state is None:
+        random_state = np.random.RandomState()
+    
+    n_cells, n_genes = X.shape
+    
+    # Calculate variance-stabilizing transformation scaling factor
+    var_stab_scaling = np.power(np.mean(X), -beta)
+    
+    # Apply variance-stabilizing transformation
+    X_transformed = np.sqrt(var_stab_scaling) * X
+    
+    # Apply Poisson normalization
+    X_poison_normalized = np.array([poisson.ppf(x) for x in X_transformed.flatten()]).reshape((n_cells, n_genes))
+    X_poison_normalized = np.clip(X_poison_normalized, 1e-6, None)
+    
+    # Apply inverse Poisson transformation (reconstructing counts)
+    X_denoised = X_poison_normalized * var_stab_scaling
+    
+    # Apply mean-centering to get more stable predictions
+    X_denoised -= np.mean(X_denoised)
+    
+    # Ensure outputs are finite and non-negative
+    X_denoised = np.maximum(X_denoised, 0.0)
+    
+    return X_denoised
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "TypeError(\"_parse_args() missing 1 required positional argument: 'mu'\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpeky1rygx/eval_candidate.py\", line 121, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpeky1rygx/eval_candidate.py\", line 103, in magic_denoise\n    X_poison_normalized = np.array([poisson.ppf(x) for x in X_transformed.flatten()]).reshape((n_cells, n_genes))\n                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpeky1rygx/eval_candidate.py\", line 103, in <listcomp>\n    X_poison_normalized = np.array([poisson.ppf(x) for x in X_transformed.flatten()]).reshape((n_cells, n_genes))\n                                    ^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/stats/_distn_infrastructure.py\", line 3768, in ppf\n    args, loc, _ = self._parse_args(*args, **kwds)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: _parse_args() missing 1 required positional argument: 'mu'\n"
+}
+Elapsed seconds: 33.96
+
+================================================================================
+Update PUCT Sampler
+================================================================================
+No valid child states. Flushed PUCT sampler only.
+PUCT stats:
+{
+  "puct/buffer_size": 5,
+  "puct/sampled_size": 5,
+  "puct/T": 30,
+  "puct/scale_last": 1e-06,
+  "puct/buffer_value/mean": -0.23159999999999997,
+  "puct/buffer_value/std": 2.7755575615628914e-17,
+  "puct/buffer_value/min": -0.2316,
+  "puct/buffer_value/max": -0.2316,
+  "puct/sampled_value/mean": -0.23159999999999997,
+  "puct/sampled_value/std": 2.7755575615628914e-17,
+  "puct/sampled_value/min": -0.2316,
+  "puct/sampled_value/max": -0.2316
+}
+
+================================================================================
+LoRA Update
+================================================================================
+Train result:
+{
+  "ok": false,
+  "loss": null,
+  "message": "All rewards are equal or only one rollout was available; advantages are zero.",
+  "rewards": [
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0
+  ],
+  "advantages": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ]
+}
+Saved LoRA adapter to: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/university_gpu/outputs/local_ttt_denoising_antirepeat_10x5_5580264/lora_adapter_step_6
+
+================================================================================
+Step 7/10
+================================================================================
+
+================================================================================
+Step 7 Rollout 1/5
+================================================================================
+Parent state:
+  id: de327d72-9209-4d93-9633-40dd8e7438e0
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 2dbbb4cbaab5
+Generated code preview:
+def magic_denoise(X, budget_s=None, random_state=None, knn=None, t=1, n_pca=6, solver='svd', decay=0.95, knn_max=50, n_jobs=-1):
+    if knn is None:
+        knn = int(np.sqrt(X.shape[1]))
+
+    if budget_s is None:
+        budget_s = 400
+
+    # Ensure X is a NumPy array
+    X = np.asanyarray(X)
+
+    # Check if X contains any invalid entries
+    if np.any(np.isnan(X)) or np.any(np.isinf(X)):
+        raise ValueError("Input data contains NaN or infinity")
+
+    # Random seed setup
+    if random_state is not None:
+        np.random.seed(random_state)
+
+    # Initialize SVD
+    if solver == 'svd':
+        svd = np.linalg.svd(X, full_matrices=False)
+        U = svd[0]
+        S = svd[1].diagonal()
+        Vt = svd[2]
+
+    elif solver == 'tsvd':
+        tsvd = TruncatedSVD(n_components=n_pca).fit_transform(X)
+        U = tsvd
+        S = np.full_like(U, np.inf)
+        S[:X.shape[1]] = np.diag(np.var(X, axis=1))
+        Vt = np.identity(X.shape[1])
+
+    else:
+        raise ValueError("Unsupported solver. Supported solvers are 'svd' and 'tsvd'.")
+
+    # Normalize rows and columns to have unit variance
+    row_sums = np.sum(X, axis=1)
+    col_sums = np.sum(X, axis=0)
+    X_normalized = X * np
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "ValueError('diag requires an array of at least two dimensions')",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpsx53504k/eval_candidate.py\", line 172, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpsx53504k/eval_candidate.py\", line 111, in magic_denoise\n    S = svd[1].diagonal()\n        ^^^^^^^^^^^^^^^^^\nValueError: diag requires an array of at least two dimensions\n"
+}
+Elapsed seconds: 67.30
+
+================================================================================
+Step 7 Rollout 2/5
+================================================================================
+Parent state:
+  id: 05ccc44d-c000-462e-afa6-52700d8cbcb7
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 72d8079abed6
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    """
+    Magic denoiser for scRNA-seq count data.
+
+    Parameters:
+    - X: numpy.ndarray, shape (n_cells, n_genes), raw count data
+    - **kwargs:
+      - budget_s: float, time budget in seconds
+      - random_state: int, random seed for reproducibility
+      - knn: bool, whether to use kNN for neighborhood estimation
+      - t: float, threshold for low capture efficiency
+      - n_pca: int, number of principal components for PCA
+      - solver: str, optimization solver ('BFGS' or 'L-BFGS-B')
+      - decay: float, learning rate decay factor
+      - knn_max: int, maximum number of neighbors
+      - n_jobs: int, number of jobs for parallel processing
+
+    Returns:
+    - numpy.ndarray, shape (n_cells, n_genes), denoised count data
+    """
+    start_time = time.time()
+
+    # Apply log-normalization
+    X = np.log(X)
+    np.fill_diagonal(X, 0)
+
+    # Precompute nearest neighbors
+    if kwargs.get('knn', False):
+        nbrs = NearestNeighbors(n_neighbors=kwargs.get('knn_max', 10), algorithm='ball_tree').fit(X)
+        distances, indices = nbrs.kneighbors(X)
+
+    # Denoise log-counts
+    denoised_counts = _denoise_log_counts(X)
+
+    # Apply Poisson con
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "NameError(\"name 'time' is not defined\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpulldj6o6/eval_candidate.py\", line 146, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpulldj6o6/eval_candidate.py\", line 109, in magic_denoise\n    start_time = time.time()\n                 ^^^^\nNameError: name 'time' is not defined\n"
+}
+Elapsed seconds: 55.27
+
+================================================================================
+Step 7 Rollout 3/5
+================================================================================
+Parent state:
+  id: 99fff8dd-e4cd-4835-8a64-5228d24a8fae
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: a6860d31aa92
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    """Denoise raw or log counts, then normalize using square root transform"""
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    # Remove outliers and low counts
+    med = np.median(X)
+    X = np.clip(X, a_min=med * 0.1, a_max=None)
+
+    # Normalize using square root transform
+    X = np.sqrt(X)
+
+    # Apply Poisson loss constraint
+    poisson_loss = lambda x: -(x * np.log(x + 1)).sum()
+    poisson_norm = minimize(poisson_loss, X.flatten()).fun
+
+    while poisson_norm < 0.97:
+        poisson_loss = lambda x: -(x * np.log(x + 1)).sum()
+        poisson_norm = minimize(poisson_loss, X.flatten()).fun
+
+    return X
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "Evaluation timeout after 900 seconds."
+}
+Elapsed seconds: 913.86
+
+================================================================================
+Step 7 Rollout 4/5
+================================================================================
+Parent state:
+  id: 1669122c-db9a-4aa0-b8ed-ee27e0cb2142
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: da7bd6c3cf99
+Generated code preview:
+import numpy as np
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler, normalize
+from sklearn.neighbors import NearestNeighbors
+from scipy.optimize import minimize
+from scipy.stats import poisson
+from scipy.spatial import distance_matrix
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "Generated code does not define magic_denoise."
+}
+Elapsed seconds: 15.83
+
+================================================================================
+Step 7 Rollout 5/5
+================================================================================
+Parent state:
+  id: cfa23feb-0607-43d5-ab47-4aa87c9600d3
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: da6e990f0553
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    pca = PCA(n_components=None, svd_solver='randomized', random_state=kwargs.get('random_state', 42))
+    X_pca = pca.fit_transform(X)
+
+    scaler = StandardScaler(with_mean=False, with_std=True)
+    X_scaled = scaler.fit_transform(X_pca)
+
+    return normalize(X_scaled)
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "RuntimeError('Non-finite result: mse=inf, poisson=inf')",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmp837bir3s/eval_candidate.py\", line 112, in <module>\n    raise RuntimeError(f\"Non-finite result: mse={mse}, poisson={poisson}\")\nRuntimeError: Non-finite result: mse=inf, poisson=inf\n"
+}
+Elapsed seconds: 22.32
+
+================================================================================
+Update PUCT Sampler
+================================================================================
+No valid child states. Flushed PUCT sampler only.
+PUCT stats:
+{
+  "puct/buffer_size": 5,
+  "puct/sampled_size": 5,
+  "puct/T": 35,
+  "puct/scale_last": 1e-06,
+  "puct/buffer_value/mean": -0.23159999999999997,
+  "puct/buffer_value/std": 2.7755575615628914e-17,
+  "puct/buffer_value/min": -0.2316,
+  "puct/buffer_value/max": -0.2316,
+  "puct/sampled_value/mean": -0.23159999999999997,
+  "puct/sampled_value/std": 2.7755575615628914e-17,
+  "puct/sampled_value/min": -0.2316,
+  "puct/sampled_value/max": -0.2316
+}
+
+================================================================================
+LoRA Update
+================================================================================
+Train result:
+{
+  "ok": false,
+  "loss": null,
+  "message": "All rewards are equal or only one rollout was available; advantages are zero.",
+  "rewards": [
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0
+  ],
+  "advantages": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ]
+}
+Saved LoRA adapter to: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/university_gpu/outputs/local_ttt_denoising_antirepeat_10x5_5580264/lora_adapter_step_7
+
+================================================================================
+Step 8/10
+================================================================================
+
+================================================================================
+Step 8 Rollout 1/5
+================================================================================
+Parent state:
+  id: de327d72-9209-4d93-9633-40dd8e7438e0
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 469288132816
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    pca = PCA(n_components=20, random_state=0)
+    X_pca = pca.fit_transform(X)
+
+    neighbors = NearestNeighbors(n_neighbors=15, metric='euclidean').fit(X_pca)
+    nearest_indices = neighbors.kneighbors()
+
+    def poisson_loss(posterior_counts, observed_counts):
+        loss = np.sum((p - observed_counts) ** 2) + np.sum(np.log(p))
+        return loss
+
+    def objective_function(posterior_counts):
+        posterior_counts = np.clip(posterior_counts, 0, None)
+        return poisson_loss(posterior_counts, X[:, 0])
+
+    initial_guesses = np.zeros_like(X)
+    bounds = ((0, 1),) * len(initial_guesses)
+    constraints = ({'type': 'eq', 'fun': lambda x: np.mean(x)}, {'type': 'eq', 'fun': lambda x: np.mean(1 - x)})
+
+    results = minimize(objective_function, initial_guesses, method='SLSQP', bounds=bounds, constraints=constraints)
+
+    if results.success:
+        return results.x
+    else:
+        raise Exception("Denoising failed")
+
+# Example usage:
+X = np.array([[10, 20], [30, 40], [50, 60]])  # Sample data for demonstration
+denoised_X = 
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmpel7nzq9t/eval_candidate.py", line 121, in <module>
+    denoised_X = magic_denoise(X)
+                 ^^^^^^^^^^^^^^^^
+  File "/local/user/1483806620/tmpel7nzq9t/eval_candidate.py", line 95, in magic_denoise
+    X_pca = pca.fit_transform(X)
+            ^^^^^^^^^^^^^^^^^^^^
+  File "/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/utils/_set_output.py", line 316, in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/base.py", line 1336, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/decomposition/_pca.py", line 466, in fit_transform
+    U, S, _, X, x_is_centered, xp = self._fit(X)
+                                    ^^^^^^^^^^^^
+  File "/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/decomposition/_pca.py", line 540, in _fit
+    return self._fit_full(X, n_components, xp, is_array_api_compliant)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/decomposition/_pca.py", line 554, in _fit_full
+    raise ValueError(
+ValueError: n_components=20 must be between 0 and min(n_samples, n_features)=2 with svd_solver='full'
+
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "Could not parse evaluator output.",
+  "stdout_tail": "",
+  "stderr_tail": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpel7nzq9t/eval_candidate.py\", line 121, in <module>\n    denoised_X = magic_denoise(X)\n                 ^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpel7nzq9t/eval_candidate.py\", line 95, in magic_denoise\n    X_pca = pca.fit_transform(X)\n            ^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/utils/_set_output.py\", line 316, in wrapped\n    data_to_wrap = f(self, X, *args, **kwargs)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/base.py\", line 1336, in wrapper\n    return fit_method(estimator, *args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/decomposition/_pca.py\", line 466, in fit_transform\n    U, S, _, X, x_is_centered, xp = self._fit(X)\n                                    ^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/decomposition/_pca.py\", line 540, in _fit\n    return self._fit_full(X, n_components, xp, is_array_api_compliant)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/decomposition/_pca.py\", line 554, in _fit_full\n    raise ValueError(\nValueError: n_components=20 must be between 0 and min(n_samples, n_features)=2 with svd_solver='full'\n"
+}
+Elapsed seconds: 27.91
+
+================================================================================
+Step 8 Rollout 2/5
+================================================================================
+Parent state:
+  id: 05ccc44d-c000-462e-afa6-52700d8cbcb7
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 8d949200e2a2
+Generated code preview:
+def magic_denoise(X: np.ndarray, **kwargs: Dict) -> np.ndarray:
+    """
+    Denoises single-cell RNA-seq data by normalizing, applying principal component analysis,
+    and then applying maximum likelihood estimation (MLE) for Poisson loss.
+
+    Parameters:
+    X (np.ndarray): Input count data with shape (n_cells, n_genes).
+    
+    Returns:
+    np.ndarray: Denoised count data with shape (n_cells, n_genes).
+    """
+
+    X = np.asarray(X, dtype=np.float64)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+
+    # Normalize log-counts
+    X = np.log2(X + 1)  # Avoid zeros
+    X_mean = np.mean(X, axis=0)
+    X_std = np.std(X, axis=0)
+    X_normalized = (X - X_mean) / X_std
+
+    # Apply PCA to reduce dimensionality
+    pca = PCA(n_components=0.95, random_state=0)
+    X_reduced = pca.fit_transform(X_normalized)
+    
+    # Initialize initial guesses for the MLE
+    initial_guesses = [np.mean(X_reduced, axis=1)]
+
+    # Define the objective function for MLE with Poisson loss
+    @minimize(fun=lambda x, y: np.sum((y - poisson.pmf(np.clip(x, 0, None), y))**2) / len(y),
+              bounds=((0., None),) * len(X_reduced[0]), method='L-BFGS-B')
+    def mle_objective(x, y):
+        retur
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmp88504go1/eval_candidate.py", line 89, in <module>
+    def magic_denoise(X: np.ndarray, **kwargs: Dict) -> np.ndarray:
+                                               ^^^^
+NameError: name 'Dict' is not defined. Did you mean: 'dict'?
+
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "Could not parse evaluator output.",
+  "stdout_tail": "",
+  "stderr_tail": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmp88504go1/eval_candidate.py\", line 89, in <module>\n    def magic_denoise(X: np.ndarray, **kwargs: Dict) -> np.ndarray:\n                                               ^^^^\nNameError: name 'Dict' is not defined. Did you mean: 'dict'?\n"
+}
+Elapsed seconds: 37.90
+
+================================================================================
+Step 8 Rollout 3/5
+================================================================================
+Parent state:
+  id: 99fff8dd-e4cd-4835-8a64-5228d24a8fae
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: b7d736d6b62f
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    n_cells, n_genes = X.shape
+    # Normalize raw data using PCA
+    pca = PCA(n_components=n_genes)
+    scaled_data = pca.fit_transform(X)
+
+    # Apply square root transformation
+    sqrt_scaled_data = np.sqrt(scaled_data)
+
+    # Use nearest neighbors for denoising
+    knn = NearestNeighbors(n_neighbors=3, metric='euclidean')
+    knn.fit(sqrt_scaled_data)
+    distances, indices = knn.kneighbors(sqrt_scaled_data)
+
+    # Denoise counts by mixing nearest neighbor means
+    mean_counts = []
+    for i in range(n_cells):
+        neighbors_counts = sqrt_scaled_data[indices[i]]
+        mean_counts.append(np.mean(neighbors_counts))
+
+    denoised_data = np.array(mean_counts).reshape((n_cells, 1))
+    denoised_data = np.minimum(denoised_data, np.log(10))  # Ensure non-negativity
+
+    # Scale back to original size
+    if kwargs.get('pca', False):
+        denoised_data = pca.inverse_transform(denoised_data)
+    else:
+        denoised_data = normalize(denoised_data, axis=1)
+
+    return denoised_data
+
+CURRENT_IMPLEMENTATION_END
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmprwwm7kx2/eval_candidate.py", line 124, in <module>
+    CURRENT_IMPLEMENTATION_END
+NameError: name 'CURRENT_IMPLEMENTATION_END' is not defined
+
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "Could not parse evaluator output.",
+  "stdout_tail": "",
+  "stderr_tail": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmprwwm7kx2/eval_candidate.py\", line 124, in <module>\n    CURRENT_IMPLEMENTATION_END\nNameError: name 'CURRENT_IMPLEMENTATION_END' is not defined\n"
+}
+Elapsed seconds: 25.59
+
+================================================================================
+Step 8 Rollout 4/5
+================================================================================
+Parent state:
+  id: 1669122c-db9a-4aa0-b8ed-ee27e0cb2142
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: d9028849a599
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    # Normalize raw counts
+    X_normalized = np.log2(np.clip(X + 1e-6, 1e-6))  # Avoid underflow
+
+    # Apply square root transformation to stabilize Poisson distribution
+    X_stabilized = np.sqrt(X_normalized)
+
+    # Calculate mean log-expression across genes
+    mean_log_exp = np.mean(X_stabilized, axis=0)
+
+    # Estimate effective gene variance
+    gene_variances = np.var(X_stabilized, axis=0) + 1e-6
+
+    # Define objective function for optimization
+    def objective_func(denoised_counts):
+        # Convert denoised counts back to raw counts
+        raw_counts = np.exp(2 * denoised_counts)
+        # Calculate total count
+        total_count = np.sum(raw_counts, axis=1, keepdims=True)
+        # Subtract mean log-expression
+        adjusted_counts = raw_counts - mean_log_exp
+        # Calculate Poisson loss
+        poisson_loss = poisson.logpmf(adjusted_counts.T, mean_log_exp).sum() * 2
+        # Add back the mean log-expression to avoid bias in the denominator
+        poisson_loss += mean_log_exp.sum()
+        # Ensure the loss is non-negative
+        poisson_loss = np.maximum(poisson_loss, 0)
+        # Calculate MSE
+        mse = np.mean((adjust
+Evaluator STDERR tail:
+  File "/local/user/1483806620/tmpapjtmxhd/eval_candidate.py", line 131
+    'bounds': ((0, None),)*X_stabilized.shape[1]),
+                                                ^
+SyntaxError: closing parenthesis ')' does not match opening parenthesis '{' on line 128
+
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "Could not parse evaluator output.",
+  "stdout_tail": "",
+  "stderr_tail": "  File \"/local/user/1483806620/tmpapjtmxhd/eval_candidate.py\", line 131\n    'bounds': ((0, None),)*X_stabilized.shape[1]),\n                                                ^\nSyntaxError: closing parenthesis ')' does not match opening parenthesis '{' on line 128\n"
+}
+Elapsed seconds: 50.77
+
+================================================================================
+Step 8 Rollout 5/5
+================================================================================
+Parent state:
+  id: cfa23feb-0607-43d5-ab47-4aa87c9600d3
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 245cda7daf0e
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    """Denoise single-cell RNA-seq count data
+
+    Args:
+        X: raw count data with shape (n_cells, n_genes)
+    
+    Returns:
+        denoised counts with the same shape as X
+    """
+    n_cells, n_genes = X.shape
+    
+    # Step 1: Denoise raw/transformed counts
+    X = _denoise_counts(X)
+    
+    # Step 2: Normalize counts to have zero mean and unit variance
+    X = _normalize_counts(X)
+    
+    # Step 3: Apply thresholding to improve noise resistance
+    X = _apply_threshold(X)
+    
+    return X
+
+def _denoise_counts(X):
+    """Apply various preprocessing steps to denoise the raw counts"""
+    # Example: square root transform
+    X = np.sqrt(X + 1e-15)
+    
+    return X
+
+def _normalize_counts(X):
+    """Standardize the counts to have zero mean and unit variance"""
+    # Example: z-score normalization
+    X = normalize(X, axis=1, copy=False)
+    
+    return X
+
+def _apply_threshold(X):
+    """Set count values below 1 to zero"""
+    X[X < 1] = 0
+    
+    return X
+Evaluator STDERR tail:
+/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/legacy_api_wrap/__init__.py:88: UserWarning: Some cells have zero counts
+  return fn(*args_all, **kw)
+
+Evaluation result:
+{
+  "ok": true,
+  "mse": 0.21754966515606708,
+  "poisson": 0.03688785612012908,
+  "reward": 4.596651524527119,
+  "raw_score": 0.21754966515606708,
+  "metrics": {
+    "mse": 0.21754966515606708,
+    "poisson": 0.03688785612012908,
+    "mse_normalized": 0.28606933832565834,
+    "poisson_normalized": 0.9772009063208299
+  },
+  "error": null
+}
+Elapsed seconds: 22.93
+
+================================================================================
+Update PUCT Sampler
+================================================================================
+Added 1 valid child states to PUCT.
+PUCT stats:
+{
+  "puct/buffer_size": 6,
+  "puct/sampled_size": 5,
+  "puct/T": 40,
+  "puct/scale_last": 1e-06,
+  "puct/buffer_value/mean": -0.22925827752601116,
+  "puct/buffer_value/std": 0.005236250636277985,
+  "puct/buffer_value/min": -0.2316,
+  "puct/buffer_value/max": -0.21754966515606708,
+  "puct/sampled_value/mean": -0.23159999999999997,
+  "puct/sampled_value/std": 2.7755575615628914e-17,
+  "puct/sampled_value/min": -0.2316,
+  "puct/sampled_value/max": -0.2316
+}
+
+================================================================================
+LoRA Update
+================================================================================
+Train result:
+{
+  "ok": true,
+  "loss": 0.8704679608345032,
+  "used_count": 5,
+  "rewards": [
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    1.459665152452712
+  ],
+  "advantages": [
+    -0.7299396991729736,
+    -0.7299396991729736,
+    -0.7299396991729736,
+    -0.7299396991729736,
+    10.811513900756836
+  ],
+  "per_sample_ce_losses": [
+    0.38363027572631836,
+    0.535625159740448,
+    0.39088180661201477,
+    0.5091419219970703,
+    0.5253939628601074
+  ]
+}
+Saved LoRA adapter to: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/university_gpu/outputs/local_ttt_denoising_antirepeat_10x5_5580264/lora_adapter_step_8
+
+================================================================================
+Step 9/10
+================================================================================
+
+================================================================================
+Step 9 Rollout 1/5
+================================================================================
+Parent state:
+  id: ef0a96c5-f307-4c6a-80dd-ad0ff56a1f4d
+  timestep: 8
+  value: -0.21754966515606708
+  mse: 0.21754966515606708
+  poisson: 0.03688785612012908
+Generated code hash: 16f2977452a3
+Generated code preview:
+def magic_denoise(X, budget_s=400, random_state=None, knn=5, t=0.75, n_pca=None, solver='auto', decay=0.05, knn_max=100, n_jobs=-1):
+    """Denoise single-cell RNA-seq count data using a modified MAGIC algorithm
+
+    Args:
+        X: raw count data with shape (n_cells, n_genes)
+        
+    Returns:
+        denoised counts with the same shape as X
+    """
+    n_cells, n_genes = X.shape
+    
+    # Step 1: Denoise raw/transformed counts
+    X = _denoise_counts(X, budget_s, random_state, knn, t, n_pca, solver, decay, knn_max, n_jobs)
+    
+    # Step 2: Normalize counts to have zero mean and unit variance
+    X = _normalize_counts(X)
+    
+    # Step 3: Apply thresholding to improve noise resistance
+    X = _apply_threshold(X)
+    
+    # Step 4: Apply Poisson loss correction
+    X = _apply_poisson_loss(X)
+    
+    return X
+
+def _denoise_counts(X, budget_s=400, random_state=None, knn=5, t=0.75, n_pca=None, solver='auto', decay=0.05, knn_max=100, n_jobs=-1):
+    """Apply various preprocessing steps to denoise the raw counts"""
+    # Example: square root transform
+    X = np.sqrt(X + 1e-15)
+    
+    # Example: PCA for dimensionality reduction
+    if n_pca is None:
+        n_pca = min(n_cel
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "NameError(\"name 'n_cells' is not defined\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmp8lj7thrx/eval_candidate.py\", line 168, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmp8lj7thrx/eval_candidate.py\", line 101, in magic_denoise\n    X = _denoise_counts(X, budget_s, random_state, knn, t, n_pca, solver, decay, knn_max, n_jobs)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmp8lj7thrx/eval_candidate.py\", line 121, in _denoise_counts\n    n_pca = min(n_cells, n_genes) // 2\n                ^^^^^^^\nNameError: name 'n_cells' is not defined\n"
+}
+Elapsed seconds: 48.79
+
+================================================================================
+Step 9 Rollout 2/5
+================================================================================
+Parent state:
+  id: cfa23feb-0607-43d5-ab47-4aa87c9600d3
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 636b2d2f4281
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    """Denoise scRNA-seq count data using a novel method"""
+    # Normalize raw count data
+    normalized_count_data = normalize_counts(X)
+    
+    # Apply square root transform
+    transformed_count_data = apply_sqrt_transform(normalized_count_data)
+    
+    # Initialize the denoised data
+    denoised_count_data = transformed_count_data.copy()
+    
+    # Minimize Poisson loss while satisfying the Poisson constraint
+    def objective(params):
+        posterior_probs = poisson.pmf(transformed_count_data.ravel(), params).reshape(normalized_count_data.shape)
+        poisson_loss_value = compute_poisson_loss(posterior_probs, transformed_count_data.ravel())
+        return poisson_loss_value
+    
+    initial_guess = [np.mean(transformed_count_data)] * transformed_count_data.shape[1]
+    bounds = [(0, None) for _ in range(transformed_count_data.shape[1])]
+    result = minimize(objective, initial_guess, bounds=bounds, tol=1e-6)
+    
+    if result.fun < 0.03688785612012908:
+        denoised_count_data = np.clip(result.x.reshape(normalized_count_data.shape), 0, None)
+    
+    # Return denoised counts
+    return denoised_count_data
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "NameError(\"name 'normalize_counts' is not defined\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpcze2ra72/eval_candidate.py\", line 120, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpcze2ra72/eval_candidate.py\", line 92, in magic_denoise\n    normalized_count_data = normalize_counts(X)\n                            ^^^^^^^^^^^^^^^^\nNameError: name 'normalize_counts' is not defined\n"
+}
+Elapsed seconds: 35.55
+
+================================================================================
+Step 9 Rollout 3/5
+================================================================================
+Parent state:
+  id: de327d72-9209-4d93-9633-40dd8e7438e0
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 8d43a3431d79
+Generated code preview:
+def magic_denoise(X, budget_s=2, random_state=None, knn=5, t=300, n_pca=30, solver='auto', decay=0.001, knn_max=100, n_jobs=-1):
+    """
+    Apply a novel denoising algorithm for scRNA-seq count data.
+    
+    Parameters:
+    - X (numpy.ndarray): Raw count data of shape (n_cells, n_genes).
+    - budget_s (int): Time budget in seconds.
+    - random_state (int): Random seed for reproducibility.
+    - knn (int): Number of neighbors for neighborhood calculation.
+    - t (float): Temperature parameter for simulated annealing.
+    - n_pca (int): Number of principal components for dimensionality reduction.
+    - solver (str): Optimization solver for simulated annealing.
+    - decay (float): Decay factor for temperature schedule.
+    - knn_max (int): Maximum number of nearest neighbors.
+    - n_jobs (int): Number of jobs to use for parallel processing.
+    
+    Returns:
+    - numpy.ndarray: Denoised count data of shape (n_cells, n_genes).
+    """
+    # Normalize the data
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+    
+    # Reduce dimensionality
+    pca = PCA(n_components=n_pca)
+    X_reduced = pca.fit_transform(X_scaled)
+    
+    # Apply simulated annealing-based
+Evaluator STDERR tail:
+/local/user/1483806620/tmpg87wx2qs/eval_candidate.py:134: RuntimeWarning: Method L-BFGS-B cannot handle constraints.
+  result = minimize(objective_function, initial_params, method='L-BFGS-B', jac=True, bounds=bounds,
+/local/user/1483806620/tmpg87wx2qs/eval_candidate.py:134: OptimizeWarning: Unknown solver options: budget_s, random_state, knn, t, n_pca, solver, decay, knn_max, n_jobs
+  result = minimize(objective_function, initial_params, method='L-BFGS-B', jac=True, bounds=bounds,
+
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "TypeError('magic_denoise.<locals>.objective_function() takes 1 positional argument but 2 were given')",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpg87wx2qs/eval_candidate.py\", line 154, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpg87wx2qs/eval_candidate.py\", line 134, in magic_denoise\n    result = minimize(objective_function, initial_params, method='L-BFGS-B', jac=True, bounds=bounds,\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_minimize.py\", line 784, in minimize\n    res = _minimize_lbfgsb(fun, x0, args, jac, bounds,\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_lbfgsb_py.py\", line 413, in _minimize_lbfgsb\n    sf = _prepare_scalar_function(fun, x0, jac=jac, args=args, epsilon=eps,\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_optimize.py\", line 310, in _prepare_scalar_function\n    sf = ScalarFunction(fun, x0, args, grad, hess,\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_differentiable_functions.py\", line 283, in __init__\n    self._update_fun()\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_differentiable_functions.py\", line 362, in _update_fun\n    fx = self._wrapped_fun(self.x)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/_lib/_util.py\", line 603, in __call__\n    fx = self.f(np.copy(x), *self.args)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_optimize.py\", line 80, in __call__\n    self._compute_if_needed(x, *args)\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_optimize.py\", line 74, in _compute_if_needed\n    fg = self.fun(x, *args)\n         ^^^^^^^^^^^^^^^^^^\nTypeError: magic_denoise.<locals>.objective_function() takes 1 positional argument but 2 were given\n"
+}
+Elapsed seconds: 58.53
+
+================================================================================
+Step 9 Rollout 4/5
+================================================================================
+Parent state:
+  id: 05ccc44d-c000-462e-afa6-52700d8cbcb7
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 8a93add2563a
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+    
+    # Reverse normalization
+    for i in range(X.shape[1]):
+        if np.max(X[:, i]) > 0.0:
+            mean = np.mean(X[:, i])
+            std = np.std(X[:, i])
+            X[:, i] = (X[:, i] - mean) / std
+    
+    return X
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "RuntimeError('Non-finite result: mse=inf, poisson=inf')",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmp2chqkcmo/eval_candidate.py\", line 113, in <module>\n    raise RuntimeError(f\"Non-finite result: mse={mse}, poisson={poisson}\")\nRuntimeError: Non-finite result: mse=inf, poisson=inf\n"
+}
+Elapsed seconds: 14.90
+
+================================================================================
+Step 9 Rollout 5/5
+================================================================================
+Parent state:
+  id: 99fff8dd-e4cd-4835-8a64-5228d24a8fae
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 842bfd369d1a
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    # Normalize the raw counts by subtracting the mean and dividing by the standard deviation
+    normalized_X = normalize(X)
+
+    # Center the data around zero
+    centered_X = normalized_X - np.mean(normalized_X, axis=0)
+
+    # Apply Principal Component Analysis to reduce dimensionality
+    pca = PCA(n_components=min(500, X.shape[1]))
+    X_pca = pca.fit_transform(centered_X)
+
+    # Train a nearest neighbor model on the PCA-transformed data
+    nn_model = NearestNeighbors(n_neighbors=10, metric='euclidean', p=1, leaf_size=30)
+    nn_model.fit(X_pca)
+
+    # Predict the nearest neighbors for each cell
+    _, indices = nn_model.kneighbors(X_pca)
+
+    # Estimate the true counts based on the nearest neighbors
+    true_counts = np.zeros_like(X)
+    for i, neighbors in enumerate(indices):
+        neighbor_counts = X[neighbors]
+        true_counts[i] = np.sum(np.log2(neighbor_counts + 1))
+
+    # Convert back to log-normal counts and renormalize
+    log_normal_counts = np.exp(true_counts)
+    normalized_log_normal_counts = log_normal_counts / np.sum(log_normal_counts, axis=1, keepdims=True)
+
+    return normalized_log_normal_counts
+Evaluator STDERR tail:
+/local/user/1483806620/tmpm4hlhxnl/eval_candidate.py:114: RuntimeWarning: overflow encountered in exp
+  log_normal_counts = np.exp(true_counts)
+/local/user/1483806620/tmpm4hlhxnl/eval_candidate.py:115: RuntimeWarning: invalid value encountered in divide
+  normalized_log_normal_counts = log_normal_counts / np.sum(log_normal_counts, axis=1, keepdims=True)
+
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "RuntimeError('Non-finite result: mse=inf, poisson=inf')",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpm4hlhxnl/eval_candidate.py\", line 129, in <module>\n    raise RuntimeError(f\"Non-finite result: mse={mse}, poisson={poisson}\")\nRuntimeError: Non-finite result: mse=inf, poisson=inf\n"
+}
+Elapsed seconds: 29.59
+
+================================================================================
+Update PUCT Sampler
+================================================================================
+No valid child states. Flushed PUCT sampler only.
+PUCT stats:
+{
+  "puct/buffer_size": 6,
+  "puct/sampled_size": 5,
+  "puct/T": 45,
+  "puct/scale_last": 0.014050334843932921,
+  "puct/buffer_value/mean": -0.22925827752601116,
+  "puct/buffer_value/std": 0.005236250636277985,
+  "puct/buffer_value/min": -0.2316,
+  "puct/buffer_value/max": -0.21754966515606708,
+  "puct/sampled_value/mean": -0.2287899330312134,
+  "puct/sampled_value/std": 0.005620133937573169,
+  "puct/sampled_value/min": -0.2316,
+  "puct/sampled_value/max": -0.21754966515606708
+}
+
+================================================================================
+LoRA Update
+================================================================================
+Train result:
+{
+  "ok": false,
+  "loss": null,
+  "message": "All rewards are equal or only one rollout was available; advantages are zero.",
+  "rewards": [
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0
+  ],
+  "advantages": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ]
+}
+Saved LoRA adapter to: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/university_gpu/outputs/local_ttt_denoising_antirepeat_10x5_5580264/lora_adapter_step_9
+
+================================================================================
+Step 10/10
+================================================================================
+
+================================================================================
+Step 10 Rollout 1/5
+================================================================================
+Parent state:
+  id: ef0a96c5-f307-4c6a-80dd-ad0ff56a1f4d
+  timestep: 8
+  value: -0.21754966515606708
+  mse: 0.21754966515606708
+  poisson: 0.03688785612012908
+Generated code hash: 2df943abfd10
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    """Denoise single-cell RNA-seq count data
+
+    Args:
+        X: raw count data with shape (n_cells, n_genes)
+    
+    Returns:
+        denoised counts with the same shape as X
+    """
+    n_cells, n_genes = X.shape
+    
+    # Step 1: Denoise raw/transformed counts
+    X = _denoise_counts(X)
+    
+    # Step 2: Normalization
+    # Use MinMaxScaler to ensure all counts are between 0 and 1
+    X = MinMaxScaler().fit_transform(X)
+    
+    # Step 3: Apply thresholding to improve noise resistance
+    X = _apply_threshold(X)
+    
+    return X
+
+def _denoise_counts(X):
+    """Apply various preprocessing steps to denoise the raw counts
+    
+    This function includes the following steps:
+    1. Use Singular Value Decomposition (SVD) to filter out small singular values,
+       which indicate weak eigenvalues and potential outliers.
+    2. Compute the pseudoinverse of the filtered SVD matrix.
+    3. Multiply the pseudoinverse with the original raw counts.
+    
+    Args:
+        X: raw count data with shape (n_cells, n_genes)
+    
+    Returns:
+        denoised counts with the same shape as X
+    """
+    U, s, Vt = svds(X, k=n_genes, return_singular_vectors='a'
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "NameError(\"name 'svds' is not defined\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmp27ygjws_/eval_candidate.py\", line 153, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmp27ygjws_/eval_candidate.py\", line 101, in magic_denoise\n    X = _denoise_counts(X)\n        ^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmp27ygjws_/eval_candidate.py\", line 127, in _denoise_counts\n    U, s, Vt = svds(X, k=n_genes, return_singular_vectors='a')\n               ^^^^\nNameError: name 'svds' is not defined\n"
+}
+Elapsed seconds: 32.79
+
+================================================================================
+Step 10 Rollout 2/5
+================================================================================
+Parent state:
+  id: cfa23feb-0607-43d5-ab47-4aa87c9600d3
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: cc2fe22a5ccc
+Generated code preview:
+def magic_denoise(X, budget_s=None, random_state=None, knn=5, t=10, n_pca=None, solver='svd', decay=0.95, knn_max=None, n_jobs=-1, **kwargs):
+    if budget_s is not None:
+        assert isinstance(budget_s, float) and budget_s > 0.0, "Budget s must be a positive float"
+    
+    if n_jobs is not None:
+        assert isinstance(n_jobs, int) and n_jobs >= -1, "Number of jobs must be an integer >= -1"
+    
+    if n_pca is not None:
+        assert isinstance(n_pca, int), "NPCA must be an integer"
+        assert n_pca <= min(X.shape[0], X.shape[1]), "NPCA cannot exceed the minimum of rows and columns"
+    
+    X = check_array(X, copy=True)
+    
+    if budget_s is not None:
+        # Apply noise model to X
+        noise_model = GaussianNoiseModel()
+        noise = noise_model.fit_transform(X)
+        X_noisy = X + noise
+    
+    else:
+        X_noisy = X
+
+    # Perform PCA
+    if n_pca is not None:
+        pca = PCA(n_components=n_pca)
+        X_pca = pca.fit_transform(X_noisy)
+    else:
+        X_pca = StandardScaler().fit_transform(X_noisy)
+
+    # Normalize
+    X_normalized = normalize(X_pca, axis=1)
+
+    # Create neighbors object
+    nn = NearestNeighbors(n_neighbors=knn, metric='eucli
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmp45ee3zma/eval_candidate.py", line 164, in <module>
+    denoised_X = magic_denoise(X)
+                 ^^^^^^^^^^^^^^^^
+  File "/local/user/1483806620/tmp45ee3zma/eval_candidate.py", line 100, in magic_denoise
+    X = check_array(X, copy=True)
+        ^^^^^^^^^^^
+NameError: name 'check_array' is not defined
+
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "Could not parse evaluator output.",
+  "stdout_tail": "",
+  "stderr_tail": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmp45ee3zma/eval_candidate.py\", line 164, in <module>\n    denoised_X = magic_denoise(X)\n                 ^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmp45ee3zma/eval_candidate.py\", line 100, in magic_denoise\n    X = check_array(X, copy=True)\n        ^^^^^^^^^^^\nNameError: name 'check_array' is not defined\n"
+}
+Elapsed seconds: 47.42
+
+================================================================================
+Step 10 Rollout 3/5
+================================================================================
+Parent state:
+  id: de327d72-9209-4d93-9633-40dd8e7438e0
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: eb390d6ab97d
+Generated code preview:
+def magic_denoise(X, budget_s=100, random_state=None, knn=5, t=0.05, n_pca=10, solver='lbfgsb', decay=0.1, knn_max=20, n_jobs=-1, **kwargs):
+    rng = np.random.default_rng(random_state)
+
+    # Normalize and center the data
+    scaler = StandardScaler()
+    X = scaler.fit_transform(X)
+
+    # Perform PCA
+    pca = PCA(n_components=n_pca)
+    X_pca = pca.fit_transform(X)
+
+    # Compute nearest neighbors
+    nn = NearestNeighbors(n_neighbors=knn, metric='euclidean')
+    distances, indices = nn.kneighbors(X_pca)
+    neighborhood_scores = [min(distances[i][j], knn_max) for i in range(X.shape[0]) for j in range(X.shape[0])]
+    
+    # Denoise based on neighborhood scores
+    denoised_counts = []
+    for cell_idx in range(X.shape[0]):
+        cell_scores = neighborhood_scores[cell_idx] * (1 - t)
+        denoised_count = np.sum((X_pca[cell_idx] / cell_scores).clip(min=0))
+        denoised_counts.append(denoised_count)
+
+    # Refine denoised counts using Poisson loss
+    poisson_loss = lambda x: poisson.pmf(x, np.exp(np.mean(denoised_counts))).sum() / len(denoised_counts)
+    result = minimize(poisson_loss, denoised_counts, bounds=[(0, None)]*len(denoised_counts), method=solver)
+    final_d
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "NotFittedError(\"This NearestNeighbors instance is not fitted yet. Call 'fit' with appropriate arguments before using this estimator.\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpi50mrrb6/eval_candidate.py\", line 127, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpi50mrrb6/eval_candidate.py\", line 102, in magic_denoise\n    distances, indices = nn.kneighbors(X_pca)\n                         ^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/neighbors/_base.py\", line 808, in kneighbors\n    check_is_fitted(self)\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/utils/validation.py\", line 1705, in check_is_fitted\n    raise NotFittedError(msg % {\"name\": type(estimator).__name__})\nsklearn.exceptions.NotFittedError: This NearestNeighbors instance is not fitted yet. Call 'fit' with appropriate arguments before using this estimator.\n"
+}
+Elapsed seconds: 33.60
+
+================================================================================
+Step 10 Rollout 4/5
+================================================================================
+Parent state:
+  id: 05ccc44d-c000-462e-afa6-52700d8cbcb7
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: 5e3aa11791d0
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.array(X, dtype=float)
+
+    # Check if input matrix is square
+    if X.shape[0] != X.shape[1]:
+        raise ValueError("Input matrix must be square")
+
+    # Normalize raw counts
+    normalizer = StandardScaler()
+    normalized_X = normalizer.fit_transform(X)
+
+    # Perform PCA
+    pca = PCA(n_components=10, random_state=0)
+    reduced_X = pca.fit_transform(normalized_X)
+
+    # Predict count values
+    predicted_counts = reduced_X * 10  # Example scaling factor
+
+    # Apply Poisson noise model
+    poisson_noise = np.random.poisson(predicted_counts)
+    final_counts = predicted_counts + poisson_noise
+
+    # Check if final counts satisfy Poisson constraint
+    if np.mean(final_counts <= 0) > 0.03:
+        return None
+
+    # Normalize final counts
+    final_counts = normalize(final_counts, axis=0, norm='l1')
+
+    return final_counts
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "ValueError('Input matrix must be square')",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpcelw33n3/eval_candidate.py\", line 124, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpcelw33n3/eval_candidate.py\", line 94, in magic_denoise\n    raise ValueError(\"Input matrix must be square\")\nValueError: Input matrix must be square\n"
+}
+Elapsed seconds: 22.10
+
+================================================================================
+Step 10 Rollout 5/5
+================================================================================
+Parent state:
+  id: 99fff8dd-e4cd-4835-8a64-5228d24a8fae
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code hash: a486f2207a6f
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+    
+    # Normalize to log-normal distribution
+    log_X = np.log(X + 1e-6)
+    
+    # Fit a Gaussian Mixture Model to the normalized data
+    means, covariances = fit_gaussian_mixture_model(log_X)
+
+    # Predict denoised counts
+    denoised_counts = reconstruct_counts(log_X, means, covariances)
+    
+    # Convert back to counts
+    denoised_counts = np.exp(denoised_counts) - 1
+    
+    # Apply Poisson constraints
+    denoised_counts = clip_to_non_negative_and_zero(denoised_counts)
+    denoised_counts = apply_poisson_constraints(denoised_counts)
+    
+    return denoised_counts
+
+def fit_gaussian_mixture_model(data):
+    # Implementation of Gaussian Mixture Model fitting
+    pass
+
+def reconstruct_counts(data, means, covariances):
+    # Implementation of reconstructing counts from Gaussian mixture model
+    pass
+
+def clip_to_non_negative_and_zero(counts):
+    # Implementation of clipping counts to non-negative and zero
+    pass
+
+def apply_poisson_constraints(counts):
+    # Implementation of applying Poisson constraints
+    pass
+
+CURRE
+Evaluator STDERR tail:
+Traceback (most recent call last):
+  File "/local/user/1483806620/tmprf82zzh3/eval_candidate.py", line 128, in <module>
+    CURRENT_IMPLEMENTATION_END
+NameError: name 'CURRENT_IMPLEMENTATION_END' is not defined
+
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "Could not parse evaluator output.",
+  "stdout_tail": "",
+  "stderr_tail": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmprf82zzh3/eval_candidate.py\", line 128, in <module>\n    CURRENT_IMPLEMENTATION_END\nNameError: name 'CURRENT_IMPLEMENTATION_END' is not defined\n"
+}
+Elapsed seconds: 24.78
+
+================================================================================
+Update PUCT Sampler
+================================================================================
+No valid child states. Flushed PUCT sampler only.
+PUCT stats:
+{
+  "puct/buffer_size": 6,
+  "puct/sampled_size": 5,
+  "puct/T": 50,
+  "puct/scale_last": 0.014050334843932921,
+  "puct/buffer_value/mean": -0.22925827752601116,
+  "puct/buffer_value/std": 0.005236250636277985,
+  "puct/buffer_value/min": -0.2316,
+  "puct/buffer_value/max": -0.21754966515606708,
+  "puct/sampled_value/mean": -0.2287899330312134,
+  "puct/sampled_value/std": 0.005620133937573169,
+  "puct/sampled_value/min": -0.2316,
+  "puct/sampled_value/max": -0.21754966515606708
+}
+
+================================================================================
+LoRA Update
+================================================================================
+Train result:
+{
+  "ok": false,
+  "loss": null,
+  "message": "All rewards are equal or only one rollout was available; advantages are zero.",
+  "rewards": [
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0
+  ],
+  "advantages": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ]
+}
+Saved LoRA adapter to: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/university_gpu/outputs/local_ttt_denoising_antirepeat_10x5_5580264/lora_adapter_step_10
+
+================================================================================
+Final Best Record
+================================================================================
+{
+  "ok": true,
+  "mse": 0.21754966515606708,
+  "poisson": 0.03688785612012908,
+  "reward": 4.596651524527119,
+  "raw_score": 0.21754966515606708,
+  "metrics": {
+    "mse": 0.21754966515606708,
+    "poisson": 0.03688785612012908,
+    "mse_normalized": 0.28606933832565834,
+    "poisson_normalized": 0.9772009063208299
+  },
+  "source": "step_8_rollout_5"
+}
+Saved best code to: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/university_gpu/outputs/local_ttt_denoising_antirepeat_10x5_5580264/best_magic_denoise.py
+
+========================================
+Finished
+========================================
+End time: Thu Jul  9 12:21:56 AM UTC 2026
