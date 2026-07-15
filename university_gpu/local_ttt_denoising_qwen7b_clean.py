@@ -644,7 +644,7 @@ def main():
             responses=rollout_responses,
             rewards=rollout_rewards,
             beta=2.0,
-            max_length=4096,
+            max_length=1024,
         )
 
         print("Train result:")
