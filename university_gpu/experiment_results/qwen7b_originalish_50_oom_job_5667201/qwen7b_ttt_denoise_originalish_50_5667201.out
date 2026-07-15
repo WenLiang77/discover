@@ -1,0 +1,94 @@
+========================================
+Official Tiny Local TTT-Denoising
+========================================
+Job ID: 5667201
+Job name: qwen7b_ttt_denoise_originalish_50
+Node: nid010723
+Start time: Wed Jul 15 04:51:44 PM UTC 2026
+Current directory: /scratch/b6ao/wenliang.b6ao/discover
+
+========================================
+Activate Python environment
+========================================
+Python executable:
+/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/bin/python3
+Python version:
+Python 3.11.7
+
+========================================
+GPU information
+========================================
+Wed Jul 15 16:51:44 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 565.57.01              Driver Version: 565.57.01      CUDA Version: 12.7     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GH200 120GB             On  |   00000039:01:00.0 Off |                    0 |
+| N/A   34C    P0             95W /  900W |       1MiB /  97871MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+
+========================================
+Experiment configuration
+========================================
+OPENPROBLEMS_CACHE_DIR=/scratch/b6ao/wenliang.b6ao/discover/.openproblems_cache
+LOCAL_TTT_MODEL=Qwen/Qwen2.5-Coder-7B-Instruct
+LOCAL_TTT_EVAL_MODE=official
+LOCAL_TTT_STEPS=10
+LOCAL_TTT_ROLLOUTS=5
+LOCAL_TTT_MAX_NEW_TOKENS=1536
+LOCAL_TTT_LORA_RANK=4
+LOCAL_TTT_LR=1e-4
+LOCAL_TTT_OUTPUT_DIR=university_gpu/outputs/qwen7b_ttt_denoising_originalish_50_5667201
+
+========================================
+Run official tiny local TTT denoising
+========================================
+
+================================================================================
+Tiny Local TTT-Denoising with Official Prompt, Reward Check, and PUCT
+================================================================================
+Repo root: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover
+Model: Qwen/Qwen2.5-Coder-7B-Instruct
+Eval mode: official
+Steps: 10
+Rollouts per step: 5
+Max new tokens: 1536
+LoRA rank: 4
+Learning rate: 0.0001
+
+================================================================================
+Create PUCT Sampler
+================================================================================
+Initial PUCT stats:
+{
+  "puct/buffer_size": 5,
+  "puct/sampled_size": 0,
+  "puct/T": 0,
+  "puct/scale_last": 1.0,
+  "puct/buffer_value/mean": -0.23159999999999997,
+  "puct/buffer_value/std": 2.7755575615628914e-17,
+  "puct/buffer_value/min": -0.2316,
+  "puct/buffer_value/max": -0.2316
+}
+
+================================================================================
+Load Local LLM + LoRA
+================================================================================
+================================================================================
+Loading tokenizer and local LoRA model
+================================================================================
+Model name: Qwen/Qwen2.5-Coder-7B-Instruct
+LoRA rank: 4
+Compute dtype: torch.bfloat16

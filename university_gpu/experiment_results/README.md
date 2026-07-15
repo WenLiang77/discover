@@ -23,3 +23,18 @@ However, repeated experiments show that the local setup tends to rediscover the 
 The anti-repeat penalty version worked mechanically, but did not improve the best score. In the larger 20x10 setting it caused an OOM failure, while the smaller 10x5 setting completed but found only one valid candidate.
 
 Overall, the experiments suggest that the local Qwen 1.5B + LoRA implementation can discover a strong solution, but has limited exploration ability and does not show monotonic improvement with more attempts.
+
+## Additional Qwen7B and originalish experiments
+
+| Experiment | Job ID | Candidates | Model | TTT variant | Status | Valid candidates | Best MSE | Reward | Notes |
+|---|---:|---:|---|---|---|---:|---:|---:|---|
+| Qwen7B-only baseline | 5650041 | 50 | Qwen2.5-Coder-7B | No TTT | Completed | 1 | 0.326289 | 3.064770 | Stronger than Qwen1.5B-only but worse than TTT plateau |
+| Qwen7B TTT memlite | 5664967 | 50 | Qwen2.5-Coder-7B | Local TTT memlite | Completed | 9 | 0.217550 | 4.596652 | Improved over Qwen7B-only but rediscovered plateau |
+| Qwen7B originalish TTT | 5667201 | 50 planned | Qwen2.5-Coder-7B | Group advantage / IS-style update | OOM | N/A | N/A | N/A | OOM during originalish update |
+| Qwen1.5B originalish TTT | 5668910 | 100 | Qwen2.5-Coder-1.5B | Group advantage / IS-style update | Completed | 2 | 0.217550 | 4.596652 | Reduced repeated valid behavior but did not improve best score |
+
+## Updated observation
+
+The Qwen7B baseline improved over the Qwen1.5B baseline, but Qwen7B local TTT still converged to the same plateau solution with MSE 0.21755. The originalish trainer, which adds grouped advantage, old-policy log probability, importance-style update, and KL proxy, did not improve the best score. On Qwen7B it was too memory-intensive and failed with OOM; on Qwen1.5B it completed but found only two valid candidates.
+
+Overall, these experiments suggest that the local TTT-style implementation can improve over base generation, but it does not reproduce the stronger continuous optimization dynamics of the original TTT-Discover backend.

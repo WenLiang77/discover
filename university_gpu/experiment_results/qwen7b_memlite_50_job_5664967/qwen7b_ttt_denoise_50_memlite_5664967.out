@@ -1,0 +1,3324 @@
+========================================
+Official Tiny Local TTT-Denoising
+========================================
+Job ID: 5664967
+Job name: qwen7b_ttt_denoise_50_memlite
+Node: nid010576
+Start time: Wed Jul 15 03:29:16 PM UTC 2026
+Current directory: /scratch/b6ao/wenliang.b6ao/discover
+
+========================================
+Activate Python environment
+========================================
+Python executable:
+/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/bin/python3
+Python version:
+Python 3.11.7
+
+========================================
+GPU information
+========================================
+Wed Jul 15 15:29:16 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 565.57.01              Driver Version: 565.57.01      CUDA Version: 12.7     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GH200 120GB             On  |   00000029:01:00.0 Off |                    0 |
+| N/A   34C    P0             95W /  900W |       1MiB /  97871MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+
+========================================
+Experiment configuration
+========================================
+OPENPROBLEMS_CACHE_DIR=/scratch/b6ao/wenliang.b6ao/discover/.openproblems_cache
+LOCAL_TTT_MODEL=Qwen/Qwen2.5-Coder-7B-Instruct
+LOCAL_TTT_EVAL_MODE=official
+LOCAL_TTT_STEPS=10
+LOCAL_TTT_ROLLOUTS=5
+LOCAL_TTT_MAX_NEW_TOKENS=1536
+LOCAL_TTT_LORA_RANK=4
+LOCAL_TTT_LR=1e-4
+LOCAL_TTT_OUTPUT_DIR=university_gpu/outputs/qwen7b_ttt_denoising_official_50_memlite_5664967
+
+========================================
+Run official tiny local TTT denoising
+========================================
+
+================================================================================
+Tiny Local TTT-Denoising with Official Prompt, Reward Check, and PUCT
+================================================================================
+Repo root: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover
+Model: Qwen/Qwen2.5-Coder-7B-Instruct
+Eval mode: official
+Steps: 10
+Rollouts per step: 5
+Max new tokens: 1536
+LoRA rank: 4
+Learning rate: 0.0001
+
+================================================================================
+Create PUCT Sampler
+================================================================================
+Initial PUCT stats:
+{
+  "puct/buffer_size": 5,
+  "puct/sampled_size": 0,
+  "puct/T": 0,
+  "puct/scale_last": 1.0,
+  "puct/buffer_value/mean": -0.23159999999999997,
+  "puct/buffer_value/std": 2.7755575615628914e-17,
+  "puct/buffer_value/min": -0.2316,
+  "puct/buffer_value/max": -0.2316
+}
+
+================================================================================
+Load Local LLM + LoRA
+================================================================================
+================================================================================
+Loading tokenizer and local LoRA model
+================================================================================
+Model name: Qwen/Qwen2.5-Coder-7B-Instruct
+LoRA rank: 4
+Compute dtype: torch.bfloat16
+LoRA target modules: ['q_proj', 'k_proj', 'v_proj', 'o_proj', 'gate_proj', 'up_proj', 'down_proj']
+
+Trainable parameters:
+trainable params: 10,092,544 || all params: 7,625,709,056 || trainable%: 0.1323
+================================================================================
+Creating optimizer
+================================================================================
+Number of trainable parameter tensors: 392
+Learning rate: 0.0001
+
+================================================================================
+Step 1/10
+================================================================================
+
+================================================================================
+Step 1 Rollout 1/5
+================================================================================
+Parent state:
+  id: 9fe8020a-5f05-4b94-b225-238d3796f340
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    
+    # Reverse normalization order
+    X_log = np.log1p(X)
+    
+    # Apply square root transformation
+    X_sqrt = np.sqrt(X_log)
+    
+    # Perform PCA for dimensionality reduction
+    pca = PCA(n_components=min(100, X_sqrt.shape[1]), svd_solver='full')
+    X_pca = pca.fit_transform(X_sqrt)
+    
+    # Reconstruct data from PCA components
+    X_reconstructed = pca.inverse_transform(X_pca)
+    
+    # Apply inverse square root transformation
+    X_inverse_sqrt = X_reconstructed ** 2
+    
+    # Exponentiate back to original scale
+    X_denoised = np.expm1(X_inverse_sqrt)
+    
+    # Ensure non-negative values
+    X_denoised = np.maximum(X_denoised, 0.0)
+    
+    # Clip values to prevent overflow
+    X_denoised = np.clip(X_denoised, 0, 1e6)
+    
+    return X_denoised.astype(np.float32)
+Evaluation result:
+{
+  "ok": false,
+  "mse": 0.22796061043787672,
+  "poisson": 0.059961478167201716,
+  "reward": -1.0,
+  "raw_score": 0.22796061043787672,
+  "metrics": {
+    "mse": 0.22796061043787672,
+    "poisson": 0.059961478167201716,
+    "mse_normalized": 0.2519038384690366,
+    "poisson_normalized": 0.8750310926194155
+  },
+  "error": "Invalid solution under official verify_denoising check."
+}
+Elapsed seconds: 112.13
+
+================================================================================
+Step 1 Rollout 2/5
+================================================================================
+Parent state:
+  id: 78cf62cc-9cfd-4809-a09b-5972a13f1f83
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+import numpy as np
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler, normalize
+from sklearn.neighbors import NearestNeighbors
+from scipy.optimize import minimize
+from scipy.stats import poisson, norm
+
+def square_root_transform(X):
+    return np.sqrt(X)
+
+def reverse_square_root_transform(X):
+    return X ** 2
+
+def denoise_with_magic(X, **kwargs):
+    budget_s = kwargs.get('budget_s', 400)
+    random_state = kwargs.get('random_state', None)
+    knn = kwargs.get('knn', 20)
+    t = kwargs.get('t', 0.01)
+    n_pca = kwargs.get('n_pca', 50)
+    solver = kwargs.get('solver', 'trust-constr')
+    decay = kwargs.get('decay', 0.1)
+    knn_max = kwargs.get('knn_max', 50)
+    n_jobs = kwargs.get('n_jobs', 2)
+
+    # Step 1: Normalize raw counts
+    X_raw = X.copy()
+    X_raw[X_raw == 0] = 1  # Avoid log(0)
+    X_log = np.log(X_raw)
+    
+    # Step 2: Apply square root transformation
+    X_sqrt = square_root_transform(X_log)
+    
+    # Step 3: Perform PCA to reduce dimensionality
+    pca = PCA(n_components=n_pca, random_state=random_state)
+    X_pca = pca.fit_transform(X_sqrt)
+    
+    # Step 4: Find nearest neighbors
+    nbrs = NearestNeighbors(n_neighbors=m
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "Generated code does not define magic_denoise."
+}
+Elapsed seconds: 141.79
+
+================================================================================
+Step 1 Rollout 3/5
+================================================================================
+Parent state:
+  id: 35bff92d-a9ab-45e1-80ce-1a24682d8042
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X[X < 0] = 0.0
+    
+    # Reverse normalization order
+    X_log = np.log1p(X)
+    
+    # Square root transformation for variance stabilization
+    X_sqrt = np.sqrt(X_log)
+    
+    # Perform PCA to reduce dimensionality
+    pca = PCA(n_components=min(20, X.shape[1]), svd_solver='full')
+    X_pca = pca.fit_transform(X_sqrt)
+    
+    # Reconstruct the data
+    X_reconstructed = pca.inverse_transform(X_pca)
+    
+    # Inverse square root transformation
+    X_inv_sqrt = X_reconstructed ** 2
+    
+    # Exponentiate back to original scale
+    denoised_X = np.expm1(X_inv_sqrt)
+    
+    # Ensure non-negativity
+    denoised_X[denoised_X < 0] = 0.0
+    
+    # Apply Poisson smoothing
+    lambda_hat = np.mean(denoised_X)
+    denoised_X = poisson.pmf(range(int(np.max(denoised_X)) + 1), mu=lambda_hat) * lambda_hat
+    
+    return denoised_X
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "ValueError('X needs to be 2-dimensional, not 1-dimensional.')",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpkgdsmv5e/eval_candidate.py\", line 125, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 172, in run_denoising_eval\n    mse = evaluate_mse(X_test, Y_denoised)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 124, in evaluate_mse\n    denoised_adata = anndata.AnnData(X=denoised_X)\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/legacy_api_wrap/__init__.py\", line 88, in fn_compatible\n    return fn(*args_all, **kw)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/anndata/_core/anndata.py\", line 252, in __init__\n    self._init_as_actual(\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/anndata/_core/anndata.py\", line 410, in _init_as_actual\n    _check_2d_shape(X)\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/anndata/_core/anndata.py\", line 2135, in _check_2d_shape\n    raise ValueError(msg)\nValueError: X needs to be 2-dimensional, not 1-dimensional.\n"
+}
+Elapsed seconds: 28.77
+
+================================================================================
+Step 1 Rollout 4/5
+================================================================================
+Parent state:
+  id: 65bafdee-fa18-46b5-9461-99e4dd9b5de7
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, budget_s=400, random_state=None, knn=20, t=0.1, n_pca=50, solver='lbfgs', decay=0.9, knn_max=None, n_jobs=2):
+    X = np.asarray(X, dtype=float)
+    
+    # Reverse normalization order
+    X_sqrt = reverse_normalization_order(X)
+    
+    # Apply PCA to reduce dimensionality
+    pca = PCA(n_components=n_pca, random_state=random_state)
+    X_pca = pca.fit_transform(X_sqrt)
+    
+    # Apply T-SNE for embedding
+    tsne = TruncatedSVD(n_components=2, random_state=random_state)
+    X_tsne = tsne.fit_transform(X_pca)
+    
+    # Find nearest neighbors
+    nbrs = NearestNeighbors(n_neighbors=knn, metric='euclidean').fit(X_tsne)
+    
+    # Initialize denoised matrix
+    denoised_X = X.copy()
+    
+    # Define objective function for optimization
+    def objective_function(params):
+        denoised_X_flat = params.reshape(X.shape)
+        mse = np.mean((denoised_X_flat - X)**2)
+        poisson_err = poisson_loss(X, denoised_X_flat)
+        return mse + t * poisson_err
+    
+    # Define constraints for optimization
+    constraints = [{'type': 'ineq', 'fun': lambda x: x - 0}, {'type': 'ineq', 'fun': lambda x: 1000 - x}]
+    
+    # Perform optimization
+    result = minimize(o
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "NameError(\"name 'reverse_normalization_order' is not defined\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpzrx6hjkc/eval_candidate.py\", line 137, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpzrx6hjkc/eval_candidate.py\", line 93, in magic_denoise\n    X_sqrt = reverse_normalization_order(X)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nNameError: name 'reverse_normalization_order' is not defined\n"
+}
+Elapsed seconds: 47.01
+
+================================================================================
+Step 1 Rollout 5/5
+================================================================================
+Parent state:
+  id: 507fff8f-535e-408c-83cd-b1f986ee6b47
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    # Normalize counts
+    scaler = StandardScaler()
+    X_normalized = scaler.fit_transform(X)
+
+    # Apply square root transformation for variance stabilization
+    X_sqrt = np.sqrt(X_normalized + 1)
+
+    # Perform PCA for dimensionality reduction
+    pca = PCA(n_components=min(10, X_sqrt.shape[1]), svd_solver='full')
+    X_pca = pca.fit_transform(X_sqrt)
+
+    # Reconstruct the data using PCA components
+    X_reconstructed = pca.inverse_transform(X_pca)
+
+    # Apply inverse square root transformation
+    X_sqrt_inv = X_reconstructed ** 2 - 1
+
+    # Inverse normalization
+    X_denoised = scaler.inverse_transform(X_sqrt_inv)
+
+    # Ensure non-negativity and validity
+    X_denoised = np.maximum(X_denoised, 0.0)
+
+    return X_denoised
+Evaluator STDERR tail:
+/local/user/1483806620/tmpc21uike3/eval_candidate.py:99: RuntimeWarning: invalid value encountered in sqrt
+  X_sqrt = np.sqrt(X_normalized + 1)
+
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "ValueError('Input X contains NaN.\\nPCA does not accept missing values encoded as NaN natively. For supervised learning, you might want to consider sklearn.ensemble.HistGradientBoostingClassifier and Regressor which accept missing values encoded as NaNs natively. Alternatively, it is possible to preprocess the data, for instance by using an imputer transformer in a pipeline or drop samples with missing values. See https://scikit-learn.org/stable/modules/impute.html You can find a list of all estimators that handle NaN values at the following page: https://scikit-learn.org/stable/modules/impute.html#estimators-that-handle-nan-values')",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpc21uike3/eval_candidate.py\", line 123, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpc21uike3/eval_candidate.py\", line 103, in magic_denoise\n    X_pca = pca.fit_transform(X_sqrt)\n            ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/utils/_set_output.py\", line 316, in wrapped\n    data_to_wrap = f(self, X, *args, **kwargs)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/base.py\", line 1336, in wrapper\n    return fit_method(estimator, *args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/decomposition/_pca.py\", line 466, in fit_transform\n    U, S, _, X, x_is_centered, xp = self._fit(X)\n                                    ^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/decomposition/_pca.py\", line 503, in _fit\n    X = validate_data(\n        ^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/utils/validation.py\", line 2902, in validate_data\n    out = check_array(X, input_name=\"X\", **check_params)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/utils/validation.py\", line 1074, in check_array\n    _assert_all_finite(\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/utils/validation.py\", line 133, in _assert_all_finite\n    _assert_all_finite_element_wise(\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/utils/validation.py\", line 182, in _assert_all_finite_element_wise\n    raise ValueError(msg_err)\nValueError: Input X contains NaN.\nPCA does not accept missing values encoded as NaN natively. For supervised learning, you might want to consider sklearn.ensemble.HistGradientBoostingClassifier and Regressor which accept missing values encoded as NaNs natively. Alternatively, it is possible to preprocess the data, for instance by using an imputer transformer in a pipeline or drop samples with missing values. See https://scikit-learn.org/stable/modules/impute.html You can find a list of all estimators that handle NaN values at the following page: https://scikit-learn.org/stable/modules/impute.html#estimators-that-handle-nan-values\n"
+}
+Elapsed seconds: 27.41
+
+================================================================================
+Update PUCT Sampler
+================================================================================
+No valid child states. Flushed PUCT sampler only.
+PUCT stats:
+{
+  "puct/buffer_size": 5,
+  "puct/sampled_size": 5,
+  "puct/T": 5,
+  "puct/scale_last": 1e-06,
+  "puct/buffer_value/mean": -0.23159999999999997,
+  "puct/buffer_value/std": 2.7755575615628914e-17,
+  "puct/buffer_value/min": -0.2316,
+  "puct/buffer_value/max": -0.2316,
+  "puct/sampled_value/mean": -0.23159999999999997,
+  "puct/sampled_value/std": 2.7755575615628914e-17,
+  "puct/sampled_value/min": -0.2316,
+  "puct/sampled_value/max": -0.2316
+}
+
+================================================================================
+LoRA Update
+================================================================================
+Train result:
+{
+  "ok": false,
+  "loss": null,
+  "message": "All rewards are equal or only one rollout was available; advantages are zero.",
+  "rewards": [
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0
+  ],
+  "advantages": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ]
+}
+Saved LoRA adapter to: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/university_gpu/outputs/qwen7b_ttt_denoising_official_50_memlite_5664967/lora_adapter_step_1
+
+================================================================================
+Step 2/10
+================================================================================
+
+================================================================================
+Step 2 Rollout 1/5
+================================================================================
+Parent state:
+  id: 9fe8020a-5f05-4b94-b225-238d3796f340
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, budget_s=400, random_state=None, knn=10, t=0.1, n_pca=50, solver='lbfgsb', decay=0.1, knn_max=100, n_jobs=-1):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    # Reverse normalization order
+    X_log = np.log1p(X)
+    X_sqrt = np.sqrt(X_log)
+    
+    # PCA for dimensionality reduction
+    pca = PCA(n_components=n_pca, random_state=random_state)
+    X_reduced = pca.fit_transform(X_sqrt)
+    
+    # Nearest neighbors for denoising
+    nbrs = NearestNeighbors(n_neighbors=knn, metric='euclidean', n_jobs=n_jobs).fit(X_reduced)
+    distances, indices = nbrs.kneighbors(X_reduced)
+    
+    # Denoising
+    X_denoised = np.zeros_like(X_sqrt)
+    for i in range(X.shape[0]):
+        weights = np.exp(-decay * distances[i])
+        weights /= weights.sum()
+        X_denoised[i] = np.dot(weights, X_sqrt[indices[i]])
+    
+    # Inverse operations
+    X_denoised = np.square(X_denoised)
+    X_denoised = np.expm1(X_denoised)
+    
+    # Ensure non-negative values
+    X_denoised = np.maximum(X_denoised, 0.0)
+    
+    return X_denoised
+Evaluation result:
+{
+  "ok": false,
+  "mse": 0.22563806214097198,
+  "poisson": 0.10537428509634064,
+  "reward": -1.0,
+  "raw_score": 0.22563806214097198,
+  "metrics": {
+    "mse": 0.22563806214097198,
+    "poisson": 0.10537428509634064,
+    "mse_normalized": 0.25952572306807875,
+    "poisson_normalized": 0.6739435471034705
+  },
+  "error": "Invalid solution under official verify_denoising check."
+}
+Elapsed seconds: 36.74
+
+================================================================================
+Step 2 Rollout 2/5
+================================================================================
+Parent state:
+  id: 78cf62cc-9cfd-4809-a09b-5972a13f1f83
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.maximum(X, 0.0)
+
+    # Reverse normalization order
+    X_log = np.log1p(X)
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X_log)
+    pca = PCA(n_components=0.95, svd_solver='full')
+    X_reduced = pca.fit_transform(X_scaled)
+
+    # Reconstruct using PCA components
+    X_reconstructed = pca.inverse_transform(X_reduced)
+    X_reconstructed_scaled = scaler.inverse_transform(X_reconstructed)
+    X_denoised = np.expm1(X_reconstructed_scaled)
+
+    # Ensure non-negative values and apply soft thresholding
+    X_denoised = np.maximum(X_denoised, 0.0)
+    threshold = 0.01
+    X_denoised[X_denoised < threshold] = threshold
+
+    return X_denoised
+Evaluation result:
+{
+  "ok": false,
+  "mse": 0.2924253251042104,
+  "poisson": 0.2732529997466958,
+  "reward": -1.0,
+  "raw_score": 0.2924253251042104,
+  "metrics": {
+    "mse": 0.2924253251042104,
+    "poisson": 0.2732529997466958,
+    "mse_normalized": 0.040350599058777185,
+    "poisson_normalized": 0.0
+  },
+  "error": "Invalid solution under official verify_denoising check."
+}
+Elapsed seconds: 28.27
+
+================================================================================
+Step 2 Rollout 3/5
+================================================================================
+Parent state:
+  id: 35bff92d-a9ab-45e1-80ce-1a24682d8042
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    
+    # Normalize raw counts
+    scaler = StandardScaler(with_mean=False)
+    X_normalized = scaler.fit_transform(X + 1)
+    
+    # Apply square root transformation for variance stabilization
+    X_sqrt = np.sqrt(X_normalized)
+    
+    # Perform PCA to reduce dimensionality
+    pca = PCA(n_components=100, svd_solver='full')
+    X_pca = pca.fit_transform(X_sqrt)
+    
+    # Reconstruct data using inverse PCA
+    X_reconstructed = pca.inverse_transform(X_pca)
+    
+    # Apply exponential to get back to count space
+    denoised_X = np.exp(X_reconstructed)
+    
+    # Ensure non-negativity and finiteness
+    denoised_X = np.maximum(denoised_X, 0.0)
+    denoised_X = np.nan_to_num(denoised_X, nan=0.0, posinf=np.inf)
+    
+    return denoised_X
+Evaluation result:
+{
+  "ok": false,
+  "mse": 0.5452090719383618,
+  "poisson": 79.16580718100765,
+  "reward": -1.0,
+  "raw_score": 0.5452090719383618,
+  "metrics": {
+    "mse": 0.5452090719383618,
+    "poisson": 79.16580718100765,
+    "mse_normalized": 0.0,
+    "poisson_normalized": 0.0
+  },
+  "error": "Invalid solution under official verify_denoising check."
+}
+Elapsed seconds: 26.72
+
+================================================================================
+Step 2 Rollout 4/5
+================================================================================
+Parent state:
+  id: 65bafdee-fa18-46b5-9461-99e4dd9b5de7
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X[X < 0] = 0
+    
+    # Normalize raw counts
+    X_log = np.log1p(X)
+    
+    # Center the data
+    scaler = StandardScaler()
+    X_centered = scaler.fit_transform(X_log)
+    
+    # Perform PCA
+    pca = PCA(n_components=50)
+    X_pca = pca.fit_transform(X_centered)
+    
+    # Find nearest neighbors
+    nbrs = NearestNeighbors(n_neighbors=10).fit(X_pca)
+    distances, indices = nbrs.kneighbors(X_pca)
+    
+    # Interpolate missing values based on nearest neighbors
+    for i in range(X.shape[0]):
+        mask = X[i] == 0
+        if np.any(mask):
+            nn_indices = indices[i]
+            nn_distances = distances[i]
+            nn_values = X_log[nn_indices][~mask]
+            nn_weights = 1 / (nn_distances + 1e-6)
+            nn_weights /= nn_weights.sum()
+            X[i, mask] = np.dot(nn_weights, nn_values)
+    
+    # Exponentiate back to count space
+    X_denoised_log = X
+    X_denoised_raw = np.expm1(X_denoised_log)
+    
+    # Apply Poisson smoothing
+    lambda_ = np.mean(X_denoised_raw, axis=0)
+    X_denoised_raw = np.clip(poisson.pmf(range(1, int(np.max(X_denoised_raw)) + 2), mu=lambda_), 0, None)
+    
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "IndexError('boolean index did not match indexed array along axis 0; size of axis is 10 but size of corresponding boolean axis is 15501')",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmptmx57_z4/eval_candidate.py\", line 133, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmptmx57_z4/eval_candidate.py\", line 114, in magic_denoise\n    nn_values = X_log[nn_indices][~mask]\n                ~~~~~~~~~~~~~~~~~^^^^^^^\nIndexError: boolean index did not match indexed array along axis 0; size of axis is 10 but size of corresponding boolean axis is 15501\n"
+}
+Elapsed seconds: 34.76
+
+================================================================================
+Step 2 Rollout 5/5
+================================================================================
+Parent state:
+  id: 507fff8f-535e-408c-83cd-b1f986ee6b47
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, budget_s=400, random_state=None, knn=10, t=1.0, n_pca=10, solver='lbfgs', decay=0.1, knn_max=50, n_jobs=2):
+    X = np.asarray(X, dtype=float)
+    X[X < 0] = 0
+    
+    # Reverse normalization order
+    X_lognorm = np.log(1 + X)
+    
+    # Apply square root transformation
+    X_sqrt = np.sqrt(X_lognorm)
+    
+    # Perform PCA
+    pca = PCA(n_components=n_pca, svd_solver='full')
+    X_pca = pca.fit_transform(X_sqrt)
+    
+    # Reconstruct data
+    X_recon = pca.inverse_transform(X_pca)
+    
+    # Apply inverse square root transformation
+    X_inv_sqrt = X_recon ** 2
+    
+    # Apply inverse log transformation
+    X_hat = np.exp(X_inv_sqrt) - 1
+    
+    # Clip negative values
+    X_hat[X_hat < 0] = 0
+    
+    # Ensure finiteness and non-negativity
+    X_hat[np.isinf(X_hat)] = 0
+    X_hat[np.isnan(X_hat)] = 0
+    
+    # Evaluate Poisson constraint
+    poisson_loss = np.mean([poisson.pmf(x, x_hat[i]) for i, x in enumerate(X.flatten())])
+    poisson_norm = (0.257575 - poisson_loss) / (0.257575 - 0.031739)
+    
+    if poisson_norm < 0.97:
+        raise ValueError("Poisson constraint not met")
+    
+    return X_hat
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "NameError(\"name 'x_hat' is not defined\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpkqzwsh55/eval_candidate.py\", line 132, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpkqzwsh55/eval_candidate.py\", line 120, in magic_denoise\n    poisson_loss = np.mean([poisson.pmf(x, x_hat[i]) for i, x in enumerate(X.flatten())])\n                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpkqzwsh55/eval_candidate.py\", line 120, in <listcomp>\n    poisson_loss = np.mean([poisson.pmf(x, x_hat[i]) for i, x in enumerate(X.flatten())])\n                                           ^^^^^\nNameError: name 'x_hat' is not defined\n"
+}
+Elapsed seconds: 33.87
+
+================================================================================
+Update PUCT Sampler
+================================================================================
+No valid child states. Flushed PUCT sampler only.
+PUCT stats:
+{
+  "puct/buffer_size": 5,
+  "puct/sampled_size": 5,
+  "puct/T": 10,
+  "puct/scale_last": 1e-06,
+  "puct/buffer_value/mean": -0.23159999999999997,
+  "puct/buffer_value/std": 2.7755575615628914e-17,
+  "puct/buffer_value/min": -0.2316,
+  "puct/buffer_value/max": -0.2316,
+  "puct/sampled_value/mean": -0.23159999999999997,
+  "puct/sampled_value/std": 2.7755575615628914e-17,
+  "puct/sampled_value/min": -0.2316,
+  "puct/sampled_value/max": -0.2316
+}
+
+================================================================================
+LoRA Update
+================================================================================
+Train result:
+{
+  "ok": false,
+  "loss": null,
+  "message": "All rewards are equal or only one rollout was available; advantages are zero.",
+  "rewards": [
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0
+  ],
+  "advantages": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ]
+}
+Saved LoRA adapter to: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/university_gpu/outputs/qwen7b_ttt_denoising_official_50_memlite_5664967/lora_adapter_step_2
+
+================================================================================
+Step 3/10
+================================================================================
+
+================================================================================
+Step 3 Rollout 1/5
+================================================================================
+Parent state:
+  id: 9fe8020a-5f05-4b94-b225-238d3796f340
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    # Reverse normalization order
+    X_log = np.log1p(X)
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X_log)
+    pca = PCA(n_components=50)
+    X_pca = pca.fit_transform(X_scaled)
+
+    # Denoise via nearest neighbors
+    nbrs = NearestNeighbors(n_neighbors=10).fit(X_pca)
+    distances, indices = nbrs.kneighbors(X_pca)
+    denoised_pca = np.mean([X_pca[indices[:, i]] for i in range(10)], axis=0)
+
+    # Inverse transformations
+    X_inverse_pca = pca.inverse_transform(denoised_pca)
+    X_inverse_scaled = scaler.inverse_transform(X_inverse_pca)
+    X_denorm = np.expm1(X_inverse_scaled)
+
+    # Ensure non-negativity
+    X_denorm = np.maximum(X_denorm, 0.0)
+
+    return X_denorm
+Evaluation result:
+{
+  "ok": false,
+  "mse": 0.26835991937539944,
+  "poisson": 0.19675474766645712,
+  "reward": -1.0,
+  "raw_score": 0.26835991937539944,
+  "metrics": {
+    "mse": 0.26835991937539944,
+    "poisson": 0.19675474766645712,
+    "mse_normalized": 0.11932581156074107,
+    "poisson_normalized": 0.2693115904175724
+  },
+  "error": "Invalid solution under official verify_denoising check."
+}
+Elapsed seconds: 28.20
+
+================================================================================
+Step 3 Rollout 2/5
+================================================================================
+Parent state:
+  id: 78cf62cc-9cfd-4809-a09b-5972a13f1f83
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X[X < 0] = 0.0
+    
+    # Normalize raw counts
+    scaler = StandardScaler(with_mean=False)
+    X_normalized = scaler.fit_transform(X)
+    
+    # Apply square root transformation for variance stabilization
+    X_sqrt = np.sqrt(X_normalized + 1e-6)
+    
+    # Perform PCA to reduce dimensionality
+    pca = TruncatedSVD(n_components=50, random_state=kwargs.get('random_state', 42))
+    X_pca = pca.fit_transform(X_sqrt)
+    
+    # Reconstruct data using nearest neighbors
+    nbrs = NearestNeighbors(n_neighbors=20).fit(X_pca)
+    distances, indices = nbrs.kneighbors(X_pca)
+    reconstructed_X_pca = np.zeros_like(X_pca)
+    for i in range(X_pca.shape[0]):
+        reconstructed_X_pca[i] = np.mean(X_pca[indices[i]], axis=0)
+    
+    # Inverse PCA transformation
+    X_reconstructed_sqrt = pca.inverse_transform(reconstructed_X_pca)
+    
+    # Exponentiate to get back to count space
+    X_denoised = np.expm1(X_reconstructed_sqrt)
+    
+    # Ensure non-negativity and normalization
+    X_denoised[X_denoised < 0] = 0.0
+    X_denoised = scaler.inverse_transform(X_denoise
+Evaluation result:
+{
+  "ok": false,
+  "mse": 0.2488408175498301,
+  "poisson": 0.2731567589979018,
+  "reward": -1.0,
+  "raw_score": 0.2488408175498301,
+  "metrics": {
+    "mse": 0.2488408175498301,
+    "poisson": 0.2731567589979018,
+    "mse_normalized": 0.18338146189520882,
+    "poisson_normalized": 0.0
+  },
+  "error": "Invalid solution under official verify_denoising check."
+}
+Elapsed seconds: 34.53
+
+================================================================================
+Step 3 Rollout 3/5
+================================================================================
+Parent state:
+  id: 35bff92d-a9ab-45e1-80ce-1a24682d8042
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    
+    # Normalize raw counts
+    scaler = StandardScaler(with_mean=False)
+    X_normalized = scaler.fit_transform(X)
+    
+    # Apply square root transformation
+    X_sqrt = np.sqrt(X_normalized)
+    
+    # Perform PCA
+    pca = PCA(n_components=0.95)
+    X_pca = pca.fit_transform(X_sqrt)
+    
+    # Reconstruct data
+    X_reconstructed = pca.inverse_transform(X_pca)
+    
+    # Apply inverse square root transformation
+    X_denoised = np.square(X_reconstructed)
+    
+    # Normalize back to raw count scale
+    X_denoised = scaler.inverse_transform(X_denoised)
+    
+    # Ensure non-negativity and finite values
+    X_denoised = np.maximum(X_denoised, 0.0)
+    X_denoised = np.nan_to_num(X_denoised, nan=0.0, posinf=0.0, neginf=0.0)
+    
+    return X_denoised
+Evaluation result:
+{
+  "ok": false,
+  "mse": 0.29467840919884986,
+  "poisson": 0.2505243630916165,
+  "reward": -1.0,
+  "raw_score": 0.29467840919884986,
+  "metrics": {
+    "mse": 0.29467840919884986,
+    "poisson": 0.2505243630916165,
+    "mse_normalized": 0.032956674469925486,
+    "poisson_normalized": 0.031220163784265925
+  },
+  "error": "Invalid solution under official verify_denoising check."
+}
+Elapsed seconds: 27.12
+
+================================================================================
+Step 3 Rollout 4/5
+================================================================================
+Parent state:
+  id: 65bafdee-fa18-46b5-9461-99e4dd9b5de7
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.maximum(X, 0.0)
+
+    # Normalize raw counts
+    scaler = StandardScaler(with_mean=False)
+    X_normalized = scaler.fit_transform(X)
+
+    # Apply square root transformation for variance stabilization
+    X_sqrt = np.sqrt(np.clip(X_normalized, 0, None))
+
+    # Perform PCA for dimensionality reduction
+    pca = PCA(n_components=50, svd_solver='arpack')
+    X_pca = pca.fit_transform(X_sqrt)
+
+    # Perform nearest neighbor imputation
+    nbrs = NearestNeighbors(n_neighbors=10).fit(X_pca)
+    distances, indices = nbrs.kneighbors(X_pca)
+    imputed_X_pca = X_pca.copy()
+    for i in range(len(distances)):
+        if np.any(distances[i] > 0):
+            imputed_X_pca[i] += np.mean(X_pca[indices[i]], axis=0)
+
+    # Inverse PCA
+    X_imputed_sqrt = pca.inverse_transform(imputed_X_pca)
+
+    # Back-transform to original scale
+    X_imputed = np.square(X_imputed_sqrt)
+    X_imputed = scaler.inverse_transform(X_imputed)
+
+    # Ensure non-negativity
+    X_imputed = np.maximum(X_imputed, 0.0)
+
+    return X_imputed
+Evaluation result:
+{
+  "ok": false,
+  "mse": 0.22173805983475292,
+  "poisson": 0.14634754082373333,
+  "reward": -1.0,
+  "raw_score": 0.22173805983475292,
+  "metrics": {
+    "mse": 0.22173805983475292,
+    "poisson": 0.14634754082373333,
+    "mse_normalized": 0.27232432344750473,
+    "poisson_normalized": 0.4925142987666567
+  },
+  "error": "Invalid solution under official verify_denoising check."
+}
+Elapsed seconds: 51.04
+
+================================================================================
+Step 3 Rollout 5/5
+================================================================================
+Parent state:
+  id: 507fff8f-535e-408c-83cd-b1f986ee6b47
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    # Reverse normalization order
+    X_log = np.log1p(X)
+    X_std = StandardScaler().fit_transform(X_log)
+
+    # Apply PCA
+    pca = PCA(n_components=0.95)
+    X_pca = pca.fit_transform(X_std)
+
+    # Reconstruct data
+    X_reconstructed = pca.inverse_transform(X_pca)
+    X_denoised = np.expm1(X_reconstructed)
+
+    # Ensure non-negativity
+    X_denoised = np.maximum(X_denoised, 0.0)
+
+    return X_denoised
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "RuntimeError('Non-finite result: mse=inf, poisson=inf')",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpra4ilshm/eval_candidate.py\", line 121, in <module>\n    raise RuntimeError(f\"Non-finite result: mse={mse}, poisson={poisson}\")\nRuntimeError: Non-finite result: mse=inf, poisson=inf\n"
+}
+Elapsed seconds: 23.63
+
+================================================================================
+Update PUCT Sampler
+================================================================================
+No valid child states. Flushed PUCT sampler only.
+PUCT stats:
+{
+  "puct/buffer_size": 5,
+  "puct/sampled_size": 5,
+  "puct/T": 15,
+  "puct/scale_last": 1e-06,
+  "puct/buffer_value/mean": -0.23159999999999997,
+  "puct/buffer_value/std": 2.7755575615628914e-17,
+  "puct/buffer_value/min": -0.2316,
+  "puct/buffer_value/max": -0.2316,
+  "puct/sampled_value/mean": -0.23159999999999997,
+  "puct/sampled_value/std": 2.7755575615628914e-17,
+  "puct/sampled_value/min": -0.2316,
+  "puct/sampled_value/max": -0.2316
+}
+
+================================================================================
+LoRA Update
+================================================================================
+Train result:
+{
+  "ok": false,
+  "loss": null,
+  "message": "All rewards are equal or only one rollout was available; advantages are zero.",
+  "rewards": [
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0
+  ],
+  "advantages": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ]
+}
+Saved LoRA adapter to: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/university_gpu/outputs/qwen7b_ttt_denoising_official_50_memlite_5664967/lora_adapter_step_3
+
+================================================================================
+Step 4/10
+================================================================================
+
+================================================================================
+Step 4 Rollout 1/5
+================================================================================
+Parent state:
+  id: 9fe8020a-5f05-4b94-b225-238d3796f340
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    # Reverse normalization order
+    scaler = StandardScaler()
+    X_log_scaled = scaler.fit_transform(np.log1p(X))
+    
+    pca = TruncatedSVD(n_components=50, random_state=kwargs.get('random_state', 42))
+    X_pca = pca.fit_transform(X_log_scaled)
+
+    nn = NearestNeighbors(n_neighbors=50, metric='cosine')
+    nn.fit(X_pca)
+    distances, indices = nn.kneighbors(X_pca)
+
+    def objective(x):
+        return np.mean((x - X_pca)**2)
+
+    def poisson_objective(x):
+        return -np.sum(poisson.logpmf(X_pca, x))
+
+    def constraint(x):
+        return np.sum(x >= 0)
+
+    initial_guess = X_pca.copy()
+    bounds = [(0, None)] * len(initial_guess)
+    constraints = {'type': 'ineq', 'fun': constraint}
+
+    result = minimize(poisson_objective, initial_guess, method='SLSQP', bounds=bounds, constraints=[constraints])
+    denoised_X_pca = result.x
+
+    denoised_X_log_scaled = pca.inverse_transform(denoised_X_pca)
+    denoised_X = np.expm1(scaler.inverse_transform(denoised_X_log_scaled))
+    denoised_X = np.maximum(denoised_X, 0.0)
+
+    retur
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "ValueError(\"'x0' must only have one dimension.\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpijd_r2zk/eval_candidate.py\", line 131, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpijd_r2zk/eval_candidate.py\", line 118, in magic_denoise\n    result = minimize(poisson_objective, initial_guess, method='SLSQP', bounds=bounds, constraints=[constraints])\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_minimize.py\", line 591, in minimize\n    raise ValueError(\"'x0' must only have one dimension.\")\nValueError: 'x0' must only have one dimension.\n"
+}
+Elapsed seconds: 34.91
+
+================================================================================
+Step 4 Rollout 2/5
+================================================================================
+Parent state:
+  id: 78cf62cc-9cfd-4809-a09b-5972a13f1f83
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X[X < 0] = 0
+    
+    # Reverse normalization order
+    X_log = np.log1p(X)
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X_log)
+    
+    pca = PCA(n_components=min(50, X.shape[1]), svd_solver='full')
+    X_pca = pca.fit_transform(X_scaled)
+    
+    X_recon = pca.inverse_transform(X_pca)
+    X_denorm = scaler.inverse_transform(X_recon)
+    denoised_X = np.expm1(X_denorm)
+    
+    # Ensure non-negativity and finiteness
+    denoised_X[denoised_X < 0] = 0
+    denoised_X[np.isinf(denoised_X)] = np.max(denoised_X[denoised_X < np.inf])
+    
+    # Push values < 1 toward zero
+    denoised_X[denoised_X < 1] = 0
+    
+    # Check Poisson constraint
+    poisson_loss = poisson.nloglik(np.clip(denoised_X, 1e-6, None), X)
+    poisson_norm = (0.257575 - poisson_loss.mean()) / (0.257575 - 0.031739)
+    
+    if poisson_norm < 0.97:
+        raise ValueError("Poisson constraint not met")
+    
+    return denoised_X
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "AttributeError(\"'poisson_gen' object has no attribute 'nloglik'\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpubcs1h0i/eval_candidate.py\", line 125, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpubcs1h0i/eval_candidate.py\", line 113, in magic_denoise\n    poisson_loss = poisson.nloglik(np.clip(denoised_X, 1e-6, None), X)\n                   ^^^^^^^^^^^^^^^\nAttributeError: 'poisson_gen' object has no attribute 'nloglik'\n"
+}
+Elapsed seconds: 32.57
+
+================================================================================
+Step 4 Rollout 3/5
+================================================================================
+Parent state:
+  id: 35bff92d-a9ab-45e1-80ce-1a24682d8042
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.maximum(X, 0.0)
+
+    # Square root transformation to stabilize variance
+    pt = PowerTransformer(method='yeo-johnson')
+    X_sqrt = pt.fit_transform(X + 1e-6)
+
+    # Apply Poisson shrinkage
+    lambda_ = np.mean(X_sqrt, axis=0)
+    X_shrinked = np.clip(lambda_, 0, None)
+
+    # Inverse square root transformation
+    X_denoised = pt.inverse_transform(X_shrinked)
+
+    return X_denoised
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "NameError(\"name 'PowerTransformer' is not defined\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmp081gu2nj/eval_candidate.py\", line 110, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmp081gu2nj/eval_candidate.py\", line 94, in magic_denoise\n    pt = PowerTransformer(method='yeo-johnson')\n         ^^^^^^^^^^^^^^^^\nNameError: name 'PowerTransformer' is not defined\n"
+}
+Elapsed seconds: 16.83
+
+================================================================================
+Step 4 Rollout 4/5
+================================================================================
+Parent state:
+  id: 65bafdee-fa18-46b5-9461-99e4dd9b5de7
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    
+    # Reverse normalization order: denoise raw counts first
+    X_log = np.log1p(X)
+    X_sqrt = np.sqrt(X_log)
+    
+    # Apply PCA for dimensionality reduction
+    pca = PCA(n_components=min(100, X.shape[1]), svd_solver='arpack')
+    X_pca = pca.fit_transform(X_sqrt)
+    
+    # Reconstruct using inverse PCA
+    X_reconstructed = pca.inverse_transform(X_pca)
+    
+    # Push low values towards zero
+    X_denoised = np.where(X_reconstructed < 1, 0, X_reconstructed)
+    
+    # Ensure non-negativity
+    X_denoised = np.maximum(X_denoised, 0.0)
+    
+    # Convert back to raw counts
+    X_denoised = np.expm1(X_denoised)
+    
+    return X_denoised.astype(float)
+Evaluation result:
+{
+  "ok": false,
+  "mse": 0.24446752607952116,
+  "poisson": 0.0653444507053876,
+  "reward": -1.0,
+  "raw_score": 0.24446752607952116,
+  "metrics": {
+    "mse": 0.24446752607952116,
+    "poisson": 0.0653444507053876,
+    "mse_normalized": 0.1977332508113286,
+    "poisson_normalized": 0.8511953333153812
+  },
+  "error": "Invalid solution under official verify_denoising check."
+}
+Elapsed seconds: 83.84
+
+================================================================================
+Step 4 Rollout 5/5
+================================================================================
+Parent state:
+  id: 507fff8f-535e-408c-83cd-b1f986ee6b47
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.maximum(X, 0.0)
+    
+    # Reverse normalization order
+    scaler = StandardScaler(with_mean=False, with_std=True)
+    X_log = np.log(X + 1)
+    X_normalized = scaler.fit_transform(X_log)
+    
+    # Define the objective function for minimization
+    def objective(x, X):
+        return np.mean((x - X)**2)
+    
+    # Constraints
+    def constraint(x):
+        return x
+    
+    # Bounds
+    bounds = [(0, None) for _ in range(X.shape[1])]
+    
+    # Initial guess
+    x0 = X_normalized.flatten()
+    
+    # Minimize the objective function with constraints
+    result = minimize(objective, x0, method='SLSQP', args=(X_normalized), bounds=bounds, constraints=[{'type': 'ineq', 'fun': constraint}])
+    
+    # Reshape the result back to the original shape
+    denoised_X = result.x.reshape(X.shape)
+    
+    return denoised_X
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "ValueError('The number of bounds is not compatible with the length of `x0`.')",
+  "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_minimize.py\", line 1114, in _validate_bounds\n    bounds.lb = np.broadcast_to(bounds.lb, x0.shape)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/numpy/lib/_stride_tricks_impl.py\", line 410, in broadcast_to\n    return _broadcast_to(array, shape, subok=subok, readonly=True)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/numpy/lib/_stride_tricks_impl.py\", line 349, in _broadcast_to\n    it = np.nditer(\n         ^^^^^^^^^^\nValueError: operands could not be broadcast together with remapped shapes [original->remapped]: (15501,)  and requested shape (30025437,)\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/local/user/1483806620/tmpfr0870cx/eval_candidate.py\", line 124, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpfr0870cx/eval_candidate.py\", line 113, in magic_denoise\n    result = minimize(objective, x0, method='SLSQP', args=(X_normalized), bounds=bounds, constraints=[{'type': 'ineq', 'fun': constraint}])\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_minimize.py\", line 705, in minimize\n    bounds = _validate_bounds(bounds, x0, meth)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_minimize.py\", line 1117, in _validate_bounds\n    raise ValueError(msg) from e\nValueError: The number of bounds is not compatible with the length of `x0`.\n"
+}
+Elapsed seconds: 23.05
+
+================================================================================
+Update PUCT Sampler
+================================================================================
+No valid child states. Flushed PUCT sampler only.
+PUCT stats:
+{
+  "puct/buffer_size": 5,
+  "puct/sampled_size": 5,
+  "puct/T": 20,
+  "puct/scale_last": 1e-06,
+  "puct/buffer_value/mean": -0.23159999999999997,
+  "puct/buffer_value/std": 2.7755575615628914e-17,
+  "puct/buffer_value/min": -0.2316,
+  "puct/buffer_value/max": -0.2316,
+  "puct/sampled_value/mean": -0.23159999999999997,
+  "puct/sampled_value/std": 2.7755575615628914e-17,
+  "puct/sampled_value/min": -0.2316,
+  "puct/sampled_value/max": -0.2316
+}
+
+================================================================================
+LoRA Update
+================================================================================
+Train result:
+{
+  "ok": false,
+  "loss": null,
+  "message": "All rewards are equal or only one rollout was available; advantages are zero.",
+  "rewards": [
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0
+  ],
+  "advantages": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ]
+}
+Saved LoRA adapter to: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/university_gpu/outputs/qwen7b_ttt_denoising_official_50_memlite_5664967/lora_adapter_step_4
+
+================================================================================
+Step 5/10
+================================================================================
+
+================================================================================
+Step 5 Rollout 1/5
+================================================================================
+Parent state:
+  id: 9fe8020a-5f05-4b94-b225-238d3796f340
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    # Square root transform
+    X_sqrt = square_root_transform(X)
+
+    # PCA denoising
+    X_hat_pca = denoise_with_pca(X_sqrt, n_components=min(X_sqrt.shape))
+
+    # Inverse square root transform
+    denoised_X = inverse_square_root_transform(X_hat_pca)
+
+    # NN imputation
+    denoised_X = denoise_with_nn_imputation(denoised_X, k=5)
+
+    # Ensure non-negativity
+    denoised_X = np.maximum(denoised_X, 0.0)
+
+    return denoised_X
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "NameError(\"name 'square_root_transform' is not defined\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpyfg_vbol/eval_candidate.py\", line 115, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpyfg_vbol/eval_candidate.py\", line 95, in magic_denoise\n    X_sqrt = square_root_transform(X)\n             ^^^^^^^^^^^^^^^^^^^^^\nNameError: name 'square_root_transform' is not defined\n"
+}
+Elapsed seconds: 37.23
+
+================================================================================
+Step 5 Rollout 2/5
+================================================================================
+Parent state:
+  id: 78cf62cc-9cfd-4809-a09b-5972a13f1f83
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.maximum(X, 0.0)
+
+    # Apply square root transformation for stability
+    X_sqrt = np.sqrt(X + 1e-6)
+
+    # Scale the data between 0 and 1
+    scaler = MinMaxScaler()
+    X_scaled = scaler.fit_transform(X_sqrt)
+
+    # Apply a soft thresholding step to push low values towards zero
+    X_thresholded = np.clip(X_scaled, 0.05, None)
+
+    # Transform back to the original scale
+    X_denoised = np.square(X_thresholded) - 1e-6
+
+    # Ensure non-negativity
+    X_denoised = np.maximum(X_denoised, 0.0)
+
+    return X_denoised.astype(int)
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "NameError(\"name 'MinMaxScaler' is not defined\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpzbcrhrjd/eval_candidate.py\", line 115, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpzbcrhrjd/eval_candidate.py\", line 97, in magic_denoise\n    scaler = MinMaxScaler()\n             ^^^^^^^^^^^^\nNameError: name 'MinMaxScaler' is not defined\n"
+}
+Elapsed seconds: 19.86
+
+================================================================================
+Step 5 Rollout 3/5
+================================================================================
+Parent state:
+  id: 35bff92d-a9ab-45e1-80ce-1a24682d8042
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    # Reversed normalization order: denoise raw counts first
+    X_log = np.log1p(X)
+    X_sqrt = np.sqrt(X)
+
+    # Apply PCA for dimensionality reduction
+    pca = PCA(n_components=50, svd_solver='full')
+    X_pca = pca.fit_transform(X_sqrt)
+
+    # Reconstruct data from PCA
+    X_reconstructed = pca.inverse_transform(X_pca)
+    X_sqrt_reconstructed = X_reconstructed ** 2
+    X_log_reconstructed = np.expm1(X_sqrt_reconstructed)
+
+    # Clip negative values and apply thresholding
+    X_denoised = np.clip(X_log_reconstructed, a_min=1e-6, a_max=None)
+    X_denoised[X_denoised < 1] = 1
+
+    return X_denoised
+Evaluator STDERR tail:
+/local/user/1483806620/tmpgq4l44ik/eval_candidate.py:105: RuntimeWarning: overflow encountered in expm1
+  X_log_reconstructed = np.expm1(X_sqrt_reconstructed)
+
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "RuntimeError('Non-finite result: mse=inf, poisson=inf')",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpgq4l44ik/eval_candidate.py\", line 123, in <module>\n    raise RuntimeError(f\"Non-finite result: mse={mse}, poisson={poisson}\")\nRuntimeError: Non-finite result: mse=inf, poisson=inf\n"
+}
+Elapsed seconds: 27.72
+
+================================================================================
+Step 5 Rollout 4/5
+================================================================================
+Parent state:
+  id: 65bafdee-fa18-46b5-9461-99e4dd9b5de7
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    
+    # Reverse normalization order
+    pt = PowerTransformer(method='yeo-johnson')
+    X_transformed = pt.fit_transform(X.T).T
+    
+    # Apply square root transformation
+    X_sqrt = np.sqrt(np.clip(X_transformed, a_min=0, a_max=None))
+    
+    # Normalize
+    X_normalized = QuantileTransformer(output_distribution='normal').fit_transform(X_sqrt)
+    
+    # Clip negative values
+    X_clipped = np.clip(X_normalized, a_min=0, a_max=None)
+    
+    return X_clipped
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "NameError(\"name 'PowerTransformer' is not defined\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmp_33v0iad/eval_candidate.py\", line 111, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmp_33v0iad/eval_candidate.py\", line 93, in magic_denoise\n    pt = PowerTransformer(method='yeo-johnson')\n         ^^^^^^^^^^^^^^^^\nNameError: name 'PowerTransformer' is not defined\n"
+}
+Elapsed seconds: 17.62
+
+================================================================================
+Step 5 Rollout 5/5
+================================================================================
+Parent state:
+  id: 507fff8f-535e-408c-83cd-b1f986ee6b47
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.maximum(X, 0.0)
+    
+    # Reverse normalization order
+    X_log = np.log(X + 1)
+    
+    # Square root transform
+    X_sqrt = np.sqrt(X_log)
+    
+    # Centering
+    scaler = StandardScaler(with_std=False)
+    X_centered = scaler.fit_transform(X_sqrt)
+    
+    # PCA
+    pca = TruncatedSVD(n_components=min(X.shape[1], 50), random_state=kwargs.get('random_state', 0))
+    X_pca = pca.fit_transform(X_centered)
+    
+    # Reconstruction
+    X_recon = pca.inverse_transform(X_pca)
+    X_recon_scaled = scaler.inverse_transform(X_recon)
+    
+    # Inverse square root transform
+    X_inv_sqrt = X_recon_scaled ** 2
+    
+    # Exponentiate back
+    X_denoised = np.exp(X_inv_sqrt) - 1
+    
+    # Ensure non-negative values
+    X_denoised = np.maximum(X_denoised, 0.0)
+    
+    return X_denoised
+Evaluation result:
+{
+  "ok": false,
+  "mse": 0.22622658451342909,
+  "poisson": -0.021735627230697295,
+  "reward": -1.0,
+  "raw_score": 0.22622658451342909,
+  "metrics": {
+    "mse": 0.22622658451342909,
+    "poisson": -0.021735627230697295,
+    "mse_normalized": 0.25759437481030495,
+    "poisson_normalized": 1.0
+  },
+  "error": "Invalid solution under official verify_denoising check."
+}
+Elapsed seconds: 27.60
+
+================================================================================
+Update PUCT Sampler
+================================================================================
+No valid child states. Flushed PUCT sampler only.
+PUCT stats:
+{
+  "puct/buffer_size": 5,
+  "puct/sampled_size": 5,
+  "puct/T": 25,
+  "puct/scale_last": 1e-06,
+  "puct/buffer_value/mean": -0.23159999999999997,
+  "puct/buffer_value/std": 2.7755575615628914e-17,
+  "puct/buffer_value/min": -0.2316,
+  "puct/buffer_value/max": -0.2316,
+  "puct/sampled_value/mean": -0.23159999999999997,
+  "puct/sampled_value/std": 2.7755575615628914e-17,
+  "puct/sampled_value/min": -0.2316,
+  "puct/sampled_value/max": -0.2316
+}
+
+================================================================================
+LoRA Update
+================================================================================
+Train result:
+{
+  "ok": false,
+  "loss": null,
+  "message": "All rewards are equal or only one rollout was available; advantages are zero.",
+  "rewards": [
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0
+  ],
+  "advantages": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ]
+}
+Saved LoRA adapter to: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/university_gpu/outputs/qwen7b_ttt_denoising_official_50_memlite_5664967/lora_adapter_step_5
+
+================================================================================
+Step 6/10
+================================================================================
+
+================================================================================
+Step 6 Rollout 1/5
+================================================================================
+Parent state:
+  id: 9fe8020a-5f05-4b94-b225-238d3796f340
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X[X < 0] = 0.0
+    
+    # Reverse normalization order
+    X_log = np.log(X + 1)
+    
+    # Square root transformation
+    X_sqrt = np.sqrt(X_log)
+    
+    # PCA for dimensionality reduction
+    pca = TruncatedSVD(n_components=min(100, X_sqrt.shape[1]), random_state=kwargs.get('random_state', None))
+    X_pca = pca.fit_transform(X_sqrt)
+    
+    # Denoise via optimization
+    def objective(x, A, b, gamma):
+        return np.mean((x - A @ x - b)**2) + gamma * np.sum(np.abs(x))
+    
+    def constraints(x, A, b):
+        return {'type': 'eq', 'fun': lambda x: A @ x + b - x}
+    
+    denoised_counts = []
+    for i in range(X_sqrt.shape[0]):
+        A = np.eye(X_sqrt.shape[1]) - pca.components_
+        b = X_pca[i]
+        res = minimize(objective, np.zeros_like(b), args=(A, b, 0.1), method='SLSQP', constraints=constraints(A, b))
+        denoised_counts.append(res.x)
+    
+    denoised_counts = np.array(denoised_counts)
+    
+    # Inverse square root transformation
+    denoised_counts = denoised_counts**2
+    
+    # Exponential transformation back to original scale
+    denoised_counts = np.expm1(denoised_counts)
+    
+ 
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "ValueError('operands could not be broadcast together with shapes (15501,15501) (100,15501) ')",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpminmzm42/eval_candidate.py\", line 134, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpminmzm42/eval_candidate.py\", line 112, in magic_denoise\n    A = np.eye(X_sqrt.shape[1]) - pca.components_\n        ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~\nValueError: operands could not be broadcast together with shapes (15501,15501) (100,15501) \n"
+}
+Elapsed seconds: 34.69
+
+================================================================================
+Step 6 Rollout 2/5
+================================================================================
+Parent state:
+  id: 78cf62cc-9cfd-4809-a09b-5972a13f1f83
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    
+    # Step 1: Reverse normalization order
+    X_log = np.log(X + 1)
+    
+    # Step 2: Apply square root transform
+    X_sqrt = np.sqrt(X_log)
+    
+    # Step 3: Perform PCA
+    pca = PCA(n_components=100, svd_solver='arpack')
+    X_pca = pca.fit_transform(X_sqrt)
+    
+    # Step 4: Reconstruct data using inverse PCA
+    X_recon_pca = pca.inverse_transform(X_pca)
+    
+    # Step 5: Apply inverse square root transform
+    X_inv_sqrt = X_recon_pca ** 2
+    
+    # Step 6: Exponentiate back to original scale
+    X_exp = np.exp(X_inv_sqrt) - 1
+    
+    # Ensure non-negativity
+    X_denoised = np.maximum(X_exp, 0.0)
+    
+    return X_denoised
+Evaluation result:
+{
+  "ok": false,
+  "mse": 0.22796061058262654,
+  "poisson": 0.059961478506536076,
+  "reward": -1.0,
+  "raw_score": 0.22796061058262654,
+  "metrics": {
+    "mse": 0.22796061058262654,
+    "poisson": 0.059961478506536076,
+    "mse_normalized": 0.2519038379940125,
+    "poisson_normalized": 0.8750310911168456
+  },
+  "error": "Invalid solution under official verify_denoising check."
+}
+Elapsed seconds: 82.61
+
+================================================================================
+Step 6 Rollout 3/5
+================================================================================
+Parent state:
+  id: 35bff92d-a9ab-45e1-80ce-1a24682d8042
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.maximum(X, 0.0)
+    
+    # Apply square root transformation to stabilize variance
+    pt = PowerTransformer(method='yeo-johnson')
+    X_transformed = pt.fit_transform(X)
+    
+    # Normalize the transformed data
+    X_normalized = normalize(X_transformed, norm='l1', axis=1)
+    
+    # Clip negative values and very small values close to zero
+    X_clipped = np.clip(X_normalized, 0.0001, None)
+    
+    # Convert back to integer counts
+    denoised_X = np.round(X_clipped).astype(int)
+    
+    return denoised_X
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "NameError(\"name 'PowerTransformer' is not defined\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpiyzgk2qd/eval_candidate.py\", line 112, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpiyzgk2qd/eval_candidate.py\", line 94, in magic_denoise\n    pt = PowerTransformer(method='yeo-johnson')\n         ^^^^^^^^^^^^^^^^\nNameError: name 'PowerTransformer' is not defined\n"
+}
+Elapsed seconds: 18.36
+
+================================================================================
+Step 6 Rollout 4/5
+================================================================================
+Parent state:
+  id: 65bafdee-fa18-46b5-9461-99e4dd9b5de7
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+    
+    X_denoised = denoise_with_pca(X)
+    
+    return X_denoised
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "NameError(\"name 'denoise_with_pca' is not defined\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpqsd4_k_m/eval_candidate.py\", line 102, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpqsd4_k_m/eval_candidate.py\", line 94, in magic_denoise\n    X_denoised = denoise_with_pca(X)\n                 ^^^^^^^^^^^^^^^^\nNameError: name 'denoise_with_pca' is not defined\n"
+}
+Elapsed seconds: 19.03
+
+================================================================================
+Step 6 Rollout 5/5
+================================================================================
+Parent state:
+  id: 507fff8f-535e-408c-83cd-b1f986ee6b47
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+    
+    # Square root transform to stabilize variance
+    X_sqrt = np.sqrt(X + 1)
+    
+    # Normalize data
+    X_normalized = normalize(X_sqrt, norm='l1', axis=1)
+    
+    # Apply PCA for dimensionality reduction
+    pca = PCA(n_components=min(50, X.shape[1]))
+    X_pca = pca.fit_transform(X_normalized)
+    
+    # Reconstruct data using PCA
+    X_reconstructed = pca.inverse_transform(X_pca)
+    
+    # Square root inverse transformation
+    X_denoised = np.square(X_reconstructed)
+    
+    # Ensure non-negativity and finite values
+    X_denoised = np.maximum(X_denoised, 0.0)
+    
+    return X_denoised
+Evaluation result:
+{
+  "ok": true,
+  "mse": 0.3219218325964934,
+  "poisson": 0.03688786213348572,
+  "reward": 3.1063441455163137,
+  "raw_score": 0.3219218325964934,
+  "metrics": {
+    "mse": 0.3219218325964934,
+    "poisson": 0.03688786213348572,
+    "mse_normalized": 0.0,
+    "poisson_normalized": 0.9772008796937348
+  },
+  "error": null
+}
+Elapsed seconds: 25.18
+
+================================================================================
+Update PUCT Sampler
+================================================================================
+Added 1 valid child states to PUCT.
+PUCT stats:
+{
+  "puct/buffer_size": 6,
+  "puct/sampled_size": 5,
+  "puct/T": 30,
+  "puct/scale_last": 1e-06,
+  "puct/buffer_value/mean": -0.24665363876608223,
+  "puct/buffer_value/std": 0.03366095958968592,
+  "puct/buffer_value/min": -0.3219218325964934,
+  "puct/buffer_value/max": -0.2316,
+  "puct/sampled_value/mean": -0.23159999999999997,
+  "puct/sampled_value/std": 2.7755575615628914e-17,
+  "puct/sampled_value/min": -0.2316,
+  "puct/sampled_value/max": -0.2316
+}
+
+================================================================================
+LoRA Update
+================================================================================
+Train result:
+{
+  "ok": false,
+  "loss": null,
+  "message": "No valid response tokens were available for training.",
+  "rewards": [
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    3.1063441455163137
+  ],
+  "advantages": [
+    -0.7299396991729736,
+    -0.7299396991729736,
+    -0.7299396991729736,
+    -0.7299396991729736,
+    10.811513900756836
+  ]
+}
+Saved LoRA adapter to: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/university_gpu/outputs/qwen7b_ttt_denoising_official_50_memlite_5664967/lora_adapter_step_6
+
+================================================================================
+Step 7/10
+================================================================================
+
+================================================================================
+Step 7 Rollout 1/5
+================================================================================
+Parent state:
+  id: 9fe8020a-5f05-4b94-b225-238d3796f340
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    # Reverse normalization order
+    X_log = np.log1p(X)
+    X_sqrt = np.sqrt(X_log)
+
+    # PCA for dimensionality reduction
+    pca = PCA(n_components=min(50, X.shape[1] - 1), svd_solver='full')
+    X_pca = pca.fit_transform(X_sqrt)
+
+    # Reconstruct the data
+    X_reconstructed = pca.inverse_transform(X_pca)
+
+    # Apply square root inverse transformation
+    X_denoised = np.square(X_reconstructed)
+
+    # Ensure non-negativity and finiteness
+    X_denoised = np.maximum(X_denoised, 0.0)
+
+    return X_denoised
+Evaluation result:
+{
+  "ok": false,
+  "mse": 0.31594457023008254,
+  "poisson": 0.09912320638262351,
+  "reward": -1.0,
+  "raw_score": 0.31594457023008254,
+  "metrics": {
+    "mse": 0.31594457023008254,
+    "poisson": 0.09912320638262351,
+    "mse_normalized": 0.0,
+    "poisson_normalized": 0.7016232736028645
+  },
+  "error": "Invalid solution under official verify_denoising check."
+}
+Elapsed seconds: 25.34
+
+================================================================================
+Step 7 Rollout 2/5
+================================================================================
+Parent state:
+  id: 78cf62cc-9cfd-4809-a09b-5972a13f1f83
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, budget_s=400, random_state=None, knn=20, t=1.0, n_pca=50, solver='lbfgs', decay=0.1, knn_max=None, n_jobs=-1):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    scaler = StandardScaler(with_mean=False, with_std=True)
+    X_scaled = scaler.fit_transform(X)
+
+    pca = PCA(n_components=n_pca, svd_solver='full', random_state=random_state)
+    X_pca = pca.fit_transform(X_scaled)
+
+    nbrs = NearestNeighbors(n_neighbors=knn, radius=t, algorithm='auto', metric='minkowski', p=2, metric_params=None, n_jobs=n_jobs)
+    nbrs.fit(X_pca)
+
+    def poisson_loss(params):
+        X_pred = np.exp(np.dot(params, X_pca.T))
+        return np.sum(poisson.logpmf(X, X_pred))
+
+    initial_guess = np.ones_like(X_pca).flatten()
+    result = minimize(poisson_loss, initial_guess, method=solver, jac=None, hess=None, bounds=None, constraints=None, tol=None, callback=None, options={'maxiter': int(budget_s)})
+    
+    X_pred_pca = np.reshape(result.x, X_pca.shape)
+    X_pred_scaled = np.dot(X_pred_pca, pca.components_)
+    X_pred = scaler.inverse_transform(X_pred_scaled)
+    
+    X_pred[X_pred < 0] = 0
+    return X_pred
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "ValueError('Unknown solver lbfgs')",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpx_wu7eet/eval_candidate.py\", line 121, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpx_wu7eet/eval_candidate.py\", line 108, in magic_denoise\n    result = minimize(poisson_loss, initial_guess, method=solver, jac=None, hess=None, bounds=None, constraints=None, tol=None, callback=None, options={'maxiter': int(budget_s)})\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/optimize/_minimize.py\", line 815, in minimize\n    raise ValueError(f'Unknown solver {method}')\nValueError: Unknown solver lbfgs\n"
+}
+Elapsed seconds: 34.41
+
+================================================================================
+Step 7 Rollout 3/5
+================================================================================
+Parent state:
+  id: 35bff92d-a9ab-45e1-80ce-1a24682d8042
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    # Reverse normalization order
+    X_log = np.log(X + 1)
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X_log)
+    X_pca = PCA(n_components=100).fit_transform(X_scaled)
+    X_reconstructed_scaled = scaler.inverse_transform(X_pca)
+    X_denoised_log = X_reconstructed_scaled
+    X_denoised = np.exp(X_denoised_log) - 1
+
+    return X_denoised
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "ValueError('operands could not be broadcast together with shapes (1937,100) (15501,) (1937,100) ')",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpst4ea9k3/eval_candidate.py\", line 109, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpst4ea9k3/eval_candidate.py\", line 99, in magic_denoise\n    X_reconstructed_scaled = scaler.inverse_transform(X_pca)\n                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/preprocessing/_data.py\", line 1159, in inverse_transform\n    X *= xp.astype(self.scale_, X.dtype)\nValueError: operands could not be broadcast together with shapes (1937,100) (15501,) (1937,100) \n"
+}
+Elapsed seconds: 20.17
+
+================================================================================
+Step 7 Rollout 4/5
+================================================================================
+Parent state:
+  id: 65bafdee-fa18-46b5-9461-99e4dd9b5de7
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    # Reverse normalization order
+    X_log = np.log1p(X)
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X_log)
+
+    # Apply PCA
+    pca = PCA(n_components=min(100, X_scaled.shape[1]))
+    X_reduced = pca.fit_transform(X_scaled)
+
+    # Reconstruct using nearest neighbors
+    nbrs = NearestNeighbors(n_neighbors=10).fit(X_reduced)
+    distances, indices = nbrs.kneighbors(X_reduced)
+
+    # Push low values towards zero
+    X_reconstructed = X_reduced.copy()
+    mask = distances < 0.5
+    X_reconstructed[mask] *= distances[mask]
+
+    # Inverse PCA
+    X_inverted = pca.inverse_transform(X_reconstructed)
+
+    # Inverse scaling and exponentiation
+    X_denormalized = scaler.inverse_transform(X_inverted)
+    X_denoised = np.expm1(X_denormalized)
+
+    # Clip negative values
+    X_denoised = np.clip(X_denoised, 0.0, None)
+
+    return X_denoised
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "IndexError('boolean index did not match indexed array along axis 1; size of axis is 100 but size of corresponding boolean axis is 10')",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpb_s6ekid/eval_candidate.py\", line 128, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpb_s6ekid/eval_candidate.py\", line 110, in magic_denoise\n    X_reconstructed[mask] *= distances[mask]\n    ~~~~~~~~~~~~~~~^^^^^^\nIndexError: boolean index did not match indexed array along axis 1; size of axis is 100 but size of corresponding boolean axis is 10\n"
+}
+Elapsed seconds: 29.04
+
+================================================================================
+Step 7 Rollout 5/5
+================================================================================
+Parent state:
+  id: 4adb4427-9b17-4662-a02c-58840ac75364
+  timestep: 6
+  value: -0.3219218325964934
+  mse: 0.3219218325964934
+  poisson: 0.03688786213348572
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+    
+    # Square root transform to stabilize variance
+    X_sqrt = np.sqrt(X + 1)
+    
+    # Normalize data
+    X_normalized = normalize(X_sqrt, norm='l1', axis=1)
+    
+    # Apply PCA for dimensionality reduction
+    pca = PCA(n_components=min(50, X.shape[1]))
+    X_pca = pca.fit_transform(X_normalized)
+    
+    # Reconstruct data using PCA
+    X_reconstructed = pca.inverse_transform(X_pca)
+    
+    # Square root inverse transformation
+    X_denoised = np.square(X_reconstructed)
+    
+    # Ensure non-negativity and finite values
+    X_denoised = np.maximum(X_denoised, 0.0)
+    
+    # Push values < 1 toward zero
+    X_denoised[X_denoised < 1] = 0
+    
+    return X_denoised
+Evaluator STDERR tail:
+/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/legacy_api_wrap/__init__.py:88: UserWarning: Some cells have zero counts
+  return fn(*args_all, **kw)
+
+Evaluation result:
+{
+  "ok": true,
+  "mse": 0.21754966515606708,
+  "poisson": 0.03688785612012908,
+  "reward": 4.596651524527119,
+  "raw_score": 0.21754966515606708,
+  "metrics": {
+    "mse": 0.21754966515606708,
+    "poisson": 0.03688785612012908,
+    "mse_normalized": 0.28606933832565834,
+    "poisson_normalized": 0.9772009063208299
+  },
+  "error": null
+}
+Elapsed seconds: 26.39
+
+================================================================================
+Update PUCT Sampler
+================================================================================
+Added 1 valid child states to PUCT.
+PUCT stats:
+{
+  "puct/buffer_size": 7,
+  "puct/sampled_size": 5,
+  "puct/T": 35,
+  "puct/scale_last": 0.09032183259649337,
+  "puct/buffer_value/mean": -0.24249592825036578,
+  "puct/buffer_value/std": 0.03278587802644777,
+  "puct/buffer_value/min": -0.3219218325964934,
+  "puct/buffer_value/max": -0.21754966515606708,
+  "puct/sampled_value/mean": -0.24966436651929866,
+  "puct/sampled_value/std": 0.03612873303859735,
+  "puct/sampled_value/min": -0.3219218325964934,
+  "puct/sampled_value/max": -0.2316
+}
+
+================================================================================
+LoRA Update
+================================================================================
+Train result:
+{
+  "ok": false,
+  "loss": null,
+  "message": "No valid response tokens were available for training.",
+  "rewards": [
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    4.596651524527119
+  ],
+  "advantages": [
+    -0.7299396991729736,
+    -0.7299396991729736,
+    -0.7299396991729736,
+    -0.7299396991729736,
+    10.811513900756836
+  ]
+}
+Saved LoRA adapter to: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/university_gpu/outputs/qwen7b_ttt_denoising_official_50_memlite_5664967/lora_adapter_step_7
+
+================================================================================
+Step 8/10
+================================================================================
+
+================================================================================
+Step 8 Rollout 1/5
+================================================================================
+Parent state:
+  id: 836a45b5-6d4b-4c80-815a-fb45b3db9604
+  timestep: 7
+  value: -0.21754966515606708
+  mse: 0.21754966515606708
+  poisson: 0.03688785612012908
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    # Square root transform to stabilize variance
+    X_sqrt = np.sqrt(X + 1)
+
+    # Normalize data
+    X_normalized = normalize(X_sqrt, norm='l1', axis=1)
+
+    # Apply PCA for dimensionality reduction
+    pca = PCA(n_components=min(50, X.shape[1]))
+    X_pca = pca.fit_transform(X_normalized)
+
+    # Reconstruct data using PCA
+    X_reconstructed = pca.inverse_transform(X_pca)
+
+    # Square root inverse transformation
+    X_denoised = np.square(X_reconstructed)
+
+    # Ensure non-negativity and finite values
+    X_denoised = np.maximum(X_denoised, 0.0)
+
+    # Push values < 1 toward zero
+    X_denoised[X_denoised < 1] = 0
+
+    # Clip values to avoid large outliers
+    X_denoised = np.clip(X_denoised, 0, np.percentile(X_denoised, 99))
+
+    return X_denoised
+Evaluator STDERR tail:
+/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/legacy_api_wrap/__init__.py:88: UserWarning: Some cells have zero counts
+  return fn(*args_all, **kw)
+
+Evaluation result:
+{
+  "ok": true,
+  "mse": 0.21754966515606708,
+  "poisson": 0.03688785612012908,
+  "reward": 4.596651524527119,
+  "raw_score": 0.21754966515606708,
+  "metrics": {
+    "mse": 0.21754966515606708,
+    "poisson": 0.03688785612012908,
+    "mse_normalized": 0.28606933832565834,
+    "poisson_normalized": 0.9772009063208299
+  },
+  "error": null
+}
+Elapsed seconds: 46.22
+
+================================================================================
+Step 8 Rollout 2/5
+================================================================================
+Parent state:
+  id: 4adb4427-9b17-4662-a02c-58840ac75364
+  timestep: 6
+  value: -0.3219218325964934
+  mse: 0.3219218325964934
+  poisson: 0.03688786213348572
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    # Square root transform to stabilize variance
+    X_sqrt = np.sqrt(X + 1)
+
+    # Normalize data
+    X_normalized = normalize(X_sqrt, norm='l1', axis=1)
+
+    # Apply SVD for dimensionality reduction
+    svd = TruncatedSVD(n_components=min(50, X.shape[1]), random_state=kwargs.get('random_state'))
+    X_svd = svd.fit_transform(X_normalized)
+
+    # Reconstruct data using SVD
+    X_reconstructed = svd.inverse_transform(X_svd)
+
+    # Square root inverse transformation
+    X_denoised = np.square(X_reconstructed)
+
+    # Ensure non-negativity and finite values
+    X_denoised = np.maximum(X_denoised, 0.0)
+
+    # Push values < 1 toward zero
+    X_denoised[X_denoised < 1] = 0.0
+
+    return X_denoised
+Evaluator STDERR tail:
+/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/legacy_api_wrap/__init__.py:88: UserWarning: Some cells have zero counts
+  return fn(*args_all, **kw)
+
+Evaluation result:
+{
+  "ok": true,
+  "mse": 0.21754966515606708,
+  "poisson": 0.03688785612012908,
+  "reward": 4.596651524527119,
+  "raw_score": 0.21754966515606708,
+  "metrics": {
+    "mse": 0.21754966515606708,
+    "poisson": 0.03688785612012908,
+    "mse_normalized": 0.28606933832565834,
+    "poisson_normalized": 0.9772009063208299
+  },
+  "error": null
+}
+Elapsed seconds: 47.36
+
+================================================================================
+Step 8 Rollout 3/5
+================================================================================
+Parent state:
+  id: 9fe8020a-5f05-4b94-b225-238d3796f340
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    # Normalize raw counts to log-scale
+    X_log = np.log1p(X)
+
+    # Perform PCA
+    pca = PCA(n_components=0.95, svd_solver='arpack')
+    X_pca = pca.fit_transform(X_log)
+
+    # Reconstruct data
+    X_recon_pca = pca.inverse_transform(X_pca)
+    X_recon_log = np.expm1(X_recon_pca)
+
+    # Apply square root transformation
+    X_sqrt = np.sqrt(np.maximum(X_recon_log, 1e-6))
+
+    # Clip values to ensure non-negativity
+    X_sqrt = np.clip(X_sqrt, 0.0, None)
+
+    return X_sqrt
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "ValueError(\"n_components=0.95 must be between 1 and min(n_samples, n_features)=1937 with svd_solver='arpack'\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpsjo631bg/eval_candidate.py\", line 117, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpsjo631bg/eval_candidate.py\", line 99, in magic_denoise\n    X_pca = pca.fit_transform(X_log)\n            ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/utils/_set_output.py\", line 316, in wrapped\n    data_to_wrap = f(self, X, *args, **kwargs)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/base.py\", line 1336, in wrapper\n    return fit_method(estimator, *args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/decomposition/_pca.py\", line 466, in fit_transform\n    U, S, _, X, x_is_centered, xp = self._fit(X)\n                                    ^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/decomposition/_pca.py\", line 542, in _fit\n    return self._fit_truncated(X, n_components, xp)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/decomposition/_pca.py\", line 709, in _fit_truncated\n    raise ValueError(\nValueError: n_components=0.95 must be between 1 and min(n_samples, n_features)=1937 with svd_solver='arpack'\n"
+}
+Elapsed seconds: 22.68
+
+================================================================================
+Step 8 Rollout 4/5
+================================================================================
+Parent state:
+  id: 78cf62cc-9cfd-4809-a09b-5972a13f1f83
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    
+    # Reverse normalization order
+    X_log = np.log1p(X)
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X_log)
+    
+    # PCA for dimensionality reduction
+    pca = PCA(n_components=min(50, X_scaled.shape[1]))
+    X_pca = pca.fit_transform(X_scaled)
+    
+    # Nearest neighbors for denoising
+    nn = NearestNeighbors(n_neighbors=10)
+    nn.fit(X_pca)
+    distances, indices = nn.kneighbors(X_pca)
+    
+    # Weighted average based on distances
+    weights = np.exp(-distances / 10)
+    weights /= weights.sum(axis=1, keepdims=True)
+    denoised_pca = np.dot(weights, X_pca[indices])
+    
+    # Inverse PCA
+    X_inv_pca = pca.inverse_transform(denoised_pca)
+    
+    # Inverse scaling and exponential transformation
+    X_inv_scaled = scaler.inverse_transform(X_inv_pca)
+    denoised_log = np.expm1(X_inv_scaled)
+    
+    # Ensure non-negativity and finite values
+    denoised_log = np.maximum(denoised_log, 0.0)
+    denoised_log[np.isinf(denoised_log)] = 0.0
+    
+    # Poisson clipping
+    clip_value = 0.05 * denoised_log.mean()
+    denoised_log
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "ValueError('Found array with dim 3, while dim <= 2 is required.')",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpyd1d77m6/eval_candidate.py\", line 140, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpyd1d77m6/eval_candidate.py\", line 113, in magic_denoise\n    X_inv_pca = pca.inverse_transform(denoised_pca)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/decomposition/_base.py\", line 197, in inverse_transform\n    X = check_array(X, input_name=\"X\", dtype=[xp.float64, xp.float32])\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/sklearn/utils/validation.py\", line 1068, in check_array\n    raise ValueError(\nValueError: Found array with dim 3, while dim <= 2 is required.\n"
+}
+Elapsed seconds: 66.03
+
+================================================================================
+Step 8 Rollout 5/5
+================================================================================
+Parent state:
+  id: 35bff92d-a9ab-45e1-80ce-1a24682d8042
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    
+    # Apply square root transformation to stabilize variance
+    X_sqrt = np.sqrt(np.maximum(X, 0.0))
+    
+    # Perform PCA to reduce dimensionality
+    pca = PCA(n_components=min(50, X.shape[1]), svd_solver='full')
+    X_pca = pca.fit_transform(X_sqrt)
+    
+    # Reconstruct data from PCA components
+    X_recon = pca.inverse_transform(X_pca)
+    
+    # Apply inverse square root transformation
+    X_denoised = X_recon ** 2
+    
+    # Ensure non-negativity and finiteness
+    X_denoised = np.maximum(X_denoised, 0.0)
+    X_denoised = np.nan_to_num(X_denoised, nan=0.0, posinf=0.0, neginf=0.0)
+    
+    return X_denoised
+Evaluation result:
+{
+  "ok": false,
+  "mse": 0.22962732018976134,
+  "poisson": 0.1303448446436029,
+  "reward": -1.0,
+  "raw_score": 0.22962732018976134,
+  "metrics": {
+    "mse": 0.22962732018976134,
+    "poisson": 0.1303448446436029,
+    "mse_normalized": 0.24643421296936763,
+    "poisson_normalized": 0.5633741093377367
+  },
+  "error": "Invalid solution under official verify_denoising check."
+}
+Elapsed seconds: 26.77
+
+================================================================================
+Update PUCT Sampler
+================================================================================
+Added 2 valid child states to PUCT.
+PUCT stats:
+{
+  "puct/buffer_size": 9,
+  "puct/sampled_size": 5,
+  "puct/T": 40,
+  "puct/scale_last": 0.1043721674404263,
+  "puct/buffer_value/mean": -0.2369523142294105,
+  "puct/buffer_value/std": 0.030718152003833765,
+  "puct/buffer_value/min": -0.3219218325964934,
+  "puct/buffer_value/max": -0.21754966515606708,
+  "puct/sampled_value/mean": -0.24685429955051208,
+  "puct/sampled_value/std": 0.03792618377567625,
+  "puct/sampled_value/min": -0.3219218325964934,
+  "puct/sampled_value/max": -0.21754966515606708
+}
+
+================================================================================
+LoRA Update
+================================================================================
+Train result:
+{
+  "ok": false,
+  "loss": null,
+  "message": "No valid response tokens were available for training.",
+  "rewards": [
+    4.596651524527119,
+    4.596651524527119,
+    -1.0,
+    -1.0,
+    -1.0
+  ],
+  "advantages": [
+    2.609588623046875,
+    2.609588623046875,
+    -0.9304026365280151,
+    -0.9304026365280151,
+    -0.9304026365280151
+  ]
+}
+Saved LoRA adapter to: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/university_gpu/outputs/qwen7b_ttt_denoising_official_50_memlite_5664967/lora_adapter_step_8
+
+================================================================================
+Step 9/10
+================================================================================
+
+================================================================================
+Step 9 Rollout 1/5
+================================================================================
+Parent state:
+  id: 80928ca3-2b6f-4a0a-a138-10ec7fcdaf63
+  timestep: 8
+  value: -0.21754966515606708
+  mse: 0.21754966515606708
+  poisson: 0.03688785612012908
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    # Square root transform to stabilize variance
+    X_sqrt = np.sqrt(X + 1)
+
+    # Normalize data
+    X_normalized = normalize(X_sqrt, norm='l1', axis=1)
+
+    # Apply PCA for dimensionality reduction
+    pca = PCA(n_components=min(50, X.shape[1]))
+    X_pca = pca.fit_transform(X_normalized)
+
+    # Reconstruct data using PCA
+    X_reconstructed = pca.inverse_transform(X_pca)
+
+    # Square root inverse transformation
+    X_denoised = np.square(X_reconstructed)
+
+    # Ensure non-negativity and finite values
+    X_denoised = np.maximum(X_denoised, 0.0)
+
+    # Push values < 1 toward zero
+    X_denoised[X_denoised < 1] = 0
+
+    # Clip values to avoid large outliers
+    X_denoised = np.clip(X_denoised, 0, np.percentile(X_denoised, 99))
+
+    # Apply Poisson clipping to ensure non-negative integer values
+    X_denoised_clip = poisson.ppf(0.99, X_denoised)
+
+    # Round to nearest integer to get final denoised counts
+    X_denoised_final = np.round(X_denoised_clip).astype(int)
+
+    return X_denoised_final
+Evaluator STDERR tail:
+/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/legacy_api_wrap/__init__.py:88: UserWarning: Some cells have zero counts
+  return fn(*args_all, **kw)
+
+Evaluation result:
+{
+  "ok": true,
+  "mse": 0.21754966515606708,
+  "poisson": 0.03688785612012908,
+  "reward": 4.596651524527119,
+  "raw_score": 0.21754966515606708,
+  "metrics": {
+    "mse": 0.21754966515606708,
+    "poisson": 0.03688785612012908,
+    "mse_normalized": 0.28606933832565834,
+    "poisson_normalized": 0.9772009063208299
+  },
+  "error": null
+}
+Elapsed seconds: 56.35
+
+================================================================================
+Step 9 Rollout 2/5
+================================================================================
+Parent state:
+  id: 416435ff-6ca9-4906-a390-bce6d9dbe708
+  timestep: 8
+  value: -0.21754966515606708
+  mse: 0.21754966515606708
+  poisson: 0.03688785612012908
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    # Square root transform to stabilize variance
+    X_sqrt = np.sqrt(X + 1)
+
+    # Normalize data
+    X_normalized = normalize(X_sqrt, norm='l1', axis=1)
+
+    # Apply SVD for dimensionality reduction
+    svd = TruncatedSVD(n_components=min(50, X.shape[1]), random_state=kwargs.get('random_state'))
+    X_svd = svd.fit_transform(X_normalized)
+
+    # Reconstruct data using SVD
+    X_reconstructed = svd.inverse_transform(X_svd)
+
+    # Square root inverse transformation
+    X_denoised = np.square(X_reconstructed)
+
+    # Ensure non-negativity and finite values
+    X_denoised = np.maximum(X_denoised, 0.0)
+
+    # Push values < 1 toward zero
+    X_denoised[X_denoised < 1] = 0.0
+
+    # Clip values to prevent overflow
+    X_denoised = np.clip(X_denoised, 0.0, np.inf)
+
+    return X_denoised
+Evaluator STDERR tail:
+/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/legacy_api_wrap/__init__.py:88: UserWarning: Some cells have zero counts
+  return fn(*args_all, **kw)
+
+Evaluation result:
+{
+  "ok": true,
+  "mse": 0.21754966515606708,
+  "poisson": 0.03688785612012908,
+  "reward": 4.596651524527119,
+  "raw_score": 0.21754966515606708,
+  "metrics": {
+    "mse": 0.21754966515606708,
+    "poisson": 0.03688785612012908,
+    "mse_normalized": 0.28606933832565834,
+    "poisson_normalized": 0.9772009063208299
+  },
+  "error": null
+}
+Elapsed seconds: 29.59
+
+================================================================================
+Step 9 Rollout 3/5
+================================================================================
+Parent state:
+  id: 836a45b5-6d4b-4c80-815a-fb45b3db9604
+  timestep: 7
+  value: -0.21754966515606708
+  mse: 0.21754966515606708
+  poisson: 0.03688785612012908
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    # Square root transform to stabilize variance
+    X_sqrt = np.sqrt(X + 1)
+
+    # Normalize data
+    X_normalized = normalize(X_sqrt, norm='l1', axis=1)
+
+    # Apply PCA for dimensionality reduction
+    pca = PCA(n_components=min(50, X.shape[1]))
+    X_pca = pca.fit_transform(X_normalized)
+
+    # Reconstruct data using PCA
+    X_reconstructed = pca.inverse_transform(X_pca)
+
+    # Square root inverse transformation
+    X_denoised = np.square(X_reconstructed)
+
+    # Ensure non-negativity and finite values
+    X_denoised = np.maximum(X_denoised, 0.0)
+
+    # Push values < 1 toward zero
+    X_denoised[X_denoised < 1] = 0
+
+    # Clip values to avoid numerical instability
+    X_denoised = np.clip(X_denoised, a_min=0, a_max=None)
+
+    return X_denoised
+Evaluator STDERR tail:
+/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/legacy_api_wrap/__init__.py:88: UserWarning: Some cells have zero counts
+  return fn(*args_all, **kw)
+
+Evaluation result:
+{
+  "ok": true,
+  "mse": 0.21754966515606708,
+  "poisson": 0.03688785612012908,
+  "reward": 4.596651524527119,
+  "raw_score": 0.21754966515606708,
+  "metrics": {
+    "mse": 0.21754966515606708,
+    "poisson": 0.03688785612012908,
+    "mse_normalized": 0.28606933832565834,
+    "poisson_normalized": 0.9772009063208299
+  },
+  "error": null
+}
+Elapsed seconds: 29.74
+
+================================================================================
+Step 9 Rollout 4/5
+================================================================================
+Parent state:
+  id: 4adb4427-9b17-4662-a02c-58840ac75364
+  timestep: 6
+  value: -0.3219218325964934
+  mse: 0.3219218325964934
+  poisson: 0.03688786213348572
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    # Square root transform to stabilize variance
+    X_sqrt = np.sqrt(X + 1)
+
+    # Normalize data
+    X_normalized = normalize(X_sqrt, norm='l1', axis=1)
+
+    # Apply PCA for dimensionality reduction
+    pca = PCA(n_components=min(50, X.shape[1]))
+    X_pca = pca.fit_transform(X_normalized)
+
+    # Reconstruct data using PCA
+    X_reconstructed = pca.inverse_transform(X_pca)
+
+    # Square root inverse transformation
+    X_denoised = np.square(X_reconstructed)
+
+    # Ensure non-negativity and finite values
+    X_denoised = np.maximum(X_denoised, 0.0)
+
+    # Apply sigmoid function to further stabilize the distribution
+    X_denoised = expit(X_denoised * 10)
+
+    return X_denoised
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "NameError(\"name 'expit' is not defined\")",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmp7xjnxat6/eval_candidate.py\", line 122, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmp7xjnxat6/eval_candidate.py\", line 114, in magic_denoise\n    X_denoised = expit(X_denoised * 10)\n                 ^^^^^\nNameError: name 'expit' is not defined\n"
+}
+Elapsed seconds: 26.36
+
+================================================================================
+Step 9 Rollout 5/5
+================================================================================
+Parent state:
+  id: 9fe8020a-5f05-4b94-b225-238d3796f340
+  timestep: -1
+  value: -0.2316
+  mse: 0.2316
+  poisson: 0.037
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.maximum(X, 0.0)
+    
+    # Reverse normalization order
+    X_log = np.log1p(X)
+    
+    # Apply PCA for dimensionality reduction
+    pca = TruncatedSVD(n_components=min(20, X.shape[1]), random_state=kwargs.get('random_state', None))
+    X_pca = pca.fit_transform(X_log)
+    
+    # Reconstruct the data
+    X_recon = pca.inverse_transform(X_pca)
+    
+    # Apply square root transformation for variance stabilization
+    X_sqrt = np.sqrt(X_recon)
+    
+    # Ensure non-negativity
+    X_sqrt = np.maximum(X_sqrt, 0.0)
+    
+    # Normalize back to the original scale
+    X_denoised = np.expm1(X_sqrt)
+    
+    # Clip negative values
+    X_denoised = np.clip(X_denoised, a_min=0, a_max=None)
+    
+    return X_denoised
+Evaluator STDERR tail:
+/local/user/1483806620/tmpezmxrdkj/eval_candidate.py:104: RuntimeWarning: invalid value encountered in sqrt
+  X_sqrt = np.sqrt(X_recon)
+
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "RuntimeError('Non-finite result: mse=inf, poisson=inf')",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpezmxrdkj/eval_candidate.py\", line 127, in <module>\n    raise RuntimeError(f\"Non-finite result: mse={mse}, poisson={poisson}\")\nRuntimeError: Non-finite result: mse=inf, poisson=inf\n"
+}
+Elapsed seconds: 24.41
+
+================================================================================
+Update PUCT Sampler
+================================================================================
+Added 3 valid child states to PUCT.
+PUCT stats:
+{
+  "puct/buffer_size": 12,
+  "puct/sampled_size": 5,
+  "puct/T": 45,
+  "puct/scale_last": 0.1043721674404263,
+  "puct/buffer_value/mean": -0.23210165196107466,
+  "puct/buffer_value/std": 0.02789785691092326,
+  "puct/buffer_value/min": -0.3219218325964934,
+  "puct/buffer_value/max": -0.21754966515606708,
+  "puct/sampled_value/mean": -0.24123416561293892,
+  "puct/sampled_value/std": 0.04070917202788876,
+  "puct/sampled_value/min": -0.3219218325964934,
+  "puct/sampled_value/max": -0.21754966515606708
+}
+
+================================================================================
+LoRA Update
+================================================================================
+Train result:
+{
+  "ok": false,
+  "loss": null,
+  "message": "No valid response tokens were available for training.",
+  "rewards": [
+    4.596651524527119,
+    4.596651524527119,
+    4.596651524527119,
+    -1.0,
+    -1.0
+  ],
+  "advantages": [
+    1.0,
+    1.0,
+    1.0,
+    -1.0,
+    -1.0
+  ]
+}
+Saved LoRA adapter to: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/university_gpu/outputs/qwen7b_ttt_denoising_official_50_memlite_5664967/lora_adapter_step_9
+
+================================================================================
+Step 10/10
+================================================================================
+
+================================================================================
+Step 10 Rollout 1/5
+================================================================================
+Parent state:
+  id: 6a5234ba-e918-464e-98bb-221309a3ba41
+  timestep: 9
+  value: -0.21754966515606708
+  mse: 0.21754966515606708
+  poisson: 0.03688785612012908
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    # Square root transform to stabilize variance
+    X_sqrt = np.sqrt(X + 1)
+
+    # Normalize data
+    X_normalized = normalize(X_sqrt, norm='l1', axis=1)
+
+    # Apply PCA for dimensionality reduction
+    pca = PCA(n_components=min(50, X.shape[1]))
+    X_pca = pca.fit_transform(X_normalized)
+
+    # Reconstruct data using PCA
+    X_reconstructed = pca.inverse_transform(X_pca)
+
+    # Square root inverse transformation
+    X_denoised = np.square(X_reconstructed)
+
+    # Ensure non-negativity and finite values
+    X_denoised = np.maximum(X_denoised, 0.0)
+
+    # Push values < 1 toward zero
+    X_denoised[X_denoised < 1] = 0
+
+    # Clip values to avoid large outliers
+    X_denoised = np.clip(X_denoised, 0, np.percentile(X_denoised, 99))
+
+    # Apply Poisson clipping to ensure non-negative integer values
+    X_denoised_clip = poisson.ppf(0.99, X_denoised)
+
+    # Round to nearest integer to get final denoised counts
+    X_denoised_final = np.round(X_denoised_clip).astype(int)
+
+    return X_denoised_final
+Evaluator STDERR tail:
+/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/legacy_api_wrap/__init__.py:88: UserWarning: Some cells have zero counts
+  return fn(*args_all, **kw)
+
+Evaluation result:
+{
+  "ok": true,
+  "mse": 0.21754966515606708,
+  "poisson": 0.03688785612012908,
+  "reward": 4.596651524527119,
+  "raw_score": 0.21754966515606708,
+  "metrics": {
+    "mse": 0.21754966515606708,
+    "poisson": 0.03688785612012908,
+    "mse_normalized": 0.28606933832565834,
+    "poisson_normalized": 0.9772009063208299
+  },
+  "error": null
+}
+Elapsed seconds: 53.62
+
+================================================================================
+Step 10 Rollout 2/5
+================================================================================
+Parent state:
+  id: 67e02d1a-dd15-4757-9cd8-82be5b41fc3b
+  timestep: 9
+  value: -0.21754966515606708
+  mse: 0.21754966515606708
+  poisson: 0.03688785612012908
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    # Square root transform to stabilize variance
+    X_sqrt = np.sqrt(X + 1)
+
+    # Normalize data
+    X_normalized = normalize(X_sqrt, norm='l1', axis=1)
+
+    # Apply SVD for dimensionality reduction
+    svd = TruncatedSVD(n_components=min(50, X.shape[1]), random_state=kwargs.get('random_state'))
+    X_svd = svd.fit_transform(X_normalized)
+
+    # Reconstruct data using SVD
+    X_reconstructed = svd.inverse_transform(X_svd)
+
+    # Square root inverse transformation
+    X_denoised = np.square(X_reconstructed)
+
+    # Ensure non-negativity and finite values
+    X_denoised = np.maximum(X_denoised, 0.0)
+
+    # Push values < 1 toward zero
+    X_denoised[X_denoised < 1] = 0.0
+
+    # Clip values to prevent overflow
+    X_denoised = np.clip(X_denoised, 0.0, np.inf)
+
+    # Calculate Poisson loss
+    poisson_loss = np.mean(poisson.logpmf(X, mu=X_denoised))
+
+    # Check Poisson constraint
+    if poisson_loss < 0.97:
+        raise ValueError("Poisson loss does not meet the requirement.")
+
+    return X_denoised
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "ValueError('Poisson loss does not meet the requirement.')",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmpkjpybccm/eval_candidate.py\", line 132, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmpkjpybccm/eval_candidate.py\", line 124, in magic_denoise\n    raise ValueError(\"Poisson loss does not meet the requirement.\")\nValueError: Poisson loss does not meet the requirement.\n"
+}
+Elapsed seconds: 33.96
+
+================================================================================
+Step 10 Rollout 3/5
+================================================================================
+Parent state:
+  id: 52405eb2-4513-4681-868a-3966a5d785fb
+  timestep: 9
+  value: -0.21754966515606708
+  mse: 0.21754966515606708
+  poisson: 0.03688785612012908
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    # Square root transform to stabilize variance
+    X_sqrt = np.sqrt(X + 1)
+
+    # Normalize data
+    X_normalized = normalize(X_sqrt, norm='l1', axis=1)
+
+    # Apply PCA for dimensionality reduction
+    pca = PCA(n_components=min(50, X.shape[1]))
+    X_pca = pca.fit_transform(X_normalized)
+
+    # Reconstruct data using PCA
+    X_reconstructed = pca.inverse_transform(X_pca)
+
+    # Square root inverse transformation
+    X_denoised = np.square(X_reconstructed)
+
+    # Ensure non-negativity and finite values
+    X_denoised = np.maximum(X_denoised, 0.0)
+
+    # Push values < 1 toward zero
+    X_denoised[X_denoised < 1] = 0
+
+    # Clip values to avoid numerical instability
+    X_denoised = np.clip(X_denoised, a_min=0, a_max=None)
+
+    # Apply Poisson noise correction
+    lambda_vals = np.mean(X_denoised, axis=0)
+    X_denoised = np.array([poisson.pmf(X_denoised[:, i], lambda_vals[i]) for i in range(X_denoised.shape[1])]).T
+
+    return X_denoised
+Evaluation result:
+{
+  "ok": false,
+  "mse": 0.39669837980494926,
+  "poisson": 1.5347477576277349,
+  "reward": -1.0,
+  "raw_score": 0.39669837980494926,
+  "metrics": {
+    "mse": 0.39669837980494926,
+    "poisson": 1.5347477576277349,
+    "mse_normalized": 0.0,
+    "poisson_normalized": 0.0
+  },
+  "error": "Invalid solution under official verify_denoising check."
+}
+Elapsed seconds: 34.24
+
+================================================================================
+Step 10 Rollout 4/5
+================================================================================
+Parent state:
+  id: 80928ca3-2b6f-4a0a-a138-10ec7fcdaf63
+  timestep: 8
+  value: -0.21754966515606708
+  mse: 0.21754966515606708
+  poisson: 0.03688785612012908
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    # Square root transform to stabilize variance
+    X_sqrt = np.sqrt(X + 1)
+
+    # Normalize data
+    X_normalized = normalize(X_sqrt, norm='l1', axis=1)
+
+    # Apply PCA for dimensionality reduction
+    pca = PCA(n_components=min(50, X.shape[1]))
+    X_pca = pca.fit_transform(X_normalized)
+
+    # Reconstruct data using PCA
+    X_reconstructed = pca.inverse_transform(X_pca)
+
+    # Square root inverse transformation
+    X_denoised = np.square(X_reconstructed)
+
+    # Ensure non-negativity and finite values
+    X_denoised = np.maximum(X_denoised, 0.0)
+
+    # Push values < 1 toward zero
+    X_denoised[X_denoised < 1] = 0
+
+    # Clip values to avoid large outliers
+    X_denoised = np.clip(X_denoised, 0, np.percentile(X_denoised, 99))
+
+    # Apply Poisson loss correction
+    lambda_hat = np.mean(X_denoised, axis=0)
+    poisson_loss = poisson.pmf(np.arange(1, np.max(X_denoised) + 1), lambda_hat).sum()
+    X_denoised *= (lambda_hat / poisson_loss)
+
+    return X_denoised
+Evaluation result:
+{
+  "ok": false,
+  "mse": null,
+  "poisson": null,
+  "reward": -1.0,
+  "raw_score": null,
+  "metrics": {},
+  "error": "ValueError('operands could not be broadcast together with shapes (15501,) (0,) ')",
+  "traceback": "Traceback (most recent call last):\n  File \"/local/user/1483806620/tmppfzfrv3v/eval_candidate.py\", line 130, in <module>\n    mse, poisson = run_denoising_eval(magic_denoise, seed=42)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/examples/denoising/utils.py\", line 163, in run_denoising_eval\n    Y_denoised = magic_denoise_fn(X_train, random_state=seed)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/local/user/1483806620/tmppfzfrv3v/eval_candidate.py\", line 121, in magic_denoise\n    poisson_loss = poisson.pmf(np.arange(1, np.max(X_denoised) + 1), lambda_hat).sum()\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/scipy/stats/_distn_infrastructure.py\", line 3531, in pmf\n    cond = cond0 & cond1\n           ~~~~~~^~~~~~~\nValueError: operands could not be broadcast together with shapes (15501,) (0,) \n"
+}
+Elapsed seconds: 34.88
+
+================================================================================
+Step 10 Rollout 5/5
+================================================================================
+Parent state:
+  id: 416435ff-6ca9-4906-a390-bce6d9dbe708
+  timestep: 8
+  value: -0.21754966515606708
+  mse: 0.21754966515606708
+  poisson: 0.03688785612012908
+Generated code preview:
+def magic_denoise(X, **kwargs):
+    X = np.asarray(X, dtype=float)
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+    X = np.maximum(X, 0.0)
+
+    # Square root transform to stabilize variance
+    X_sqrt = np.sqrt(X + 1)
+
+    # Normalize data
+    X_normalized = normalize(X_sqrt, norm='l1', axis=1)
+
+    # Apply SVD for dimensionality reduction
+    svd = TruncatedSVD(n_components=min(50, X.shape[1]), random_state=kwargs.get('random_state'))
+    X_svd = svd.fit_transform(X_normalized)
+
+    # Reconstruct data using SVD
+    X_reconstructed = svd.inverse_transform(X_svd)
+
+    # Square root inverse transformation
+    X_denoised = np.square(X_reconstructed)
+
+    # Ensure non-negativity and finite values
+    X_denoised = np.maximum(X_denoised, 0.0)
+
+    # Push values < 1 toward zero
+    X_denoised[X_denoised < 1] = 0.0
+
+    # Clip values to ensure they are integers
+    X_denoised = np.clip(X_denoised.astype(int), 0, None)
+
+    return X_denoised
+Evaluator STDERR tail:
+/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/.venv/lib/python3.11/site-packages/legacy_api_wrap/__init__.py:88: UserWarning: Some cells have zero counts
+  return fn(*args_all, **kw)
+
+Evaluation result:
+{
+  "ok": true,
+  "mse": 0.21754966515606708,
+  "poisson": 0.03688785612012908,
+  "reward": 4.596651524527119,
+  "raw_score": 0.21754966515606708,
+  "metrics": {
+    "mse": 0.21754966515606708,
+    "poisson": 0.03688785612012908,
+    "mse_normalized": 0.28606933832565834,
+    "poisson_normalized": 0.9772009063208299
+  },
+  "error": null
+}
+Elapsed seconds: 29.65
+
+================================================================================
+Update PUCT Sampler
+================================================================================
+Added 2 valid child states to PUCT.
+PUCT stats:
+{
+  "puct/buffer_size": 13,
+  "puct/sampled_size": 5,
+  "puct/T": 50,
+  "puct/scale_last": 0.1043721674404263,
+  "puct/buffer_value/mean": -0.23098226836068944,
+  "puct/buffer_value/std": 0.02708243272117235,
+  "puct/buffer_value/min": -0.3219218325964934,
+  "puct/buffer_value/max": -0.21754966515606708,
+  "puct/sampled_value/mean": -0.21754966515606705,
+  "puct/sampled_value/std": 2.7755575615628914e-17,
+  "puct/sampled_value/min": -0.21754966515606708,
+  "puct/sampled_value/max": -0.21754966515606708
+}
+
+================================================================================
+LoRA Update
+================================================================================
+Train result:
+{
+  "ok": false,
+  "loss": null,
+  "message": "No valid response tokens were available for training.",
+  "rewards": [
+    4.596651524527119,
+    -1.0,
+    -1.0,
+    -1.0,
+    4.596651524527119
+  ],
+  "advantages": [
+    2.609588623046875,
+    -0.9304026365280151,
+    -0.9304026365280151,
+    -0.9304026365280151,
+    2.609588623046875
+  ]
+}
+Saved LoRA adapter to: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/university_gpu/outputs/qwen7b_ttt_denoising_official_50_memlite_5664967/lora_adapter_step_10
+
+================================================================================
+Final Best Record
+================================================================================
+{
+  "ok": true,
+  "mse": 0.21754966515606708,
+  "poisson": 0.03688785612012908,
+  "reward": 4.596651524527119,
+  "raw_score": 0.21754966515606708,
+  "metrics": {
+    "mse": 0.21754966515606708,
+    "poisson": 0.03688785612012908,
+    "mse_normalized": 0.28606933832565834,
+    "poisson_normalized": 0.9772009063208299
+  },
+  "source": "step_7_rollout_5"
+}
+Saved best code to: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/university_gpu/outputs/qwen7b_ttt_denoising_official_50_memlite_5664967/best_magic_denoise.py
+
+========================================
+Finished
+========================================
+End time: Wed Jul 15 04:01:05 PM UTC 2026
