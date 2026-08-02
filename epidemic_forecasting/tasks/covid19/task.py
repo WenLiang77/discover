@@ -1,0 +1,188 @@
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Any
+
+import numpy as np
+
+from epidemic_forecasting.tasks.base import (
+    EpidemicForecastTask,
+    EvaluationResult,
+    TaskConfig,
+)
+from epidemic_forecasting.tasks.covid19.config import (
+    make_covid19_config,
+)
+from epidemic_forecasting.tasks.covid19.evaluator import (
+    Covid19Evaluator,
+    NAIVE_BASELINE_CODE,
+)
+
+
+class Covid19Task:
+    """
+    Complete COVID-19 forecasting task used by baseline and TTT runners.
+
+    This class joins together:
+    - the task configuration;
+    - the UK or US EpiCastBench data;
+    - the initial baseline implementation;
+    - generated-code evaluation.
+    """
+
+    def __init__(
+        self,
+        dataset: str | Path = "uk",
+        forecast_horizon: int = 14,
+        runtime_budget_seconds: float | None = None,
+        random_state: int = 0,
+        mase_seasonality: int = 1,
+    ) -> None:
+        self.dataset = dataset
+        self.forecast_horizon = int(forecast_horizon)
+        self.random_state = int(random_state)
+        self.mase_seasonality = int(mase_seasonality)
+
+        dataset_id = self._dataset_id(dataset)
+
+        self.config: TaskConfig = make_covid19_config(
+            forecast_horizon=self.forecast_horizon,
+            dataset_id=dataset_id,
+            frequency="daily",
+        )
+
+        self.evaluator = Covid19Evaluator(
+            dataset=self.dataset,
+            forecast_horizon=self.forecast_horizon,
+            config=self.config,
+            runtime_budget_seconds=runtime_budget_seconds,
+            random_state=self.random_state,
+            mase_seasonality=self.mase_seasonality,
+        )
+
+    @staticmethod
+    def _dataset_id(dataset: str | Path) -> str:
+        """
+        Return a stable identifier for either an alias or a CSV path.
+        """
+        if isinstance(dataset, Path):
+            return dataset.stem
+
+        value = str(dataset).strip()
+
+        if not value:
+            raise ValueError("dataset must not be empty.")
+
+        possible_path = Path(value)
+
+        if possible_path.suffix.lower() == ".csv":
+            return possible_path.stem
+
+        return value
+
+    def get_initial_code(self) -> str:
+        """
+        Return the simple last-value persistence baseline.
+
+        TTT starts from this valid implementation and asks the language model
+        to improve it.
+        """
+        return NAIVE_BASELINE_CODE
+
+    def load_data(
+        self,
+    ) -> tuple[np.ndarray, np.ndarray, dict[str, Any]]:
+        """
+        Return defensive copies of the train/test arrays and task metadata.
+
+        The generated forecasting function receives only train_values.
+        test_values remain inside the evaluator and are used only for scoring.
+        """
+        return (
+            self.evaluator.train_values.copy(),
+            self.evaluator.test_values.copy(),
+            dict(self.evaluator.data_metadata),
+        )
+
+    def evaluate_code(
+        self,
+        code: str,
+    ) -> EvaluationResult:
+        """
+        Evaluate one generated covid_forecast implementation.
+        """
+        return self.evaluator.evaluate_code(code)
+
+    def evaluate_initial_code(self) -> EvaluationResult:
+        """
+        Evaluate the default baseline implementation.
+        """
+        return self.evaluate_code(self.get_initial_code())
+
+    def describe(self) -> dict[str, Any]:
+        """
+        Return a concise JSON-friendly description of this task instance.
+        """
+        metadata = self.evaluator.data_metadata
+
+        return {
+            "task_id": self.config.task_id,
+            "disease_name": self.config.disease_name,
+            "dataset_id": metadata["dataset_id"],
+            "function_name": self.config.function_name,
+            "prompt_path": str(self.config.prompt_path),
+            "forecast_horizon": self.config.forecast_horizon,
+            "frequency": metadata["frequency"],
+            "number_of_locations": metadata["number_of_locations"],
+            "training_observations": metadata["training_observations"],
+            "test_observations": self.config.forecast_horizon,
+            "primary_metric": self.config.primary_metric,
+            "primary_metric_direction": (
+                self.config.primary_metric_direction
+            ),
+            "runtime_budget_seconds": (
+                self.evaluator.runtime_budget_seconds
+            ),
+        }
+
+
+def create_covid19_task(
+    dataset: str | Path = "uk",
+    forecast_horizon: int = 14,
+    runtime_budget_seconds: float | None = None,
+    random_state: int = 0,
+    mase_seasonality: int = 1,
+) -> Covid19Task:
+    """
+    Convenience factory used by command-line experiment runners.
+    """
+    return Covid19Task(
+        dataset=dataset,
+        forecast_horizon=forecast_horizon,
+        runtime_budget_seconds=runtime_budget_seconds,
+        random_state=random_state,
+        mase_seasonality=mase_seasonality,
+    )
+
+
+def _check_protocol_compatibility() -> None:
+    """
+    Internal development check for the runtime-checkable task protocol.
+    """
+    task = create_covid19_task(
+        dataset="uk",
+        forecast_horizon=14,
+        runtime_budget_seconds=20,
+    )
+
+    if not isinstance(task, EpidemicForecastTask):
+        raise TypeError(
+            "Covid19Task does not satisfy EpidemicForecastTask."
+        )
+
+
+if __name__ == "__main__":
+    print(
+        "Import create_covid19_task from a guarded runner script "
+        "to construct this task."
+    )
