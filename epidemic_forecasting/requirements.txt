@@ -2,7 +2,8 @@
 pandas
 scipy
 scikit-learn
-torch
+# PyTorch is installed separately by setup_epidemic_env.sh
+# to pin the CUDA 12.6 build used on Isambard.
 transformers
 accelerate
 peft

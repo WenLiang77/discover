@@ -235,3 +235,5 @@ gpu_mode/gpu_scores.tsv
 tinker_log/
 openproblems/
 data/
+.venv_epidemic/
+.venv_epidemic_py36_broken/

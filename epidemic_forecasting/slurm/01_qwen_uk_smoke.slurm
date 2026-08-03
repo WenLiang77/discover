@@ -9,6 +9,7 @@
 #SBATCH --error=epidemic_forecasting/results/qwen_uk_smoke_%j.err
 
 set -euo pipefail
+module load cray-python/3.11.7
 
 REPO_ROOT="${SLURM_SUBMIT_DIR:-$(pwd)}"
 cd "${REPO_ROOT}"

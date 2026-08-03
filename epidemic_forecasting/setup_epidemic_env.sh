@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+module load cray-python/3.11.7
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 VENV_DIR="${REPO_ROOT}/.venv_epidemic"
@@ -43,6 +45,37 @@ python -m pip install --upgrade pip setuptools wheel
 
 echo
 echo "============================================================"
+echo
+echo "============================================================"
+echo "Install pinned PyTorch 2.11.0 with CUDA 12.6"
+echo "============================================================"
+
+python -m pip install \
+  "torch==2.11.0" \
+  --index-url https://download.pytorch.org/whl/cu126
+
+echo
+echo "Verify pinned PyTorch build"
+
+python - <<'PYTORCH_CHECK'
+import torch
+
+print("torch:", torch.__version__)
+print("PyTorch CUDA runtime:", torch.version.cuda)
+
+if not torch.__version__.startswith("2.11.0"):
+    raise RuntimeError(
+        f"Expected torch 2.11.0, but found {torch.__version__}"
+    )
+
+if torch.version.cuda != "12.6":
+    raise RuntimeError(
+        f"Expected CUDA runtime 12.6, but found {torch.version.cuda}"
+    )
+
+print("Pinned PyTorch build verified.")
+PYTORCH_CHECK
+
 echo "Install epidemic forecasting requirements"
 echo "============================================================"
 
