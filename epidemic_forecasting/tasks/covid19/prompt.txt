@@ -89,6 +89,29 @@ The optional `kwargs` may include parameters such as `budget_s`, `random_state`,
 
 ## Rules
 
+### Strict Output Contract
+
+The following requirements are mandatory:
+
+- Return raw Python source code only.
+- Do not use Markdown code fences.
+- Do not include explanations, analysis, comments outside the code, or example usage.
+- The returned module must define exactly one top-level function named `covid_forecast`.
+- The required signature is:
+  `def covid_forecast(train_values, horizon, **kwargs):`
+- Helper functions are allowed, but no additional function may be named `covid_forecast`.
+- The code must be complete, syntactically valid Python and directly executable.
+- Imports are limited to these exact root packages:
+  `numpy`, `scipy`, `pandas`, `sklearn`, `math`, `statistics`,
+  `collections`, `functools`, `itertools`, `typing`, and `warnings`.
+- Do not import `statsmodels`.
+- Do not use ARIMA, SARIMAX, AutoReg, ExponentialSmoothing, Prophet,
+  PyTorch, TensorFlow, network access, filesystem access, or subprocesses.
+- Prefer a robust NumPy-only implementation when uncertain.
+- Before returning the answer, verify that the code defines
+  `covid_forecast`, returns shape `(horizon, N)`, and clips predictions
+  to finite non-negative values.
+
 Use only standard scientific Python libraries such as numpy, scipy, pandas, and scikit-learn.
 
 Do not perform network access.
