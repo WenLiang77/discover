@@ -1,7 +1,8 @@
-﻿numpy
+numpy
 pandas
 scipy
 scikit-learn
+statsmodels==0.14.6
 # PyTorch is installed separately by setup_epidemic_env.sh
 # to pin the CUDA 12.6 build used on Isambard.
 transformers

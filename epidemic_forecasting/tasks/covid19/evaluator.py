@@ -40,6 +40,28 @@ ALLOWED_IMPORT_ROOTS = {
     "warnings",
 }
 
+ALLOWED_IMPORT_PREFIXES = {
+    "statsmodels.tsa.arima.model",
+    "statsmodels.tsa.holtwinters",
+    "statsmodels.tsa.seasonal",
+    "statsmodels.tsa.statespace.sarimax",
+}
+
+
+def _import_is_allowed(module_name: str) -> bool:
+    """Allow ordinary scientific roots and selected statsmodels modules."""
+    root = module_name.split(".", maxsplit=1)[0]
+
+    if root in ALLOWED_IMPORT_ROOTS:
+        return True
+
+    return any(
+        module_name == prefix
+        or module_name.startswith(prefix + ".")
+        for prefix in ALLOWED_IMPORT_PREFIXES
+    )
+
+
 BLOCKED_CALL_NAMES = {
     "__import__",
     "breakpoint",
@@ -240,8 +262,7 @@ def validate_candidate_code(
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
             for alias in node.names:
-                root = alias.name.split(".", maxsplit=1)[0]
-                if root not in ALLOWED_IMPORT_ROOTS:
+                if not _import_is_allowed(alias.name):
                     raise ValueError(
                         f"Importing {alias.name!r} is not allowed."
                     )
@@ -250,8 +271,7 @@ def validate_candidate_code(
             if node.module is None:
                 raise ValueError("Relative imports are not allowed.")
 
-            root = node.module.split(".", maxsplit=1)[0]
-            if root not in ALLOWED_IMPORT_ROOTS:
+            if not _import_is_allowed(node.module):
                 raise ValueError(
                     f"Importing from {node.module!r} is not allowed."
                 )
@@ -289,9 +309,7 @@ def _controlled_import(
     if level != 0:
         raise ImportError("Relative imports are not allowed.")
 
-    root = name.split(".", maxsplit=1)[0]
-
-    if root not in ALLOWED_IMPORT_ROOTS:
+    if not _import_is_allowed(name):
         raise ImportError(f"Importing {name!r} is not allowed.")
 
     return builtins.__import__(

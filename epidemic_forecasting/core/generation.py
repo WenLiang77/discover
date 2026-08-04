@@ -1,5 +1,7 @@
 ﻿from __future__ import annotations
 
+import ast
+
 import re
 from pathlib import Path
 from typing import Any
@@ -219,11 +221,153 @@ def remove_trailing_explanation(text: str) -> str:
     return text.strip()
 
 
+def _contains_target_function(
+    tree: ast.Module,
+    function_name: str,
+) -> bool:
+    """Return whether a parsed module contains the required top-level function."""
+    return any(
+        isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+        and node.name == function_name
+        for node in tree.body
+    )
+
+
+def _parse_longest_complete_candidate(
+    text: str,
+    function_name: str,
+) -> ast.Module | None:
+    """
+    Parse the complete response.
+
+    If the response ends with unfinished code or explanatory text, repeatedly
+    remove trailing lines until a syntactically complete module containing the
+    required function is found.
+    """
+    try:
+        return ast.parse(text)
+    except SyntaxError:
+        pass
+
+    lines = text.splitlines()
+
+    for end_index in range(len(lines) - 1, 0, -1):
+        candidate = "\n".join(lines[:end_index]).rstrip()
+
+        if not candidate:
+            continue
+
+        try:
+            tree = ast.parse(candidate)
+        except SyntaxError:
+            continue
+
+        if _contains_target_function(tree, function_name):
+            return tree
+
+    return None
+
+
+def _is_literal_assignment(
+    node: ast.Assign | ast.AnnAssign,
+) -> bool:
+    """Return whether a top-level assignment contains a literal constant."""
+    value = node.value
+
+    if value is None:
+        return True
+
+    try:
+        ast.literal_eval(value)
+    except (
+        ValueError,
+        TypeError,
+        SyntaxError,
+        MemoryError,
+        RecursionError,
+    ):
+        return False
+
+    return True
+
+
+def _normalise_candidate_module(
+    tree: ast.Module,
+    function_name: str,
+) -> str:
+    """
+    Keep only module content accepted by the static validator.
+
+    Imports, helper functions, literal constants and one target forecasting
+    function are retained. Example calls, print statements and main blocks are
+    discarded.
+    """
+    target_positions = [
+        index
+        for index, node in enumerate(tree.body)
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+        and node.name == function_name
+    ]
+
+    # When the model returns multiple versions, the final version is normally
+    # its intended answer.
+    selected_target_position = (
+        target_positions[-1] if target_positions else None
+    )
+
+    kept_nodes: list[ast.stmt] = []
+
+    for index, node in enumerate(tree.body):
+        if isinstance(node, (ast.Import, ast.ImportFrom)):
+            # A future import is unnecessary in generated forecasting code and
+            # is not part of the evaluator import allow-list.
+            if (
+                isinstance(node, ast.ImportFrom)
+                and node.module == "__future__"
+            ):
+                continue
+
+            kept_nodes.append(node)
+            continue
+
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            if node.name == function_name:
+                if index == selected_target_position:
+                    kept_nodes.append(node)
+            else:
+                kept_nodes.append(node)
+            continue
+
+        if isinstance(node, (ast.Assign, ast.AnnAssign)):
+            if _is_literal_assignment(node):
+                kept_nodes.append(node)
+            continue
+
+        # Preserve a module docstring, but discard ordinary top-level
+        # expressions such as print(...) and example function calls.
+        if (
+            isinstance(node, ast.Expr)
+            and isinstance(node.value, ast.Constant)
+            and isinstance(node.value.value, str)
+        ):
+            kept_nodes.append(node)
+
+    cleaned_tree = ast.Module(
+        body=kept_nodes,
+        type_ignores=[],
+    )
+    ast.fix_missing_locations(cleaned_tree)
+
+    return ast.unparse(cleaned_tree).strip()
+
+
 def extract_candidate_code(text: str, function_name: str) -> str:
     """
-    Extract a complete candidate implementation from model output.
+    Extract and normalise a complete candidate implementation.
 
-    Imports and top-level helper functions are retained.
+    The returned module is aligned with the evaluator's accepted top-level
+    structure while retaining imports, helper functions and the final required
+    forecasting function.
     """
     text = text.strip()
 
@@ -231,25 +375,36 @@ def extract_candidate_code(text: str, function_name: str) -> str:
     if code_block is not None:
         text = code_block
 
-    function_marker = f"def {function_name}"
-
-    possible_starts = [
-        position
-        for position in (
-            text.find("import "),
-            text.find("from "),
-            text.find(function_marker),
-        )
-        if position != -1
-    ]
-
-    if possible_starts:
-        text = text[min(possible_starts):]
-
-    text = remove_trailing_explanation(text)
     text = clean_generated_code_block(text)
+    text = remove_trailing_explanation(text)
 
-    return text.strip()
+    # Remove prose preceding the first genuine Python import or definition.
+    start_match = re.search(
+        r"(?m)^(?:"
+        r"from\s+\S+\s+import\s+.+"
+        r"|import\s+.+"
+        r"|(?:async\s+)?def\s+\w+\s*\("
+        r")",
+        text,
+    )
+
+    if start_match is not None:
+        text = text[start_match.start():]
+
+    tree = _parse_longest_complete_candidate(
+        text=text,
+        function_name=function_name,
+    )
+
+    # Leave irreparable output unchanged so that the evaluator can report the
+    # original syntax or missing-function error.
+    if tree is None:
+        return text.strip()
+
+    return _normalise_candidate_module(
+        tree=tree,
+        function_name=function_name,
+    )
 
 
 def generate_candidate_code(

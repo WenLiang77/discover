@@ -101,12 +101,24 @@ The following requirements are mandatory:
   `def covid_forecast(train_values, horizon, **kwargs):`
 - Helper functions are allowed, but no additional function may be named `covid_forecast`.
 - The code must be complete, syntactically valid Python and directly executable.
-- Imports are limited to these exact root packages:
+- Imports may use the ordinary scientific packages:
   `numpy`, `scipy`, `pandas`, `sklearn`, `math`, `statistics`,
   `collections`, `functools`, `itertools`, `typing`, and `warnings`.
-- Do not import `statsmodels`.
-- Do not use ARIMA, SARIMAX, AutoReg, ExponentialSmoothing, Prophet,
-  PyTorch, TensorFlow, network access, filesystem access, or subprocesses.
+- The following statsmodels modules are also permitted:
+  `statsmodels.tsa.holtwinters`,
+  `statsmodels.tsa.arima.model`,
+  `statsmodels.tsa.statespace.sarimax`, and
+  `statsmodels.tsa.seasonal`.
+- Do not import `statsmodels.api` or any other statsmodels module.
+- Permitted forecasting classes include `SimpleExpSmoothing`, `Holt`,
+  `ExponentialSmoothing`, `ARIMA`, and `SARIMAX`.
+- Keep ARIMA and SARIMAX orders small. Do not perform grid search,
+  automatic order search, or unnecessarily expensive optimization.
+- Fit each geographical series independently unless a robust
+  multivariate method is explicitly implemented.
+- Catch model-fitting failures and fall back to a finite,
+  non-negative last-value or recent-trend forecast.
+- The complete candidate must remain within the 400-second CPU budget.
 - Prefer a robust NumPy-only implementation when uncertain.
 - Before returning the answer, verify that the code defines
   `covid_forecast`, returns shape `(horizon, N)`, and clips predictions
