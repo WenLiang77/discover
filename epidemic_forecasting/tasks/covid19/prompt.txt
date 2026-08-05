@@ -197,3 +197,118 @@ Finally, write an improved implementation of:
 def covid_forecast(train_values, horizon, **kwargs):
 
 Return only the complete Python implementation of the improved function.
+
+### Mandatory Implementation Scaffold
+
+The returned answer must be a complete Python module.
+
+Preserve the function name, function signature, input validation,
+per-location forecasting loop, fallback behaviour, output shape checking,
+finite-value sanitisation, and final non-negative clipping shown below.
+
+You may:
+
+- Add imports from the permitted import list.
+- Replace the forecasting logic inside the `try` block.
+- Add small helper functions when genuinely necessary.
+
+You must not:
+
+- Define any classes.
+- Import evaluation metrics.
+- Compute SMAPE, MAE, RMSE, MASE, or any other evaluation metric.
+- Add example calls, tests, `print` statements, or a main block.
+- Change the required output shape `(horizon, number_of_locations)`.
+- Return Markdown fences or explanatory prose.
+- Include the `<required_scaffold>` tags in the returned code.
+
+Correct statsmodels imports include:
+
+`from statsmodels.tsa.holtwinters import SimpleExpSmoothing, Holt, ExponentialSmoothing`
+
+`from statsmodels.tsa.arima.model import ARIMA`
+
+`from statsmodels.tsa.statespace.sarimax import SARIMAX`
+
+Never import those classes from `sklearn`.
+
+<required_scaffold>
+import numpy as np
+
+
+def covid_forecast(train_values, horizon, **kwargs):
+    train_values = np.asarray(train_values, dtype=float)
+
+    if train_values.ndim != 2:
+        raise ValueError(
+            "train_values must have shape (time, locations)"
+        )
+
+    if train_values.shape[0] < 1:
+        raise ValueError(
+            "At least one historical observation is required"
+        )
+
+    horizon = int(horizon)
+
+    if horizon < 1:
+        raise ValueError("horizon must be positive")
+
+    number_of_locations = train_values.shape[1]
+
+    forecast = np.empty(
+        (horizon, number_of_locations),
+        dtype=float,
+    )
+
+    for location_index in range(number_of_locations):
+        series = np.asarray(
+            train_values[:, location_index],
+            dtype=float,
+        )
+
+        fallback_value = float(series[-1])
+
+        try:
+            # Replace only this model-specific forecasting block.
+            prediction = np.repeat(
+                fallback_value,
+                horizon,
+            )
+        except Exception:
+            prediction = np.repeat(
+                fallback_value,
+                horizon,
+            )
+
+        prediction = np.asarray(
+            prediction,
+            dtype=float,
+        ).reshape(-1)
+
+        if prediction.size != horizon:
+            prediction = np.repeat(
+                fallback_value,
+                horizon,
+            )
+
+        prediction = np.nan_to_num(
+            prediction,
+            nan=fallback_value,
+            posinf=fallback_value,
+            neginf=0.0,
+        )
+
+        forecast[:, location_index] = prediction
+
+    forecast = np.nan_to_num(
+        forecast,
+        nan=0.0,
+        posinf=0.0,
+        neginf=0.0,
+    )
+
+    return np.clip(forecast, 0.0, None)
+</required_scaffold>
+
+### End Mandatory Implementation Scaffold
