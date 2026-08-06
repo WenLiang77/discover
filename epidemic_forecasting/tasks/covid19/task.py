@@ -13,10 +13,7 @@ from epidemic_forecasting.tasks.base import (
 from epidemic_forecasting.tasks.covid19.config import (
     make_covid19_config,
 )
-from epidemic_forecasting.tasks.covid19.evaluator import (
-    Covid19Evaluator,
-    NAIVE_BASELINE_CODE,
-)
+from epidemic_forecasting.tasks.covid19.evaluator import Covid19Evaluator
 
 
 class Covid19Task:
@@ -26,7 +23,6 @@ class Covid19Task:
     This class joins together:
     - the task configuration;
     - the UK or US EpiCastBench data;
-    - the initial baseline implementation;
     - generated-code evaluation.
     """
 
@@ -80,15 +76,6 @@ class Covid19Task:
 
         return value
 
-    def get_initial_code(self) -> str:
-        """
-        Return the simple last-value persistence baseline.
-
-        TTT starts from this valid implementation and asks the language model
-        to improve it.
-        """
-        return NAIVE_BASELINE_CODE
-
     def load_data(
         self,
     ) -> tuple[np.ndarray, np.ndarray, dict[str, Any]]:
@@ -112,12 +99,6 @@ class Covid19Task:
         Evaluate one generated covid_forecast implementation.
         """
         return self.evaluator.evaluate_code(code)
-
-    def evaluate_initial_code(self) -> EvaluationResult:
-        """
-        Evaluate the default baseline implementation.
-        """
-        return self.evaluate_code(self.get_initial_code())
 
     def describe(self) -> dict[str, Any]:
         """

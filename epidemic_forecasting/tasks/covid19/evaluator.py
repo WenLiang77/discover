@@ -123,24 +123,6 @@ BLOCKED_ATTRIBUTE_NAMES = {
     "tofile",
 }
 
-NAIVE_BASELINE_CODE = """\
-import numpy as np
-
-
-def covid_forecast(train_values, horizon, **kwargs):
-    train_values = np.asarray(train_values, dtype=float)
-
-    if train_values.ndim != 2:
-        raise ValueError("train_values must be a two-dimensional array.")
-
-    if train_values.shape[0] < 1:
-        raise ValueError("At least one historical observation is required.")
-
-    last_value = train_values[-1]
-    forecast = np.repeat(last_value[None, :], int(horizon), axis=0)
-
-    return np.clip(forecast, 0.0, None)
-"""
 
 
 def _safe_constant_expression(node: ast.AST) -> bool:
@@ -856,11 +838,6 @@ class Covid19Evaluator:
                 ),
             },
         )
-
-    def evaluate_naive_baseline(self) -> EvaluationResult:
-        """Evaluate the last-value persistence baseline."""
-        return self.evaluate_code(NAIVE_BASELINE_CODE)
-
 
 def evaluate_covid19_code(
     code: str,

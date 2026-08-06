@@ -162,24 +162,21 @@ def load_inference_model(model_name: str):
     return tokenizer, model
 
 
-def build_fixed_baseline_prompt(task, baseline_result) -> str:
+def build_fixed_baseline_prompt(task) -> str:
     """
-    Build the fixed prompt used for every independent Qwen-only attempt.
+    Build one fixed prompt for independent no-TTT generations.
 
-    Previous generated attempts are deliberately excluded. Including them
-    would turn this baseline into iterative prompt optimisation rather than
-    independent base-model sampling.
+    No hand-written forecasting implementation or hand-written result is
+    supplied to the model. Every attempt starts from the same task-only prompt.
     """
     from epidemic_forecasting.core.generation import (
         build_task_prompt,
     )
 
-    history = [baseline_result.to_history_item()]
-
     return build_task_prompt(
         prompt_path=task.config.prompt_path,
-        current_code=task.get_initial_code(),
-        history=history,
+        current_code="",
+        history=None,
     )
 
 
@@ -242,25 +239,6 @@ def run_baseline(args: argparse.Namespace) -> Path:
     print("Output directory:", output_directory)
     print("Task:", task.describe())
 
-    baseline_result = task.evaluate_initial_code()
-
-    baseline_payload = result_to_dict(baseline_result)
-
-    if baseline_result.predictions is not None:
-        np.save(
-            output_directory / "initial_baseline_predictions.npy",
-            baseline_result.predictions,
-        )
-
-    (output_directory / "initial_baseline.py").write_text(
-        task.get_initial_code(),
-        encoding="utf-8",
-    )
-    write_json(
-        output_directory / "initial_baseline_result.json",
-        baseline_payload,
-    )
-
     run_configuration = {
         "runner": "qwen_only_baseline",
         "task": task.describe(),
@@ -281,31 +259,24 @@ def run_baseline(args: argparse.Namespace) -> Path:
         run_configuration,
     )
 
-    if not baseline_result.ok:
-        raise RuntimeError(
-            "The initial persistence baseline failed evaluation: "
-            f"{baseline_result.error}"
-        )
+    fixed_prompt = build_fixed_baseline_prompt(task=task)
 
     if args.dry_run:
         summary = {
+            "schema_version": 2,
             "status": "dry_run_complete",
+            "runner": "qwen_only_baseline",
             "task": task.describe(),
-            "initial_baseline": baseline_payload,
             "generated_attempts": [],
             "valid_generated_count": 0,
             "invalid_generated_count": 0,
             "duplicate_behavior_count": 0,
             "best_generated_attempt": None,
-            "best_overall": {
-                "source": "initial_baseline",
-                "reward": baseline_result.reward,
-                "metrics": baseline_result.metrics,
-            },
+            "best_model_result": None,
             "finished_at_utc": datetime.now(timezone.utc).isoformat(),
         }
         write_json(output_directory / "summary.json", summary)
-        print("Dry run completed successfully.")
+        print("No-TTT dry run completed successfully.")
         return output_directory
 
     from epidemic_forecasting.core.generation import (
@@ -313,18 +284,8 @@ def run_baseline(args: argparse.Namespace) -> Path:
     )
 
     tokenizer, model = load_inference_model(args.model_name)
-    fixed_prompt = build_fixed_baseline_prompt(
-        task=task,
-        baseline_result=baseline_result,
-    )
-
     attempt_summaries: list[dict[str, Any]] = []
     seen_behavior_signatures: dict[str, str] = {}
-
-    if baseline_result.behavior_signature:
-        seen_behavior_signatures[
-            baseline_result.behavior_signature
-        ] = "initial_baseline"
 
     best_generated: dict[str, Any] | None = None
 
@@ -412,6 +373,9 @@ def run_baseline(args: argparse.Namespace) -> Path:
                     "reward": float(evaluation_result.reward),
                     "metrics": dict(evaluation_result.metrics),
                     "duplicate_valid_behavior": duplicate_behavior,
+                    "candidate_path": str(
+                        attempt_directory / "candidate.py"
+                    ),
                 }
 
             print("Valid:", evaluation_result.ok)
@@ -468,37 +432,29 @@ def run_baseline(args: argparse.Namespace) -> Path:
         for item in attempt_summaries
     )
 
-    if (
-        best_generated is not None
-        and best_generated["reward"] > float(baseline_result.reward)
-    ):
-        best_overall = {
-            "source": (
-                f"attempt_{best_generated['attempt']:04d}"
-            ),
-            "reward": best_generated["reward"],
-            "metrics": best_generated["metrics"],
-        }
-    else:
-        best_overall = {
-            "source": "initial_baseline",
-            "reward": baseline_result.reward,
-            "metrics": baseline_result.metrics,
-        }
+    if best_generated is not None:
+        best_candidate_path = Path(best_generated["candidate_path"])
+        if best_candidate_path.is_file():
+            (
+                output_directory / "best_generated_candidate.py"
+            ).write_text(
+                best_candidate_path.read_text(encoding="utf-8"),
+                encoding="utf-8",
+            )
 
     summary = {
+        "schema_version": 2,
         "status": "complete",
+        "runner": "qwen_only_baseline",
         "task": task.describe(),
-        "initial_baseline": baseline_payload,
         "generated_attempts": attempt_summaries,
         "valid_generated_count": len(valid_attempts),
         "invalid_generated_count": len(invalid_attempts),
         "duplicate_behavior_count": duplicate_count,
         "best_generated_attempt": best_generated,
-        "best_overall": best_overall,
+        "best_model_result": best_generated,
         "finished_at_utc": datetime.now(timezone.utc).isoformat(),
     }
-
     write_json(output_directory / "summary.json", summary)
 
     print()
@@ -509,7 +465,7 @@ def run_baseline(args: argparse.Namespace) -> Path:
     print("Invalid generated attempts:", len(invalid_attempts))
     print("Duplicate behaviours:", duplicate_count)
     print("Best generated:", best_generated)
-    print("Best overall:", best_overall)
+    print("Best model-generated result:", best_generated)
     print("Results:", output_directory)
 
     return output_directory
@@ -586,7 +542,7 @@ def build_argument_parser() -> argparse.ArgumentParser:
         "--dry-run",
         action="store_true",
         help=(
-            "Evaluate and save the initial baseline without loading Qwen."
+            "Validate task, prompt and output setup without loading Qwen."
         ),
     )
 

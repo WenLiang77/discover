@@ -211,40 +211,18 @@ def run_ttt(args: argparse.Namespace) -> Path:
     print("Output directory:", output_directory)
     print("Task:", task.describe())
 
-    baseline_result = task.evaluate_initial_code()
-    if not baseline_result.ok or baseline_result.reward is None:
-        raise RuntimeError(
-            "Initial baseline evaluation failed: "
-            f"{baseline_result.error}"
-        )
-
-    (output_directory / "initial_baseline.py").write_text(
-        task.get_initial_code(),
-        encoding="utf-8",
-    )
-    write_json(
-        output_directory / "initial_baseline_result.json",
-        result_to_dict(baseline_result),
-    )
-    if baseline_result.predictions is not None:
-        np.save(
-            output_directory / "initial_baseline_predictions.npy",
-            baseline_result.predictions,
-        )
-
     initial_state = SearchState(
         timestep=0,
-        code=task.get_initial_code(),
-        value=float(baseline_result.reward),
-        metrics=dict(baseline_result.metrics),
-        observation=format_observation(baseline_result, duplicate=False),
+        code="",
+        value=None,
+        metrics={},
+        observation="No model-generated candidate exists yet.",
         metadata={
-            "source": "initial_baseline",
+            "source": "generation_root",
             "task_id": task.config.task_id,
         },
-        behavior_signature=baseline_result.behavior_signature,
+        behavior_signature=None,
     )
-
     sampler = PUCTSampler(
         file_path=output_directory / "puct" / "sampler.json",
         initial_state_factory=lambda: initial_state,
@@ -293,20 +271,17 @@ def run_ttt(args: argparse.Namespace) -> Path:
 
     if args.dry_run:
         summary = {
+            "schema_version": 2,
             "status": "dry_run_complete",
             "runner": "local_ttt",
             "task": task.describe(),
-            "initial_baseline": result_to_dict(baseline_result),
             "steps": [],
             "valid_generated_count": 0,
             "invalid_generated_count": 0,
             "duplicate_behavior_count": 0,
             "best_generated_state": None,
-            "best_overall": {
-                "source": "initial_baseline",
-                "reward": baseline_result.reward,
-                "metrics": baseline_result.metrics,
-            },
+            "best_search_states": [],
+            "best_model_result": None,
             "finished_at_utc": datetime.now(timezone.utc).isoformat(),
         }
         write_json(output_directory / "summary.json", summary)
@@ -321,19 +296,8 @@ def run_ttt(args: argparse.Namespace) -> Path:
     )
     optimizer = make_optimizer(model=model, learning_rate=args.learning_rate)
 
-    all_history: list[dict[str, Any]] = [
-        history_item(
-            baseline_result,
-            duplicate=False,
-            adjusted_reward=float(baseline_result.reward),
-        )
-    ]
-
+    all_history: list[dict[str, Any]] = []
     seen_behavior_signatures: dict[str, str] = {}
-    if baseline_result.behavior_signature:
-        seen_behavior_signatures[
-            baseline_result.behavior_signature
-        ] = "initial_baseline"
 
     step_summaries: list[dict[str, Any]] = []
     total_valid = 0
@@ -619,31 +583,18 @@ def run_ttt(args: argparse.Namespace) -> Path:
         model.save_pretrained(adapter_directory)
         tokenizer.save_pretrained(adapter_directory)
 
-    if (
-        best_generated is not None
-        and best_generated["raw_reward"] > float(baseline_result.reward)
-    ):
-        best_overall = {"source": "generated", **best_generated}
-    else:
-        best_overall = {
-            "source": "initial_baseline",
-            "raw_reward": float(baseline_result.reward),
-            "adjusted_reward": float(baseline_result.reward),
-            "metrics": dict(baseline_result.metrics),
-        }
-
     summary = {
+        "schema_version": 2,
         "status": "complete",
         "runner": "local_ttt",
         "task": task.describe(),
-        "initial_baseline": result_to_dict(baseline_result),
         "steps": step_summaries,
         "valid_generated_count": total_valid,
         "invalid_generated_count": total_invalid,
         "duplicate_behavior_count": total_duplicates,
         "best_generated_state": best_generated,
         "best_search_states": best_state_payloads,
-        "best_overall": best_overall,
+        "best_model_result": best_generated,
         "finished_at_utc": datetime.now(timezone.utc).isoformat(),
     }
     write_json(output_directory / "summary.json", summary)
@@ -657,7 +608,7 @@ def run_ttt(args: argparse.Namespace) -> Path:
     print("Invalid generated candidates:", total_invalid)
     print("Duplicate behaviours:", total_duplicates)
     print("Best generated:", best_generated)
-    print("Best overall:", best_overall)
+    print("Best model-generated result:", best_generated)
     print("Results:", output_directory)
 
     return output_directory
@@ -721,7 +672,7 @@ def build_argument_parser() -> argparse.ArgumentParser:
         "--dry-run",
         action="store_true",
         help=(
-            "Check the task, baseline, output and PUCT setup "
+            "Check the task, prompt, output and PUCT setup "
             "without loading the language model."
         ),
     )

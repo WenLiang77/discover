@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -107,12 +107,6 @@ class EpidemicForecastTask(Protocol):
     """
 
     config: TaskConfig
-
-    def get_initial_code(self) -> str:
-        """
-        Return the initial baseline implementation supplied to the model.
-        """
-        ...
 
     def load_data(
         self,
