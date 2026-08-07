@@ -92,44 +92,114 @@ def encode_prompt_and_response(
     max_length: int = 4096,
 ):
     """
-    Tokenize prompt + response together.
+    Tokenize prompt and response separately.
 
-    We train only on the response tokens.
-    Prompt tokens are masked out with label = -100.
+    Training loss is computed only on response tokens.
+
+    When the combined sequence is longer than max_length, preserve
+    response tokens first and truncate the OLD part of the prompt.
+    This prevents a long TTT prompt from removing the generated
+    response completely.
+
+    With max_length=1024, at least roughly half of the available
+    sequence is reserved for the response when the response is long.
     """
+    if max_length < 4:
+        raise ValueError("max_length must be at least 4.")
 
-    full_text = prompt_text + "\n" + response_text
-
-    prompt_encoded = tokenizer(
+    prompt_ids = tokenizer(
         prompt_text,
         add_special_tokens=False,
-        truncation=True,
-        max_length=max_length,
+    )["input_ids"]
+
+    response_ids = tokenizer(
+        response_text,
+        add_special_tokens=False,
+    )["input_ids"]
+
+    separator_ids = tokenizer(
+        "\n",
+        add_special_tokens=False,
+    )["input_ids"]
+
+    if not response_ids:
+        input_ids = torch.tensor(
+            [prompt_ids[-max_length:]],
+            dtype=torch.long,
+        )
+        attention_mask = torch.ones_like(input_ids)
+        labels = torch.full_like(input_ids, -100)
+
+        return {
+            "input_ids": input_ids,
+            "attention_mask": attention_mask,
+            "labels": labels,
+        }
+
+    separator_length = len(separator_ids)
+
+    # Guarantee substantial room for generated response tokens.
+    # For max_length=1024 this reserves up to 512 response tokens.
+    minimum_response_tokens = min(
+        len(response_ids),
+        max_length // 2,
     )
 
-    full_encoded = tokenizer(
-        full_text,
-        return_tensors="pt",
-        truncation=True,
-        max_length=max_length,
+    prompt_budget = max(
+        0,
+        max_length
+        - separator_length
+        - minimum_response_tokens,
     )
 
-    input_ids = full_encoded["input_ids"]
-    attention_mask = full_encoded["attention_mask"]
+    # Keep the most recent part of the prompt.  In TTT this contains
+    # the current model-generated candidate, recent metrics, and the
+    # final improvement instruction.
+    if prompt_budget > 0:
+        kept_prompt_ids = prompt_ids[-prompt_budget:]
+    else:
+        kept_prompt_ids = []
+
+    # Whatever space remains is given to the response.  If the prompt
+    # is short, more than half of the sequence can therefore be used
+    # for the response.
+    response_budget = (
+        max_length
+        - len(kept_prompt_ids)
+        - separator_length
+    )
+
+    kept_response_ids = response_ids[:response_budget]
+
+    combined_ids = (
+        kept_prompt_ids
+        + separator_ids
+        + kept_response_ids
+    )
+
+    prompt_and_separator_length = (
+        len(kept_prompt_ids)
+        + separator_length
+    )
+
+    input_ids = torch.tensor(
+        [combined_ids],
+        dtype=torch.long,
+    )
+
+    attention_mask = torch.ones_like(input_ids)
 
     labels = input_ids.clone()
 
-    prompt_length = len(prompt_encoded["input_ids"])
-    prompt_length = min(prompt_length, labels.shape[1])
-
-    labels[:, :prompt_length] = -100
+    # Ignore prompt tokens.  Only generated response tokens contribute
+    # to the language-model training loss.
+    labels[:, :prompt_and_separator_length] = -100
 
     return {
         "input_ids": input_ids,
         "attention_mask": attention_mask,
         "labels": labels,
     }
-
 
 def compute_response_ce_loss(
     model,

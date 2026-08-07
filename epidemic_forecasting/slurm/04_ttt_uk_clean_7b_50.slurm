@@ -58,7 +58,7 @@ srun python -m epidemic_forecasting.run_ttt \
     --top-p 0.95 \
     --max-new-tokens 2048 \
     --max-input-tokens 8192 \
-    --training-max-length 1024 \
+    --training-max-length 2048 \
     --runtime-budget-seconds 400 \
     --learning-rate 1e-4 \
     --lora-rank 8 \
