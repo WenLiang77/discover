@@ -227,11 +227,21 @@ def train_lora_on_rollouts(
             "advantages": advantages.detach().cpu().tolist(),
         }
 
-    total_loss = None
+    # Accumulate gradients rollout-by-rollout instead of keeping all
+    # computation graphs alive until one final backward pass.
+    #
+    # This is mathematically equivalent to backpropagating the mean loss:
+    # first accumulate the sum of gradients, then divide the gradients by
+    # the number of valid training samples before optimizer.step().
+    total_loss_value = 0.0
     used_count = 0
     per_sample_losses = []
 
-    for prompt_text, response_text, advantage in zip(prompts, responses, advantages):
+    for prompt_text, response_text, advantage in zip(
+        prompts,
+        responses,
+        advantages,
+    ):
         ce_loss = compute_response_ce_loss(
             model=model,
             tokenizer=tokenizer,
@@ -249,39 +259,53 @@ def train_lora_on_rollouts(
         # Policy-gradient style local approximation:
         # CE = -logprob(response)
         # loss = advantage * CE
-        #
-        # Positive advantage -> reduce CE -> increase probability.
-        # Negative advantage -> increase CE -> decrease probability.
         sample_loss = advantage * ce_loss
 
-        if total_loss is None:
-            total_loss = sample_loss
-        else:
-            total_loss = total_loss + sample_loss
+        # Backpropagate immediately so this rollout's computation graph
+        # can be released before the next rollout is processed.
+        sample_loss.backward()
 
+        total_loss_value += float(sample_loss.detach().cpu())
         used_count += 1
-        per_sample_losses.append(float(ce_loss.detach().cpu()))
+        per_sample_losses.append(
+            float(ce_loss.detach().cpu())
+        )
 
-    if total_loss is None or used_count == 0:
-        optimizer.zero_grad()
+        del sample_loss
+        del ce_loss
+
+    if used_count == 0:
+        optimizer.zero_grad(set_to_none=True)
         return {
             "ok": False,
             "loss": None,
-            "message": "No valid response tokens were available for training.",
+            "message": (
+                "No valid response tokens were available for training."
+            ),
             "rewards": rewards,
             "advantages": advantages.detach().cpu().tolist(),
         }
 
-    # Average over used samples for stability.
-    total_loss = total_loss / used_count
+    # The old implementation used:
+    #
+    #     mean_loss = sum(sample_losses) / used_count
+    #     mean_loss.backward()
+    #
+    # We accumulated the summed gradients above, so divide them here
+    # before optimizer.step() to preserve the same average-gradient scale.
+    with torch.no_grad():
+        for parameter in model.parameters():
+            if parameter.grad is not None:
+                parameter.grad.div_(used_count)
 
-    total_loss.backward()
+    average_loss_value = total_loss_value / used_count
+
     optimizer.step()
-    optimizer.zero_grad()
+    optimizer.zero_grad(set_to_none=True)
 
     return {
         "ok": True,
-        "loss": float(total_loss.detach().cpu()),
+        "loss": average_loss_value,
         "used_count": used_count,
         "rewards": rewards,
         "advantages": advantages.detach().cpu().tolist(),

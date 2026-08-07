@@ -1,0 +1,63 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --gpus=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=8
+#SBATCH --job-name=qwen_uk_clean_7b_50
+#SBATCH --time=05:00:00
+#SBATCH --output=epidemic_forecasting/results/qwen_uk_clean_7b_50_%j.out
+#SBATCH --error=epidemic_forecasting/results/qwen_uk_clean_7b_50_%j.err
+
+set -euo pipefail
+module load cray-python/3.11.7
+
+REPO_ROOT="${SLURM_SUBMIT_DIR:-$(pwd)}"
+cd "${REPO_ROOT}"
+
+if [[ ! -d ".venv_epidemic" ]]; then
+    echo "ERROR: .venv_epidemic was not found."
+    echo "Run: bash epidemic_forecasting/setup_epidemic_env.sh"
+    exit 1
+fi
+
+source ".venv_epidemic/bin/activate"
+
+export PYTHONPATH="${REPO_ROOT}:${PYTHONPATH:-}"
+export PYTHONUNBUFFERED=1
+export TOKENIZERS_PARALLELISM=false
+export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK:-8}"
+export HF_HOME="${HF_HOME:-${HOME}/.cache/huggingface}"
+
+mkdir -p "${HF_HOME}"
+
+echo "Job ID: ${SLURM_JOB_ID}"
+echo "Node: $(hostname)"
+echo "Start: $(date --iso-8601=seconds)"
+echo "Python: $(which python)"
+python --version
+python - <<'PY'
+import torch
+print("torch:", torch.__version__)
+print("CUDA available:", torch.cuda.is_available())
+if torch.cuda.is_available():
+    print("GPU:", torch.cuda.get_device_name(0))
+    print("BF16 supported:", torch.cuda.is_bf16_supported())
+PY
+nvidia-smi --list-gpus
+
+OUTPUT_DIR="${REPO_ROOT}/epidemic_forecasting/results/baseline/covid19_uk_14step/job_${SLURM_JOB_ID}"
+
+srun python -m epidemic_forecasting.run_baseline \
+    --dataset uk \
+    --forecast-horizon 14 \
+    --model-name Qwen/Qwen2.5-Coder-7B-Instruct \
+    --attempts 50 \
+    --seed 42 \
+    --temperature 0.7 \
+    --top-p 0.95 \
+    --max-new-tokens 2048 \
+    --max-input-tokens 8192 \
+    --runtime-budget-seconds 400 \
+    --output-dir "${OUTPUT_DIR}"
+
+echo "End: $(date --iso-8601=seconds)"

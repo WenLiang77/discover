@@ -104,6 +104,8 @@ def load_tokenizer_and_lora_model(
     # Some models use cache during generation, but training with gradient checkpointing /
     # adapters is safer with cache disabled.
     model.config.use_cache = False
+    model.gradient_checkpointing_enable()
+    model.enable_input_require_grads()
 
     if lora_alpha is None:
         lora_alpha = 2 * lora_rank
