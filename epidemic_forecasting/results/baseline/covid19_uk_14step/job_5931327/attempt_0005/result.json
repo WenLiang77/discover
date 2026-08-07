@@ -1,0 +1,19 @@
+{
+  "attempt": 5,
+  "seed": 46,
+  "elapsed_seconds": 13.556670638965443,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "Evaluation failed: Forecast contains NaN or infinite values.",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "covid_uk",
+      "stage": "prediction_validation_or_metrics",
+      "runtime_seconds": 1.0081485280534253
+    }
+  }
+}

@@ -1,0 +1,43 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+def covid_forecast(train_values, horizon, **kwargs):
+    """
+    Forecast COVID-19 incidence for multiple regions using a SARIMAX model.
+
+    Parameters:
+    train_values (np.ndarray): A 2D NumPy array of shape (T, N) containing the training data,
+                                where T is the number of historical time steps and N is the number of regions.
+    horizon (int): The number of future time steps to predict.
+
+    Returns:
+    np.ndarray: A 2D NumPy array of shape (horizon, N) containing the forecasted values.
+    """
+    
+    num_regions = train_values.shape[1]
+    forecasts = np.zeros((horizon, num_regions))
+    
+    for region in range(num_regions):
+        # Fit a SARIMAX model to each region's data
+        try:
+            model = SARIMAX(train_values[:, region], order=(1, 1, 1), seasonal_order=(1, 1, 1, 7))
+            results = model.fit(disp=False)
+            
+            # Forecast the next 'horizon' steps
+            forecast = results.get_forecast(steps=horizon).predicted_mean
+            
+            # Ensure non-negativity and finite values
+            forecast = np.maximum(forecast, 0)
+            forecast[np.isnan(forecast)] = 0
+            forecast[np.isinf(forecast)] = 0
+            
+            forecasts[:, region] = forecast
+        except Exception as e:
+            # If model fitting fails, fill with zeros
+            forecasts[:, region] = 0
+    
+    return forecasts
+```
+
+This implementation uses a Seasonal AutoRegressive Integrated Moving Average with eXogenous factors (SARIMAX) model from the `statsmodels` library to forecast COVID-19 incidence for multiple regions. The model is fit to each region's data individually, and forecasts are made for the specified horizon. Non-negative and finite values are enforced in the forecasts. If model fitting fails due to any reason, the forecasts for that region are filled with zeros. This approach ensures robustness against various types of data characteristics while keeping the model orders and optimization costs modest.

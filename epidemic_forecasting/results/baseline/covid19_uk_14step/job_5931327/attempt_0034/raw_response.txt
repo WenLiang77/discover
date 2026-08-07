@@ -1,0 +1,34 @@
+```python
+import numpy as np
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.preprocessing import StandardScaler
+
+def covid_forecast(train_values, horizon, **kwargs):
+    # Split the data into train and validation sets
+    split_point = int(0.8 * len(train_values))
+    X_train = train_values[:split_point]
+    y_train = train_values[split_point:]
+    
+    # Scale the features
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    y_train_scaled = scaler.transform(y_train)
+    
+    # Train a RandomForestRegressor on the scaled data
+    model = RandomForestRegressor(n_estimators=100, random_state=42)
+    model.fit(X_train_scaled, y_train_scaled.flatten())
+    
+    # Prepare the initial forecast by predicting the last observed value
+    last_observed = train_values[-1]
+    last_observed_scaled = scaler.transform([last_observed])
+    forecast_scaled = model.predict(last_observed_scaled.reshape(1, -1))
+    
+    # Initialize the full forecast array with zeros
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    
+    # Fill the forecast array with the predicted values
+    for t in range(horizon):
+        forecast[t] = scaler.inverse_transform(forecast_scaled).flatten()
+    
+    return forecast.clip(min=0)
+```

@@ -1,0 +1,34 @@
+```python
+import numpy as np
+from statsmodels.tsa.seasonal import seasonal_decompose
+
+def covid_forecast(train_values, horizon, **kwargs):
+    # Decompose the time series into trend, seasonal, and residual components
+    decomposed = seasonal_decompose(train_values, period=7)
+    
+    # Extract the trend component
+    trend = decomposed.trend
+    
+    # Fill NaN values in the trend component with linear interpolation
+    trend = np.nan_to_num(trend, nan=np.interp(np.where(np.isnan(trend))[0], np.where(~np.isnan(trend))[0], trend[~np.isnan(trend)]))
+    
+    # Generate forecasts for each region
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    for i in range(train_values.shape[1]):
+        # Fit a simple exponential smoothing model to the trend component of the region
+        alpha = 2 / (len(trend[:, i]) + 1)  # Simple exponential smoothing parameter
+        smoothed_trend = np.zeros_like(trend[:, i])
+        smoothed_trend[0] = trend[0, i]
+        for t in range(1, len(trend[:, i])):
+            smoothed_trend[t] = alpha * trend[t, i] + (1 - alpha) * smoothed_trend[t - 1]
+        
+        # Extend the smoothed trend to the forecast horizon
+        extended_trend = np.concatenate([smoothed_trend, [smoothed_trend[-1]] * (horizon - len(smoothed_trend))])
+        
+        # Assign the forecast for the region
+        forecast[:, i] = extended_trend[:horizon]
+    
+    return forecast
+```
+
+This forecasting implementation decomposes the time series into trend, seasonal, and residual components, extracts the trend component, fills NaN values with linear interpolation, fits a simple exponential smoothing model to the trend component for each region, extends the smoothed trend to the forecast horizon, and returns the forecast.

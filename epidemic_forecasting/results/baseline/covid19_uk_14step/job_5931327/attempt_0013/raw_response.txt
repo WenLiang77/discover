@@ -1,0 +1,41 @@
+```python
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+
+def covid_forecast(train_values, horizon, **kwargs):
+    """
+    Forecast COVID-19 incidence for multiple regions using ARIMA models.
+    
+    Parameters:
+    - train_values: A 2D NumPy array of shape (T, N) containing historical incidence data.
+    - horizon: An integer representing the number of future time steps to predict.
+    - kwargs: Additional keyword arguments (not used in this function).
+    
+    Returns:
+    - A 2D NumPy array of shape (horizon, N) containing the forecasted incidence values.
+    """
+    # Ensure input is a NumPy array
+    train_values = np.array(train_values)
+    
+    # Initialize the forecasted values array
+    forecasted_values = np.zeros((horizon, train_values.shape[1]))
+    
+    # Fit an ARIMA model to each region and make forecasts
+    for i in range(train_values.shape[1]):
+        try:
+            # Fit ARIMA model to the current region's data
+            model = ARIMA(train_values[:, i], order=(5,1,0))
+            model_fit = model.fit()
+            
+            # Make predictions
+            forecast = model_fit.forecast(steps=horizon)
+            forecasted_values[:, i] = forecast.clip(0)  # Clip negative predictions to zero
+        except Exception as e:
+            # If model fitting fails, fill the forecast with zeros
+            print(f"Failed to fit model for region {i}: {e}")
+            forecasted_values[:, i] = 0
+    
+    return forecasted_values
+```
+
+This implementation uses the ARIMA model from `statsmodels` to forecast COVID-19 incidence for multiple regions. The ARIMA model is fitted to each region's historical data, and predictions are made for the specified horizon. Negative predictions are clipped to zero to ensure non-negative outputs. If a model fitting fails, the forecast for that region is set to zero. This approach ensures robustness and handles potential issues with model fitting gracefully.

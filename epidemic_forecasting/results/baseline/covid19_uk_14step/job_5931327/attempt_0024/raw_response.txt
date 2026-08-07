@@ -1,0 +1,59 @@
+```python
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.impute import SimpleImputer
+
+def covid_forecast(train_values, horizon, **kwargs):
+    # Initialize scaler
+    scaler = MinMaxScaler()
+    
+    # Fit scaler on training data
+    scaled_train_values = scaler.fit_transform(train_values)
+    
+    # Initialize imputer to handle missing values
+    imputer = SimpleImputer(strategy='mean')
+    
+    # Fit imputer on scaled training data
+    imputed_scaled_train_values = imputer.fit_transform(scaled_train_values)
+    
+    # Forecast each region separately
+    forecast_values = []
+    for i in range(imputed_scaled_train_values.shape[1]):
+        # Fit ARIMA model to the data of the current region
+        try:
+            model = ARIMA(imputed_scaled_train_values[:, i], order=(5, 1, 0))
+            model_fit = model.fit(disp=False)
+            
+            # Predict the next 'horizon' steps
+            forecast = model_fit.forecast(steps=horizon)
+            
+            # Inverse transform the forecasted values
+            inverse_forecast = scaler.inverse_transform(forecast.reshape(-1, 1))[:, 0]
+            
+            # Ensure non-negative forecasts
+            inverse_forecast = np.clip(inverse_forecast, 0, None)
+            
+            forecast_values.append(inverse_forecast)
+        except Exception as e:
+            print(f"Error fitting ARIMA model for region {i}: {e}")
+            # If fitting fails, use zeros as a fallback
+            forecast_values.append(np.zeros(horizon))
+    
+    # Convert the list of forecasts into a numpy array
+    forecast_array = np.array(forecast_values).T
+    
+    return forecast_array
+```
+
+This forecasting implementation uses the ARIMA model from `statsmodels` to predict COVID-19 incidence for each geographical region. Here's a breakdown of the steps involved:
+
+1. **Scaling**: The training data is scaled using `MinMaxScaler` to bring the values within a specific range (usually [0, 1]).
+2. **Imputation**: Missing values in the scaled data are handled using `SimpleImputer` with the mean strategy.
+3. **Model Fitting**: An ARIMA model is fitted to the data of each region. The order `(5, 1, 0)` is chosen arbitrarily and can be tuned based on the performance.
+4. **Forecasting**: The model is used to forecast the next `horizon` steps for each region.
+5. **Inverse Transformation**: The forecasted values are transformed back to their original scale using the inverse transformation of the scaler.
+6. **Non-Negative Clipping**: Negative forecasted values are clipped to zero to ensure they are non-negative.
+7. **Fallback Mechanism**: If fitting the ARIMA model fails for any reason, the forecast for that region is set to zero.
+
+This approach ensures that the forecasting function is robust and handles potential issues such as missing values and model fitting failures gracefully.

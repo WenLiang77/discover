@@ -1,0 +1,39 @@
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+def preprocess_data(train_values):
+    scaler = StandardScaler()
+    scaled_train_values = scaler.fit_transform(train_values)
+    return (scaled_train_values, scaler)
+
+def fit_model(scaled_train_values, horizon):
+    models = []
+    for i in range(scaled_train_values.shape[1]):
+        try:
+            model = SARIMAX(scaled_train_values[:, i], order=(1, 1, 1), seasonal_order=(1, 1, 1, 24))
+            model_fit = model.fit(disp=False)
+            models.append(model_fit)
+        except Exception as e:
+            models.append(None)
+    return models
+
+def forecast(models, scaler, train_values, horizon):
+    forecast_values = np.zeros((horizon, train_values.shape[1]))
+    for i, model in enumerate(models):
+        if model is not None:
+            try:
+                forecast_result = model.get_forecast(steps=horizon)
+                forecasted_values = forecast_result.predicted_mean
+                forecasted_values = np.clip(forecasted_values, 0, None)
+                forecasted_values = scaler.inverse_transform(np.array([forecasted_values]).T).flatten()
+                forecast_values[:, i] = forecasted_values
+            except Exception as e:
+                pass
+    return forecast_values
+
+def covid_forecast(train_values, horizon, **kwargs):
+    scaled_train_values, scaler = preprocess_data(train_values)
+    models = fit_model(scaled_train_values, horizon)
+    forecast_values = forecast(models, scaler, train_values, horizon)
+    return forecast_values

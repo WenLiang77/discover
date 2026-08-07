@@ -1,0 +1,19 @@
+{
+  "attempt": 30,
+  "seed": 71,
+  "elapsed_seconds": 14.338461332954466,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "Evaluation failed: Forecast has shape (14, 167); expected (14, 4).",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "covid_uk",
+      "stage": "prediction_validation_or_metrics",
+      "runtime_seconds": 7.7617608200525865
+    }
+  }
+}

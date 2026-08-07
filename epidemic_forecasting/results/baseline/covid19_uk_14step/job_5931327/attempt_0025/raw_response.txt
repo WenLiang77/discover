@@ -1,0 +1,52 @@
+```python
+import numpy as np
+from statsmodels.tsa.seasonal import seasonal_decompose
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from sklearn.preprocessing import StandardScaler
+from sklearn.impute import SimpleImputer
+
+def covid_forecast(train_values, horizon, **kwargs):
+    # Ensure train_values is a numpy array
+    train_values = np.array(train_values)
+    
+    # Check if the input is valid
+    if not isinstance(train_values, np.ndarray) or len(train_values.shape) != 2:
+        raise ValueError("Input must be a 2D numpy array.")
+    
+    if horizon <= 0:
+        raise ValueError("Horizon must be a positive integer.")
+    
+    # Decompose the time series to handle trend and seasonality
+    decomposed = seasonal_decompose(train_values, model='additive', period=7)
+    trend = decomposed.trend
+    seasonal = decomposed.seasonal
+    
+    # Combine trend and seasonal components
+    combined = trend + seasonal
+    
+    # Fill missing values with imputation
+    imputer = SimpleImputer(strategy='mean')
+    combined_filled = imputer.fit_transform(combined)
+    
+    # Scale the time series
+    scaler = StandardScaler()
+    combined_scaled = scaler.fit_transform(combined_filled)
+    
+    # Fit SARIMA model
+    try:
+        sarima_model = SARIMAX(combined_scaled, order=(1, 1, 1), seasonal_order=(1, 1, 1, 7)).fit(disp=False)
+    except Exception as e:
+        # If SARIMA fails, fit a simpler ARIMA model
+        arima_model = SARIMAX(combined_scaled, order=(1, 1, 1)).fit(disp=False)
+        forecast_scaled = arima_model.get_forecast(steps=horizon).forecasted_values
+    else:
+        forecast_scaled = sarima_model.get_forecast(steps=horizon).forecasted_values
+    
+    # Inverse scale the forecast
+    forecast = scaler.inverse_transform(forecast_scaled)
+    
+    # Clip negative values to zero
+    forecast = np.maximum(0, forecast)
+    
+    return forecast
+```

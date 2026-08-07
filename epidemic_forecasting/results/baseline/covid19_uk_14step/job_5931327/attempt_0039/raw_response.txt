@@ -1,0 +1,43 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+def covid_forecast(train_values, horizon, **kwargs):
+    # Ensure the input is a NumPy array
+    train_values = np.array(train_values)
+    
+    # Extract parameters
+    T, N = train_values.shape
+    freq = kwargs.get('frequency', 'D')  # Default frequency is daily
+    
+    # Initialize the forecasted values array
+    forecasts = np.zeros((horizon, N))
+    
+    # Loop through each region
+    for i in range(N):
+        try:
+            # Fit a SARIMAX model to the data for the current region
+            model = SARIMAX(train_values[:, i], order=(1, 1, 0), seasonal_order=(1, 1, 0, 7), enforce_stationarity=False, enforce_invertibility=False)
+            model_fit = model.fit(disp=False)
+            
+            # Generate the forecast
+            forecast = model_fit.forecast(steps=horizon)
+            forecasts[:, i] = forecast.clip(0)  # Clip negative values to zero
+        except Exception as e:
+            # If fitting fails, fill with zeros
+            forecasts[:, i] = 0
+            print(f"Failed to fit model for region {i}: {e}")
+    
+    return forecasts
+```
+
+### Explanation:
+1. **Input Validation**: The input `train_values` is converted to a NumPy array to ensure consistency.
+2. **Parameters Extraction**: The dimensions of the training data (`T`, `N`) and the frequency of the data are extracted.
+3. **Initialization**: A zero array `forecasts` is initialized to store the predicted values.
+4. **Loop Through Regions**: For each region, a SARIMAX model is fitted to the historical data.
+5. **Model Fitting**: The `SARIMAX` model is fitted with specified orders (1, 1, 0 for non-seasonal part and 1, 1, 0, 7 for seasonal part). The `enforce_stationarity` and `enforce_invertibility` flags are set to False to handle potential issues with these assumptions.
+6. **Forecast Generation**: The model is used to generate forecasts for the specified horizon. Negative predictions are clipped to zero.
+7. **Exception Handling**: If model fitting fails due to any reason, the corresponding region's forecast is filled with zeros, and an error message is printed.
+
+This approach ensures that the model is robust to various conditions and provides sensible fallbacks in case of errors during fitting.

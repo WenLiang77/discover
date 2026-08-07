@@ -1,0 +1,28 @@
+{
+  "attempt": 26,
+  "seed": 67,
+  "elapsed_seconds": 10.14850688597653,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": true,
+    "reward": -39.48834385735657,
+    "metrics": {
+      "smape": 39.48834385735657,
+      "mae": 39.46304731013938,
+      "rmse": 120.34682259416496,
+      "mase": 0.36222404770640965
+    },
+    "error": null,
+    "behavior_signature": "a2ed8059a295e664ed4ada4855d3169bc98401b1f3ddac32959a072dbd811de2",
+    "metadata": {
+      "dataset_id": "covid_uk",
+      "forecast_horizon": 14,
+      "number_of_locations": 4,
+      "candidate_runtime_seconds": 0.3304981109686196,
+      "total_runtime_seconds": 1.1696658249711618,
+      "primary_metric": "smape",
+      "primary_metric_direction": "minimize"
+    }
+  }
+}

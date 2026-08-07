@@ -1,0 +1,21 @@
+{
+  "attempt": 25,
+  "seed": 66,
+  "elapsed_seconds": 11.66955660993699,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "ValueError: SARIMAX models require univariate `endog`. Got shape (167, 4).",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "covid_uk",
+      "stage": "execution",
+      "runtime_seconds": 1.186505001038313,
+      "traceback": "Traceback (most recent call last):\n  File \"<generated_forecaster>\", line 22, in covid_forecast\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py\", line 328, in __init__\n    self._spec = SARIMAXSpecification(\n                 ^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/arima/specification.py\", line 454, in __init__\n    raise ValueError('SARIMAX models require univariate `endog`. Got'\nValueError: SARIMAX models require univariate `endog`. Got shape (167, 4).\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 398, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 24, in covid_forecast\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py\", line 328, in __init__\n    self._spec = SARIMAXSpecification(\n                 ^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/arima/specification.py\", line 454, in __init__\n    raise ValueError('SARIMAX models require univariate `endog`. Got'\nValueError: SARIMAX models require univariate `endog`. Got shape (167, 4).\n",
+      "timed_out": false
+    }
+  }
+}
