@@ -1,0 +1,64 @@
+```python
+import numpy as np
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+from statsmodels.tsa.arima.model import ARIMA
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.tsa.seasonal import seasonal_decompose
+from sklearn.preprocessing import PowerTransformer
+from math import isnan, inf
+
+def covid_forecast(train_values, horizon, **kwargs):
+    forecasted_values = np.zeros((horizon, train_values.shape[1]), dtype=float)
+    pt = PowerTransformer(method='yeo-johnson')
+    
+    for region in range(train_values.shape[1]):
+        region_data = train_values[:, region]
+        
+        # Apply Yeo-Johnson transformation to stabilize variance
+        transformed_data = pt.fit_transform(region_data.reshape(-1, 1)).flatten()
+        
+        # Decompose the transformed data into trend and seasonality
+        decomposition = seasonal_decompose(transformed_data, model='additive', period=7)
+        trend = decomposition.trend
+        seasonal = decomposition.seasonal
+        
+        try:
+            # Fit an ARIMA model on the trend component
+            arima_model = ARIMA(trend, order=(1, 1, 1))
+            arima_fitted_model = arima_model.fit(disp=False)
+            trend_forecast = arima_fitted_model.forecast(steps=horizon)
+            
+            # Fit an Exponential Smoothing model on the seasonal component
+            es_model = ExponentialSmoothing(seasonal, trend='add', seasonal_periods=7)
+            es_fitted_model = es_model.fit()
+            seasonal_forecast = es_fitted_model.forecast(steps=horizon)
+            
+            # Combine the forecasts and reverse transform them
+            combined_forecast = np.exp(trend_forecast + seasonal_forecast) - 1
+            original_scale_forecast = pt.inverse_transform(combined_forecast.reshape(-1, 1)).flatten()
+            forecasted_values[:, region] = np.maximum(original_scale_forecast, 0)
+            
+        except Exception as e:
+            try:
+                # Fallback to Exponential Smoothing on the original transformed data
+                es_model = ExponentialSmoothing(transformed_data, trend='add', seasonal=None)
+                es_fitted_model = es_model.fit()
+                forecast = es_fitted_model.forecast(steps=horizon)
+                
+                # Reverse transform the forecast
+                original_scale_forecast = pt.inverse_transform(forecast.reshape(-1, 1)).flatten()
+                forecasted_values[:, region] = np.maximum(original_scale_forecast, 0)
+                
+            except Exception as e:
+                forecasted_values[:, region] = 0
+    
+    return forecasted_values
+```
+
+This implementation includes several improvements over the previous candidate:
+1. **Yeo-Johnson Transformation**: To handle non-stationarity and stabilize variance, the data is transformed before modeling.
+2. **Decomposition**: The data is decomposed into trend and seasonality components, which allows for more accurate modeling of each component separately.
+3. **ARIMA Model**: An ARIMA model is fit to the trend component for capturing temporal dependencies.
+4. **Exponential Smoothing**: An Exponential Smoothing model is used for the seasonal component to capture local trends and smooth out noise.
+5. **Error Handling**: The code includes basic error handling to manage exceptions and ensure the forecast remains non-negative.
+6. **Reverse Transformation**: The forecasted values are reversed-transformed back to their original scale after modeling.

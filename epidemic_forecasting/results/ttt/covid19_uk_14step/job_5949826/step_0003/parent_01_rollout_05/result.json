@@ -1,0 +1,25 @@
+{
+  "step": 3,
+  "parent_number": 1,
+  "parent_state_id": "f53f9722-fd35-4a71-941c-4199e6ee346b",
+  "parent_reward": -91.8048357298361,
+  "rollout_number": 5,
+  "global_rollout_index": 15,
+  "seed": 57,
+  "elapsed_seconds": 26.57615555403754,
+  "raw_reward": null,
+  "adjusted_reward": -250.0,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "Static validation failed: Importing from 'statsmodels.graphics.tsaplots' is not allowed.",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "covid_uk",
+      "stage": "static_validation"
+    }
+  }
+}

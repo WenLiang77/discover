@@ -1,0 +1,37 @@
+import numpy as np
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+from statsmodels.tsa.arima.model import ARIMA
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.tsa.seasonal import seasonal_decompose
+from sklearn.preprocessing import PowerTransformer
+from sklearn.impute import SimpleImputer
+
+def covid_forecast(train_values, horizon, **kwargs):
+    forecasted_values = np.zeros((horizon, train_values.shape[1]))
+    imputer = SimpleImputer(strategy='mean')
+    for region in range(train_values.shape[1]):
+        region_data = train_values[:, region]
+        region_data = imputer.fit_transform(region_data.reshape(-1, 1)).flatten()
+        try:
+            decomposition = seasonal_decompose(region_data, model='multiplicative', period=7)
+            trend = decomposition.trend
+            seasonal = decomposition.seasonal
+            sarimax_model_trend = SARIMAX(trend, order=(1, 1, 1), seasonal_order=(1, 1, 1, 7))
+            sarimax_fitted_model_trend = sarimax_model_trend.fit(disp=False)
+            trend_forecast = sarimax_fitted_model_trend.get_forecast(steps=horizon).predicted_mean
+            sarimax_model_seasonal = SARIMAX(seasonal, order=(1, 1, 1), seasonal_order=(1, 1, 1, 7))
+            sarimax_fitted_model_seasonal = sarimax_model_seasonal.fit(disp=False)
+            seasonal_forecast = sarimax_fitted_model_seasonal.get_forecast(steps=horizon).predicted_mean
+            combined_forecast = trend_forecast * seasonal_forecast
+            inverse_transformed_forecast = np.maximum(combined_forecast, 0)
+            forecasted_values[:, region] = inverse_transformed_forecast
+        except Exception as _:
+            try:
+                es_model = ExponentialSmoothing(region_data, trend='mul', seasonal='add', seasonal_periods=7)
+                es_fitted_model = es_model.fit()
+                forecast = es_fitted_model.forecast(steps=horizon)
+                forecasted_values[:, region] = np.maximum(forecast, 0)
+            except Exception as _:
+                forecast = np.mean(region_data[-7:]) * np.ones(horizon)
+                forecasted_values[:, region] = np.maximum(forecast, 0)
+    return forecasted_values

@@ -1,0 +1,69 @@
+```python
+import numpy as np
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+from statsmodels.tsa.arima.model import ARIMA
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.tsa.seasonal import seasonal_decompose
+from sklearn.preprocessing import PowerTransformer
+from sklearn.exceptions import NotFittedError
+
+def covid_forecast(train_values, horizon, **kwargs):
+    forecasted_values = np.zeros((horizon, train_values.shape[1]))
+    
+    for region in range(train_values.shape[1]):
+        region_data = train_values[:, region].astype(np.float64)
+        
+        # Check if the region data has enough history for modeling
+        if len(region_data) < horizon * 2:
+            continue
+        
+        try:
+            # Apply power transformation to stabilize variance
+            pt = PowerTransformer(method='yeo-johnson')
+            transformed_data = pt.fit_transform(region_data.reshape(-1, 1)).flatten()
+            
+            # Decompose the time series to capture trend and seasonality
+            decomposition = seasonal_decompose(transformed_data, model='additive', period=7)
+            trend = decomposition.trend
+            seasonal = decomposition.seasonal
+            
+            # Fit SARIMAX model on the trend component
+            sarimax_model_trend = SARIMAX(trend, order=(1, 1, 1), seasonal_order=(1, 1, 1, 7))
+            sarimax_fitted_model_trend = sarimax_model_trend.fit(disp=False)
+            trend_forecast = sarimax_fitted_model_trend.get_forecast(steps=horizon).predicted_mean
+            
+            # Fit SARIMAX model on the seasonal component
+            sarimax_model_seasonal = SARIMAX(seasonal, order=(1, 1, 1), seasonal_order=(1, 1, 1, 7))
+            sarimax_fitted_model_seasonal = sarimax_model_seasonal.fit(disp=False)
+            seasonal_forecast = sarimax_fitted_model_seasonal.get_forecast(steps=horizon).predicted_mean
+            
+            # Combine forecasts
+            combined_forecast = trend_forecast + seasonal_forecast
+            
+            # Invert the power transformation
+            inverse_transformed_forecast = pt.inverse_transform(combined_forecast.reshape(-1, 1)).flatten()
+            
+            # Ensure non-negative values
+            forecasted_values[:, region] = np.maximum(inverse_transformed_forecast, 0)
+        except Exception as e:
+            try:
+                # Fallback to exponential smoothing if SARIMAX fails
+                es_model = ExponentialSmoothing(region_data, trend='add', seasonal=None)
+                es_fitted_model = es_model.fit(disp=False)
+                forecasted_values[:, region] = np.maximum(es_fitted_model.forecast(steps=horizon), 0)
+            except Exception as e:
+                # If both methods fail, fill with zeros
+                pass
+    
+    return forecasted_values
+```
+
+### Explanation:
+1. **Power Transformation**: Applies a Yeo-Johnson transformation to stabilize the variance of the time series.
+2. **Seasonal Decomposition**: Uses `seasonal_decompose` to separate the time series into trend and seasonal components.
+3. **SARIMAX Models**: Fits two SARIMAX models on the trend and seasonal components separately and combines their forecasts.
+4. **Inverse Transformation**: Reverses the power transformation to get back to the original scale.
+5. **Non-Negative Forecasts**: Ensures that all predicted values are non-negative by clipping them at zero.
+6. **Fallback Mechanism**: If the initial approach fails, falls back to simple exponential smoothing.
+
+This implementation aims to handle various types of time series characteristics such as trend, seasonality, and noise effectively while ensuring that the forecasts are non-negative and within the required shape.

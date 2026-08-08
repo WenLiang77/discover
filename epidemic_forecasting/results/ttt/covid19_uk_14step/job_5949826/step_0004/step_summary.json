@@ -1,0 +1,402 @@
+{
+  "step": 4,
+  "parents": [
+    {
+      "type": "SearchState",
+      "id": "31c7b51d-f703-4bc5-bb83-89d59455581c",
+      "timestep": 3,
+      "code": "import numpy as np\nfrom statsmodels.tsa.holtwinters import ExponentialSmoothing\nfrom statsmodels.tsa.statespace.sarimax import SARIMAX\nfrom statsmodels.tsa.seasonal import seasonal_decompose\nfrom sklearn.preprocessing import PowerTransformer\n\ndef covid_forecast(train_values, horizon, **kwargs):\n    forecasted_values = np.zeros((horizon, train_values.shape[1]))\n    for region in range(train_values.shape[1]):\n        region_data = train_values[:, region]\n        pt = PowerTransformer(method='yeo-johnson')\n        transformed_data = pt.fit_transform(region_data.reshape(-1, 1)).flatten()\n        try:\n            decomposition = seasonal_decompose(transformed_data, model='additive', period=7)\n            trend = decomposition.trend\n            seasonal = decomposition.seasonal\n            sarimax_model = SARIMAX(trend, order=(1, 1, 1), seasonal_order=(1, 1, 1, 7))\n            sarimax_fitted_model = sarimax_model.fit(disp=False)\n            trend_forecast = sarimax_fitted_model.get_forecast(steps=horizon).predicted_mean\n            es_model = ExponentialSmoothing(seasonal, trend='add', seasonal_periods=7)\n            es_fitted_model = es_model.fit()\n            seasonal_forecast = es_fitted_model.forecast(steps=horizon)\n            combined_forecast = trend_forecast + seasonal_forecast\n            inverse_transformed_forecast = pt.inverse_transform(combined_forecast.reshape(-1, 1)).flatten()\n            forecasted_values[:, region] = np.maximum(inverse_transformed_forecast, 0)\n        except Exception as e:\n            try:\n                es_model = ExponentialSmoothing(region_data, trend='add', seasonal=None)\n                es_fitted_model = es_model.fit()\n                forecast = es_fitted_model.forecast(steps=horizon)\n                forecasted_values[:, region] = np.maximum(forecast, 0)\n            except Exception as e:\n                pass\n    return forecasted_values",
+      "value": -45.973170765081534,
+      "metrics": {
+        "smape": 45.973170765081534,
+        "mae": 57.15726550847445,
+        "rmse": 128.6829217314304,
+        "mase": 0.4767002506591214
+      },
+      "observation": "reward=-45.973171; mae=57.157266, mase=0.47670025, rmse=128.68292, smape=45.973171;",
+      "metadata": {
+        "step": 3,
+        "parent_number": 1,
+        "rollout_number": 3,
+        "raw_reward": -45.973170765081534,
+        "adjusted_reward": -45.973170765081534,
+        "duplicate_behavior": false,
+        "duplicate_of": null,
+        "evaluation_metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 1.1966570699587464,
+          "total_runtime_seconds": 5.886814572964795,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize"
+        }
+      },
+      "behavior_signature": "be9323132a8848bfa06546ebd2473b463b3e02933fce367ee32fcc8dcec5e73e",
+      "parent_values": [
+        -91.8048357298361,
+        -97.79259450483272
+      ],
+      "parents": [
+        {
+          "id": "f53f9722-fd35-4a71-941c-4199e6ee346b",
+          "timestep": 2
+        },
+        {
+          "id": "23dc966e-8a87-4aee-8345-1205a562cd09",
+          "timestep": 1
+        },
+        {
+          "id": "8906295b-68cf-42c6-956c-a10143383014",
+          "timestep": 0
+        }
+      ]
+    }
+  ],
+  "rollouts": [
+    {
+      "step": 4,
+      "parent_number": 1,
+      "parent_state_id": "31c7b51d-f703-4bc5-bb83-89d59455581c",
+      "parent_reward": -45.973170765081534,
+      "rollout_number": 1,
+      "global_rollout_index": 16,
+      "seed": 58,
+      "elapsed_seconds": 41.301822645938955,
+      "raw_reward": null,
+      "adjusted_reward": -250.0,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "NameError: name 'seasonal_decompose' is not defined",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 4.773227849043906,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 398, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 19, in covid_forecast\nNameError: name 'seasonal_decompose' is not defined\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "step": 4,
+      "parent_number": 1,
+      "parent_state_id": "31c7b51d-f703-4bc5-bb83-89d59455581c",
+      "parent_reward": -45.973170765081534,
+      "rollout_number": 2,
+      "global_rollout_index": 17,
+      "seed": 59,
+      "elapsed_seconds": 22.445328578935005,
+      "raw_reward": null,
+      "adjusted_reward": -250.0,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "ValueError: non-broadcastable output operand with shape (14,1) doesn't match the broadcast shape (14,4)",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 4.642819845001213,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 398, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 18, in covid_forecast\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/preprocessing/_data.py\", line 613, in inverse_transform\n    X -= self.min_\nValueError: non-broadcastable output operand with shape (14,1) doesn't match the broadcast shape (14,4)\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "step": 4,
+      "parent_number": 1,
+      "parent_state_id": "31c7b51d-f703-4bc5-bb83-89d59455581c",
+      "parent_reward": -45.973170765081534,
+      "rollout_number": 3,
+      "global_rollout_index": 18,
+      "seed": 60,
+      "elapsed_seconds": 37.16918758396059,
+      "raw_reward": -45.973170765081534,
+      "adjusted_reward": -45.973170765081534,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "step_0003/parent_01_rollout_03",
+      "evaluation": {
+        "ok": true,
+        "reward": -45.973170765081534,
+        "metrics": {
+          "smape": 45.973170765081534,
+          "mae": 57.15726550847445,
+          "rmse": 128.6829217314304,
+          "mase": 0.4767002506591214
+        },
+        "error": null,
+        "behavior_signature": "be9323132a8848bfa06546ebd2473b463b3e02933fce367ee32fcc8dcec5e73e",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 1.1885555810295045,
+          "total_runtime_seconds": 5.844644542085007,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize"
+        }
+      }
+    },
+    {
+      "step": 4,
+      "parent_number": 1,
+      "parent_state_id": "31c7b51d-f703-4bc5-bb83-89d59455581c",
+      "parent_reward": -45.973170765081534,
+      "rollout_number": 4,
+      "global_rollout_index": 19,
+      "seed": 61,
+      "elapsed_seconds": 38.192992710042745,
+      "raw_reward": -149.68581124063897,
+      "adjusted_reward": -149.68581124063897,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": true,
+        "reward": -149.68581124063897,
+        "metrics": {
+          "smape": 149.68581124063897,
+          "mae": 344.1464750146867,
+          "rmse": 597.1435457739275,
+          "mase": 3.2531598262160424
+        },
+        "error": null,
+        "behavior_signature": "0f6bf4126ddc2870bcafc0b3788a111e7061c24f3db7e712d8ca4a41021fb73b",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.04041945899371058,
+          "total_runtime_seconds": 4.7117418620036915,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize"
+        }
+      }
+    },
+    {
+      "step": 4,
+      "parent_number": 1,
+      "parent_state_id": "31c7b51d-f703-4bc5-bb83-89d59455581c",
+      "parent_reward": -45.973170765081534,
+      "rollout_number": 5,
+      "global_rollout_index": 20,
+      "seed": 62,
+      "elapsed_seconds": 40.82125582895242,
+      "raw_reward": -97.79259450483272,
+      "adjusted_reward": -97.79259450483272,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "step_0001/parent_01_rollout_02",
+      "evaluation": {
+        "ok": true,
+        "reward": -97.79259450483272,
+        "metrics": {
+          "smape": 97.79259450483272,
+          "mae": 60.05477303972454,
+          "rmse": 127.09836519587475,
+          "mase": 0.533589791746933
+        },
+        "error": null,
+        "behavior_signature": "7a91161390a3cf086fba664638422455b2f72ad4fc037ad27dd5efa1f28a5430",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.06572500104084611,
+          "total_runtime_seconds": 4.880928233964369,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize"
+        }
+      }
+    }
+  ],
+  "training": {
+    "ok": true,
+    "loss": 0.0036384120583534242,
+    "used_count": 5,
+    "rewards": [
+      -250.0,
+      -250.0,
+      -45.973170765081534,
+      -149.68581124063897,
+      -97.79259450483272
+    ],
+    "advantages": [
+      -0.9558807611465454,
+      -0.9558807611465454,
+      6.8532185554504395,
+      -0.6419469118118286,
+      0.21841120719909668
+    ],
+    "per_sample_ce_losses": [
+      0.2532779276371002,
+      0.25714558362960815,
+      0.07564914971590042,
+      0.06672131270170212,
+      0.13958755135536194
+    ]
+  },
+  "puct_stats": {
+    "puct/buffer_size": 4.0,
+    "puct/sampled_size": 1.0,
+    "puct/T": 20.0,
+    "puct/scale_last": 51.81942373975119,
+    "puct/buffer_value/mean": -78.52353366658345,
+    "puct/buffer_value/std": 23.14602784570881,
+    "puct/buffer_value/min": -97.79259450483272,
+    "puct/buffer_value/max": -45.973170765081534,
+    "puct/sampled_value/mean": -45.973170765081534,
+    "puct/sampled_value/std": 0.0,
+    "puct/sampled_value/min": -45.973170765081534,
+    "puct/sampled_value/max": -45.973170765081534,
+    "puct/selected_score/mean": 36.937907218520365,
+    "puct/selected_score/std": 0.0,
+    "puct/selected_score/min": 36.937907218520365,
+    "puct/selected_score/max": 36.937907218520365
+  },
+  "best_states": [
+    {
+      "type": "SearchState",
+      "id": "31c7b51d-f703-4bc5-bb83-89d59455581c",
+      "timestep": 3,
+      "code": "import numpy as np\nfrom statsmodels.tsa.holtwinters import ExponentialSmoothing\nfrom statsmodels.tsa.statespace.sarimax import SARIMAX\nfrom statsmodels.tsa.seasonal import seasonal_decompose\nfrom sklearn.preprocessing import PowerTransformer\n\ndef covid_forecast(train_values, horizon, **kwargs):\n    forecasted_values = np.zeros((horizon, train_values.shape[1]))\n    for region in range(train_values.shape[1]):\n        region_data = train_values[:, region]\n        pt = PowerTransformer(method='yeo-johnson')\n        transformed_data = pt.fit_transform(region_data.reshape(-1, 1)).flatten()\n        try:\n            decomposition = seasonal_decompose(transformed_data, model='additive', period=7)\n            trend = decomposition.trend\n            seasonal = decomposition.seasonal\n            sarimax_model = SARIMAX(trend, order=(1, 1, 1), seasonal_order=(1, 1, 1, 7))\n            sarimax_fitted_model = sarimax_model.fit(disp=False)\n            trend_forecast = sarimax_fitted_model.get_forecast(steps=horizon).predicted_mean\n            es_model = ExponentialSmoothing(seasonal, trend='add', seasonal_periods=7)\n            es_fitted_model = es_model.fit()\n            seasonal_forecast = es_fitted_model.forecast(steps=horizon)\n            combined_forecast = trend_forecast + seasonal_forecast\n            inverse_transformed_forecast = pt.inverse_transform(combined_forecast.reshape(-1, 1)).flatten()\n            forecasted_values[:, region] = np.maximum(inverse_transformed_forecast, 0)\n        except Exception as e:\n            try:\n                es_model = ExponentialSmoothing(region_data, trend='add', seasonal=None)\n                es_fitted_model = es_model.fit()\n                forecast = es_fitted_model.forecast(steps=horizon)\n                forecasted_values[:, region] = np.maximum(forecast, 0)\n            except Exception as e:\n                pass\n    return forecasted_values",
+      "value": -45.973170765081534,
+      "metrics": {
+        "smape": 45.973170765081534,
+        "mae": 57.15726550847445,
+        "rmse": 128.6829217314304,
+        "mase": 0.4767002506591214
+      },
+      "observation": "reward=-45.973171; mae=57.157266, mase=0.47670025, rmse=128.68292, smape=45.973171;",
+      "metadata": {
+        "step": 3,
+        "parent_number": 1,
+        "rollout_number": 3,
+        "raw_reward": -45.973170765081534,
+        "adjusted_reward": -45.973170765081534,
+        "duplicate_behavior": false,
+        "duplicate_of": null,
+        "evaluation_metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 1.1966570699587464,
+          "total_runtime_seconds": 5.886814572964795,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize"
+        }
+      },
+      "behavior_signature": "be9323132a8848bfa06546ebd2473b463b3e02933fce367ee32fcc8dcec5e73e",
+      "parent_values": [
+        -91.8048357298361,
+        -97.79259450483272
+      ],
+      "parents": [
+        {
+          "id": "f53f9722-fd35-4a71-941c-4199e6ee346b",
+          "timestep": 2
+        },
+        {
+          "id": "23dc966e-8a87-4aee-8345-1205a562cd09",
+          "timestep": 1
+        },
+        {
+          "id": "8906295b-68cf-42c6-956c-a10143383014",
+          "timestep": 0
+        }
+      ]
+    },
+    {
+      "type": "SearchState",
+      "id": "f53f9722-fd35-4a71-941c-4199e6ee346b",
+      "timestep": 2,
+      "code": "import numpy as np\nfrom statsmodels.tsa.holtwinters import ExponentialSmoothing\nfrom statsmodels.tsa.statespace.sarimax import SARIMAX\n\ndef covid_forecast(train_values, horizon, **kwargs):\n    forecasted_values = np.zeros((horizon, train_values.shape[1]))\n    for region in range(train_values.shape[1]):\n        region_data = train_values[:, region]\n        try:\n            model = SARIMAX(region_data, order=(1, 1, 1), seasonal_order=(1, 1, 1, 7))\n            fitted_model = model.fit(disp=False)\n            forecast = fitted_model.get_forecast(steps=horizon).predicted_mean\n            forecasted_values[:, region] = np.maximum(forecast, 0)\n        except Exception as _:\n            pass\n        if np.all(np.isnan(forecasted_values[:, region])):\n            try:\n                model = ExponentialSmoothing(region_data, trend='add', seasonal=None)\n                fitted_model = model.fit()\n                forecast = fitted_model.forecast(steps=horizon)\n                forecasted_values[:, region] = np.maximum(forecast, 0)\n            except Exception as _:\n                pass\n    return forecasted_values",
+      "value": -91.8048357298361,
+      "metrics": {
+        "smape": 91.8048357298361,
+        "mae": 51.83371745544783,
+        "rmse": 136.46113809672514,
+        "mase": 0.535683455485427
+      },
+      "observation": "reward=-91.804836; mae=51.833717, mase=0.53568346, rmse=136.46114, smape=91.804836;",
+      "metadata": {
+        "step": 2,
+        "parent_number": 1,
+        "rollout_number": 1,
+        "raw_reward": -91.8048357298361,
+        "adjusted_reward": -91.8048357298361,
+        "duplicate_behavior": false,
+        "duplicate_of": null,
+        "evaluation_metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.7529270539525896,
+          "total_runtime_seconds": 5.296159987919964,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize"
+        }
+      },
+      "behavior_signature": "a6c95fdb0d798b27bfed10691af3b9a24494b7c2bef1595239f8ca933ef6c235",
+      "parent_values": [
+        -97.79259450483272
+      ],
+      "parents": [
+        {
+          "id": "23dc966e-8a87-4aee-8345-1205a562cd09",
+          "timestep": 1
+        },
+        {
+          "id": "8906295b-68cf-42c6-956c-a10143383014",
+          "timestep": 0
+        }
+      ]
+    },
+    {
+      "type": "SearchState",
+      "id": "23dc966e-8a87-4aee-8345-1205a562cd09",
+      "timestep": 1,
+      "code": "import numpy as np\nfrom statsmodels.tsa.holtwinters import ExponentialSmoothing\n\ndef covid_forecast(train_values, horizon, **kwargs):\n    forecasted_values = np.zeros((horizon, train_values.shape[1]))\n    for region in range(train_values.shape[1]):\n        region_data = train_values[:, region]\n        try:\n            model = ExponentialSmoothing(region_data, trend='add', seasonal=None)\n            fitted_model = model.fit()\n            forecast = fitted_model.forecast(steps=horizon)\n            forecasted_values[:, region] = np.maximum(forecast, 0)\n        except Exception as e:\n            forecasted_values[:, region] = 0\n    return forecasted_values",
+      "value": -97.79259450483272,
+      "metrics": {
+        "smape": 97.79259450483272,
+        "mae": 60.05477303972454,
+        "rmse": 127.09836519587475,
+        "mase": 0.533589791746933
+      },
+      "observation": "reward=-97.792595; mae=60.054773, mase=0.53358979, rmse=127.09837, smape=97.792595;",
+      "metadata": {
+        "step": 1,
+        "parent_number": 1,
+        "rollout_number": 2,
+        "raw_reward": -97.79259450483272,
+        "adjusted_reward": -97.79259450483272,
+        "duplicate_behavior": false,
+        "duplicate_of": null,
+        "evaluation_metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.034414571011438966,
+          "total_runtime_seconds": 6.021569916978478,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize"
+        }
+      },
+      "behavior_signature": "7a91161390a3cf086fba664638422455b2f72ad4fc037ad27dd5efa1f28a5430",
+      "parent_values": [],
+      "parents": [
+        {
+          "id": "8906295b-68cf-42c6-956c-a10143383014",
+          "timestep": 0
+        }
+      ]
+    }
+  ]
+}

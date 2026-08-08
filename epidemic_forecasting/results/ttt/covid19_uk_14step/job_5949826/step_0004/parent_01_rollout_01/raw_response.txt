@@ -1,0 +1,66 @@
+```python
+import numpy as np
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from sklearn.preprocessing import PowerTransformer
+from sklearn.impute import SimpleImputer
+from sklearn.linear_model import LinearRegression
+from sklearn.pipeline import make_pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import StandardScaler
+
+def covid_forecast(train_values, horizon, **kwargs):
+    forecasted_values = np.zeros((horizon, train_values.shape[1]))
+    imputer = SimpleImputer(strategy='mean')
+    
+    for region in range(train_values.shape[1]):
+        region_data = train_values[:, region]
+        region_data = imputer.fit_transform(region_data.reshape(-1, 1)).flatten()
+        
+        # Detect seasonality and trend
+        seasonal_period = 7  # Assuming weekly seasonality
+        if len(region_data) >= 2 * seasonal_period:
+            decomposition = seasonal_decompose(region_data, model='multiplicative', period=seasonal_period)
+            trend = decomposition.trend
+            seasonal = decomposition.seasonal
+        else:
+            trend = np.zeros_like(region_data)
+            seasonal = np.ones_like(region_data)
+        
+        # Combine trend and seasonal components
+        combined_data = trend * seasonal
+        
+        # Fit SARIMAX model on combined data
+        try:
+            sarimax_model = SARIMAX(combined_data, order=(1, 1, 1), seasonal_order=(1, 1, 1, seasonal_period))
+            sarimax_fitted_model = sarimax_model.fit(disp=False)
+            trend_forecast = sarimax_fitted_model.get_forecast(steps=horizon).predicted_mean
+            seasonal_forecast = seasonal[:horizon]
+            combined_forecast = trend_forecast * seasonal_forecast
+        except Exception as _:
+            combined_forecast = np.full(horizon, np.nan)
+        
+        # Fit Exponential Smoothing model on original data
+        try:
+            es_model = ExponentialSmoothing(region_data, trend='add', seasonal=None)
+            es_fitted_model = es_model.fit()
+            forecast = es_fitted_model.forecast(steps=horizon)
+        except Exception as _:
+            forecast = np.full(horizon, np.nan)
+        
+        # Combine forecasts and apply inverse transformation
+        combined_forecast[np.isnan(combined_forecast)] = forecast[np.isnan(combined_forecast)]
+        forecasted_values[:, region] = np.maximum(combined_forecast, 0)
+    
+    return forecasted_values
+```
+
+### Explanation:
+1. **Imputation**: We use `SimpleImputer` to handle missing values (zeros) in the training data.
+2. **Seasonality Detection**: We assume a weekly seasonality (period of 7 days). If the data length is less than twice the seasonality period, we default to a constant seasonal component.
+3. **SARIMAX Model**: We fit a SARIMAX model on the combined trend and seasonal data to capture both temporal dependencies and seasonality.
+4. **Exponential Smoothing Model**: We also fit an exponential smoothing model directly on the original data to capture local trends.
+5. **Combination of Forecasts**: We combine the forecasts from both models, preferring the SARIMAX model where available.
+6. **Sanitization**: Negative forecasts are clipped to zero using `np.maximum`.
+
+This approach aims to balance between capturing both global trends and regional-specific patterns, while handling potential issues like missing data and non-stationarity.

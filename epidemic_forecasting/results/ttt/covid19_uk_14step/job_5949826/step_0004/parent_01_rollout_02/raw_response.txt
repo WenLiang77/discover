@@ -1,0 +1,37 @@
+```python
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.preprocessing import MinMaxScaler
+
+def covid_forecast(train_values, horizon, **kwargs):
+    scaler = MinMaxScaler(feature_range=(0, 1))
+    scaled_train_values = scaler.fit_transform(train_values)
+
+    forecasted_values = np.zeros((horizon, train_values.shape[1]))
+    
+    for region in range(train_values.shape[1]):
+        region_data = scaled_train_values[:, region]
+        
+        # Fit ARIMA model
+        try:
+            arima_model = ARIMA(region_data, order=(5, 1, 0))
+            arima_fitted_model = arima_model.fit(disp=False)
+            forecast = arima_fitted_model.forecast(steps=horizon)
+        except Exception as e:
+            forecast = np.full(horizon, np.nan)
+        
+        # Clip negative values to zero
+        forecast = np.maximum(forecast, 0)
+        
+        # Inverse transform
+        inverse_transformed_forecast = scaler.inverse_transform(forecast.reshape(-1, 1)).flatten()
+        
+        # Ensure non-nan values
+        inverse_transformed_forecast[np.isnan(inverse_transformed_forecast)] = 0
+        
+        forecasted_values[:, region] = inverse_transformed_forecast
+    
+    return forecasted_values
+```
+
+This implementation uses the ARIMA model for forecasting, which is a robust and widely-used technique for time-series forecasting. It includes scaling of the data to improve the performance of the ARIMA model and handles potential issues such as negative predictions and missing values during forecasting.

@@ -1,0 +1,35 @@
+{
+  "step": 10,
+  "parent_number": 1,
+  "parent_state_id": "d804c5fe-74d0-4461-8694-e73b0a3a91fa",
+  "parent_reward": -44.408815761998035,
+  "rollout_number": 4,
+  "global_rollout_index": 49,
+  "seed": 91,
+  "elapsed_seconds": 32.87269314401783,
+  "raw_reward": -139.28571428571428,
+  "adjusted_reward": -139.28571428571428,
+  "duplicate_valid_behavior": true,
+  "duplicate_of": "step_0008/parent_01_rollout_01",
+  "evaluation": {
+    "ok": true,
+    "reward": -139.28571428571428,
+    "metrics": {
+      "smape": 139.28571428571428,
+      "mae": 142.92857142857142,
+      "rmse": 293.1388018377252,
+      "mase": 1.0586307040752856
+    },
+    "error": null,
+    "behavior_signature": "b9688a03298da6f9dc64aa9b5385145bd0c8bb79c0b974f5f09ea17954cc0028",
+    "metadata": {
+      "dataset_id": "covid_uk",
+      "forecast_horizon": 14,
+      "number_of_locations": 4,
+      "candidate_runtime_seconds": 0.006046077003702521,
+      "total_runtime_seconds": 4.626694567035884,
+      "primary_metric": "smape",
+      "primary_metric_direction": "minimize"
+    }
+  }
+}

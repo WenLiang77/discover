@@ -1,0 +1,26 @@
+{
+  "step": 8,
+  "parent_number": 1,
+  "parent_state_id": "31c7b51d-f703-4bc5-bb83-89d59455581c",
+  "parent_reward": -45.973170765081534,
+  "rollout_number": 2,
+  "global_rollout_index": 37,
+  "seed": 79,
+  "elapsed_seconds": 33.97068271692842,
+  "raw_reward": null,
+  "adjusted_reward": -250.0,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "Evaluation failed: Forecast contains NaN or infinite values.",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "covid_uk",
+      "stage": "prediction_validation_or_metrics",
+      "runtime_seconds": 4.732860350050032
+    }
+  }
+}

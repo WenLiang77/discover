@@ -1,0 +1,54 @@
+```python
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+from sklearn.preprocessing import PowerTransformer
+from scipy.stats.mstats import gmean
+
+def covid_forecast(train_values, horizon, **kwargs):
+    forecasted_values = np.zeros((horizon, train_values.shape[1]))
+    for region in range(train_values.shape[1]):
+        region_data = train_values[:, region]
+        pt = PowerTransformer(method='yeo-johnson')
+        transformed_data = pt.fit_transform(region_data.reshape(-1, 1)).flatten()
+        
+        try:
+            # Attempt SARIMAX model
+            sarimax_model = SARIMAX(transformed_data, order=(1, 1, 1), seasonal_order=(1, 1, 1, 7))
+            sarimax_fitted_model = sarimax_model.fit(maxiter=1000, disp=False)
+            sarimax_forecast = sarimax_fitted_model.get_forecast(steps=horizon).predicted_mean
+            forecasted_values[:, region] = np.maximum(pt.inverse_transform(sarimax_forecast.reshape(-1, 1)), 0)
+        except Exception:
+            try:
+                # Attempt ARIMA model
+                arima_model = ARIMA(transformed_data, order=(1, 1, 1))
+                arima_fitted_model = arima_model.fit(maxiter=1000, disp=False)
+                arima_forecast = arima_fitted_model.get_forecast(steps=horizon).predicted_mean
+                forecasted_values[:, region] = np.maximum(pt.inverse_transform(arima_forecast.reshape(-1, 1)), 0)
+            except Exception:
+                try:
+                    # Attempt Exponential Smoothing
+                    es_model = ExponentialSmoothing(transformed_data, trend='add', seasonal_periods=7)
+                    es_fitted_model = es_model.fit(smoothing_level=0.2, smoothing_slope=0.2, smoothing_seasonal=0.2, optimized=True)
+                    es_forecast = es_fitted_model.forecast(steps=horizon)
+                    forecasted_values[:, region] = np.maximum(pt.inverse_transform(es_forecast.reshape(-1, 1)), 0)
+                except Exception:
+                    # Fallback to simple exponential smoothing
+                    es_fallback_model = ExponentialSmoothing(transformed_data, trend=None, seasonal=None)
+                    es_fallback_fitted_model = es_fallback_model.fit(smoothing_level=0.2, optimized=True)
+                    es_fallback_forecast = es_fallback_fitted_model.forecast(steps=horizon)
+                    forecasted_values[:, region] = np.maximum(pt.inverse_transform(es_fallback_forecast.reshape(-1, 1)), 0)
+    
+    return forecasted_values
+```
+
+### Explanation:
+
+1. **Transformation**: We apply a Yeo-Johnson transformation to stabilize variance and make the data more normal.
+2. **SARIMAX Model**: This is a versatile model capable of capturing both trend and seasonality. We fit it to the transformed data and forecast using it.
+3. **ARIMA Model**: If SARIMAX fails, we fall back to ARIMA, which is useful for univariate time series without clear seasonal patterns.
+4. **Exponential Smoothing**: If both SARIMAX and ARIMA fail, we use Exponential Smoothing. This is suitable for simpler datasets with possible trends.
+5. **Fallback**: If all models fail, we resort to a basic exponential smoothing model with fixed parameters.
+
+This approach ensures robustness by trying multiple models and handling exceptions gracefully. The fallback mechanism helps in maintaining a minimal but functional prediction when complex models fail.

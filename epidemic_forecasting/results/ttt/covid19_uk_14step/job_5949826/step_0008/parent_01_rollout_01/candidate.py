@@ -1,0 +1,35 @@
+import numpy as np
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.tsa.seasonal import seasonal_decompose
+from sklearn.preprocessing import PowerTransformer
+from sklearn.linear_model import LinearRegression
+from sklearn.pipeline import Pipeline
+
+def covid_forecast(train_values, horizon, **kwargs):
+    forecasted_values = np.zeros((horizon, train_values.shape[1]))
+    for region in range(train_values.shape[1]):
+        region_data = train_values[:, region]
+        pt = PowerTransformer(method='yeo-johnson')
+        transformed_data = pt.fit_transform(region_data.reshape(-1, 1)).flatten()
+        try:
+            sarimax_model = SARIMAX(transformed_data, order=(1, 1, 1), seasonal_order=(1, 1, 1, 7))
+            sarimax_fitted_model = sarimax_model.fit(disp=False)
+            sarimax_forecast = sarimax_fitted_model.get_forecast(steps=horizon).predicted_mean
+            forecasted_values[:, region] = np.maximum(pt.inverse_transform(sarimax_forecast.reshape(-1, 1)), 0)
+        except Exception as e:
+            try:
+                es_model = ExponentialSmoothing(transformed_data, trend='add', seasonal='add', seasonal_periods=7)
+                es_fitted_model = es_model.fit()
+                es_forecast = es_fitted_model.forecast(steps=horizon)
+                forecasted_values[:, region] = np.maximum(pt.inverse_transform(es_forecast.reshape(-1, 1)), 0)
+            except Exception as e:
+                try:
+                    model = LinearRegression()
+                    model.fit(np.arange(len(region_data)).reshape(-1, 1), region_data)
+                    last_value = region_data[-1]
+                    forecast = [last_value * (1 + i / len(region_data)) for i in range(1, horizon + 1)]
+                    forecasted_values[:, region] = np.maximum(pt.inverse_transform(np.array(forecast).reshape(-1, 1)), 0)
+                except Exception as e:
+                    pass
+    return forecasted_values

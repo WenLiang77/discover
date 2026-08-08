@@ -1,0 +1,347 @@
+{
+  "step": 2,
+  "parents": [
+    {
+      "type": "SearchState",
+      "id": "23dc966e-8a87-4aee-8345-1205a562cd09",
+      "timestep": 1,
+      "code": "import numpy as np\nfrom statsmodels.tsa.holtwinters import ExponentialSmoothing\n\ndef covid_forecast(train_values, horizon, **kwargs):\n    forecasted_values = np.zeros((horizon, train_values.shape[1]))\n    for region in range(train_values.shape[1]):\n        region_data = train_values[:, region]\n        try:\n            model = ExponentialSmoothing(region_data, trend='add', seasonal=None)\n            fitted_model = model.fit()\n            forecast = fitted_model.forecast(steps=horizon)\n            forecasted_values[:, region] = np.maximum(forecast, 0)\n        except Exception as e:\n            forecasted_values[:, region] = 0\n    return forecasted_values",
+      "value": -97.79259450483272,
+      "metrics": {
+        "smape": 97.79259450483272,
+        "mae": 60.05477303972454,
+        "rmse": 127.09836519587475,
+        "mase": 0.533589791746933
+      },
+      "observation": "reward=-97.792595; mae=60.054773, mase=0.53358979, rmse=127.09837, smape=97.792595;",
+      "metadata": {
+        "step": 1,
+        "parent_number": 1,
+        "rollout_number": 2,
+        "raw_reward": -97.79259450483272,
+        "adjusted_reward": -97.79259450483272,
+        "duplicate_behavior": false,
+        "duplicate_of": null,
+        "evaluation_metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.034414571011438966,
+          "total_runtime_seconds": 6.021569916978478,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize"
+        }
+      },
+      "behavior_signature": "7a91161390a3cf086fba664638422455b2f72ad4fc037ad27dd5efa1f28a5430",
+      "parent_values": [],
+      "parents": [
+        {
+          "id": "8906295b-68cf-42c6-956c-a10143383014",
+          "timestep": 0
+        }
+      ]
+    }
+  ],
+  "rollouts": [
+    {
+      "step": 2,
+      "parent_number": 1,
+      "parent_state_id": "23dc966e-8a87-4aee-8345-1205a562cd09",
+      "parent_reward": -97.79259450483272,
+      "rollout_number": 1,
+      "global_rollout_index": 6,
+      "seed": 48,
+      "elapsed_seconds": 20.10578841296956,
+      "raw_reward": -91.8048357298361,
+      "adjusted_reward": -91.8048357298361,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": true,
+        "reward": -91.8048357298361,
+        "metrics": {
+          "smape": 91.8048357298361,
+          "mae": 51.83371745544783,
+          "rmse": 136.46113809672514,
+          "mase": 0.535683455485427
+        },
+        "error": null,
+        "behavior_signature": "a6c95fdb0d798b27bfed10691af3b9a24494b7c2bef1595239f8ca933ef6c235",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.7529270539525896,
+          "total_runtime_seconds": 5.296159987919964,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize"
+        }
+      }
+    },
+    {
+      "step": 2,
+      "parent_number": 1,
+      "parent_state_id": "23dc966e-8a87-4aee-8345-1205a562cd09",
+      "parent_reward": -97.79259450483272,
+      "rollout_number": 2,
+      "global_rollout_index": 7,
+      "seed": 49,
+      "elapsed_seconds": 16.97955920198001,
+      "raw_reward": -91.8048357298361,
+      "adjusted_reward": -91.8048357298361,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "step_0002/parent_01_rollout_01",
+      "evaluation": {
+        "ok": true,
+        "reward": -91.8048357298361,
+        "metrics": {
+          "smape": 91.8048357298361,
+          "mae": 51.83371745544783,
+          "rmse": 136.46113809672514,
+          "mase": 0.535683455485427
+        },
+        "error": null,
+        "behavior_signature": "a6c95fdb0d798b27bfed10691af3b9a24494b7c2bef1595239f8ca933ef6c235",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.7457970690447837,
+          "total_runtime_seconds": 5.286722864024341,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize"
+        }
+      }
+    },
+    {
+      "step": 2,
+      "parent_number": 1,
+      "parent_state_id": "23dc966e-8a87-4aee-8345-1205a562cd09",
+      "parent_reward": -97.79259450483272,
+      "rollout_number": 3,
+      "global_rollout_index": 8,
+      "seed": 50,
+      "elapsed_seconds": 34.42996206996031,
+      "raw_reward": null,
+      "adjusted_reward": -250.0,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "ValueError: You must specify a period or x must be a pandas object with a PeriodIndex or a DatetimeIndex with a freq not set to None",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 4.757738715969026,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 398, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 11, in covid_forecast\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/seasonal.py\", line 167, in seasonal_decompose\n    raise ValueError(\nValueError: You must specify a period or x must be a pandas object with a PeriodIndex or a DatetimeIndex with a freq not set to None\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "step": 2,
+      "parent_number": 1,
+      "parent_state_id": "23dc966e-8a87-4aee-8345-1205a562cd09",
+      "parent_reward": -97.79259450483272,
+      "rollout_number": 4,
+      "global_rollout_index": 9,
+      "seed": 51,
+      "elapsed_seconds": 19.819986924994737,
+      "raw_reward": -91.8048357298361,
+      "adjusted_reward": -91.8048357298361,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "step_0002/parent_01_rollout_01",
+      "evaluation": {
+        "ok": true,
+        "reward": -91.8048357298361,
+        "metrics": {
+          "smape": 91.8048357298361,
+          "mae": 51.83371745544783,
+          "rmse": 136.46113809672514,
+          "mase": 0.535683455485427
+        },
+        "error": null,
+        "behavior_signature": "a6c95fdb0d798b27bfed10691af3b9a24494b7c2bef1595239f8ca933ef6c235",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.755689051002264,
+          "total_runtime_seconds": 5.315562406089157,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize"
+        }
+      }
+    },
+    {
+      "step": 2,
+      "parent_number": 1,
+      "parent_state_id": "23dc966e-8a87-4aee-8345-1205a562cd09",
+      "parent_reward": -97.79259450483272,
+      "rollout_number": 5,
+      "global_rollout_index": 10,
+      "seed": 52,
+      "elapsed_seconds": 20.92203230294399,
+      "raw_reward": -91.8048357298361,
+      "adjusted_reward": -91.8048357298361,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "step_0002/parent_01_rollout_01",
+      "evaluation": {
+        "ok": true,
+        "reward": -91.8048357298361,
+        "metrics": {
+          "smape": 91.8048357298361,
+          "mae": 51.83371745544783,
+          "rmse": 136.46113809672514,
+          "mase": 0.535683455485427
+        },
+        "error": null,
+        "behavior_signature": "a6c95fdb0d798b27bfed10691af3b9a24494b7c2bef1595239f8ca933ef6c235",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.7530801609391347,
+          "total_runtime_seconds": 5.25127686408814,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize"
+        }
+      }
+    }
+  ],
+  "training": {
+    "ok": true,
+    "loss": 0.0029928475618362428,
+    "used_count": 5,
+    "rewards": [
+      -91.8048357298361,
+      -91.8048357298361,
+      -250.0,
+      -91.8048357298361,
+      -91.8048357298361
+    ],
+    "advantages": [
+      0.3333333730697632,
+      0.3333333730697632,
+      -1.0,
+      0.3333333730697632,
+      0.3333333730697632
+    ],
+    "per_sample_ce_losses": [
+      0.12002966552972794,
+      0.19426891207695007,
+      0.20392033457756042,
+      0.16719138622283936,
+      0.17516367137432098
+    ]
+  },
+  "puct_stats": {
+    "puct/buffer_size": 3.0,
+    "puct/sampled_size": 1.0,
+    "puct/T": 10.0,
+    "puct/scale_last": 1.0,
+    "puct/buffer_value/mean": -94.79871511733441,
+    "puct/buffer_value/std": 2.9938793874983105,
+    "puct/buffer_value/min": -97.79259450483272,
+    "puct/buffer_value/max": -91.8048357298361,
+    "puct/sampled_value/mean": -97.79259450483272,
+    "puct/sampled_value/std": 0.0,
+    "puct/sampled_value/min": -97.79259450483272,
+    "puct/sampled_value/max": -97.79259450483272,
+    "puct/selected_score/mean": -96.15960134297727,
+    "puct/selected_score/std": 0.0,
+    "puct/selected_score/min": -96.15960134297727,
+    "puct/selected_score/max": -96.15960134297727
+  },
+  "best_states": [
+    {
+      "type": "SearchState",
+      "id": "f53f9722-fd35-4a71-941c-4199e6ee346b",
+      "timestep": 2,
+      "code": "import numpy as np\nfrom statsmodels.tsa.holtwinters import ExponentialSmoothing\nfrom statsmodels.tsa.statespace.sarimax import SARIMAX\n\ndef covid_forecast(train_values, horizon, **kwargs):\n    forecasted_values = np.zeros((horizon, train_values.shape[1]))\n    for region in range(train_values.shape[1]):\n        region_data = train_values[:, region]\n        try:\n            model = SARIMAX(region_data, order=(1, 1, 1), seasonal_order=(1, 1, 1, 7))\n            fitted_model = model.fit(disp=False)\n            forecast = fitted_model.get_forecast(steps=horizon).predicted_mean\n            forecasted_values[:, region] = np.maximum(forecast, 0)\n        except Exception as _:\n            pass\n        if np.all(np.isnan(forecasted_values[:, region])):\n            try:\n                model = ExponentialSmoothing(region_data, trend='add', seasonal=None)\n                fitted_model = model.fit()\n                forecast = fitted_model.forecast(steps=horizon)\n                forecasted_values[:, region] = np.maximum(forecast, 0)\n            except Exception as _:\n                pass\n    return forecasted_values",
+      "value": -91.8048357298361,
+      "metrics": {
+        "smape": 91.8048357298361,
+        "mae": 51.83371745544783,
+        "rmse": 136.46113809672514,
+        "mase": 0.535683455485427
+      },
+      "observation": "reward=-91.804836; mae=51.833717, mase=0.53568346, rmse=136.46114, smape=91.804836;",
+      "metadata": {
+        "step": 2,
+        "parent_number": 1,
+        "rollout_number": 1,
+        "raw_reward": -91.8048357298361,
+        "adjusted_reward": -91.8048357298361,
+        "duplicate_behavior": false,
+        "duplicate_of": null,
+        "evaluation_metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.7529270539525896,
+          "total_runtime_seconds": 5.296159987919964,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize"
+        }
+      },
+      "behavior_signature": "a6c95fdb0d798b27bfed10691af3b9a24494b7c2bef1595239f8ca933ef6c235",
+      "parent_values": [
+        -97.79259450483272
+      ],
+      "parents": [
+        {
+          "id": "23dc966e-8a87-4aee-8345-1205a562cd09",
+          "timestep": 1
+        },
+        {
+          "id": "8906295b-68cf-42c6-956c-a10143383014",
+          "timestep": 0
+        }
+      ]
+    },
+    {
+      "type": "SearchState",
+      "id": "23dc966e-8a87-4aee-8345-1205a562cd09",
+      "timestep": 1,
+      "code": "import numpy as np\nfrom statsmodels.tsa.holtwinters import ExponentialSmoothing\n\ndef covid_forecast(train_values, horizon, **kwargs):\n    forecasted_values = np.zeros((horizon, train_values.shape[1]))\n    for region in range(train_values.shape[1]):\n        region_data = train_values[:, region]\n        try:\n            model = ExponentialSmoothing(region_data, trend='add', seasonal=None)\n            fitted_model = model.fit()\n            forecast = fitted_model.forecast(steps=horizon)\n            forecasted_values[:, region] = np.maximum(forecast, 0)\n        except Exception as e:\n            forecasted_values[:, region] = 0\n    return forecasted_values",
+      "value": -97.79259450483272,
+      "metrics": {
+        "smape": 97.79259450483272,
+        "mae": 60.05477303972454,
+        "rmse": 127.09836519587475,
+        "mase": 0.533589791746933
+      },
+      "observation": "reward=-97.792595; mae=60.054773, mase=0.53358979, rmse=127.09837, smape=97.792595;",
+      "metadata": {
+        "step": 1,
+        "parent_number": 1,
+        "rollout_number": 2,
+        "raw_reward": -97.79259450483272,
+        "adjusted_reward": -97.79259450483272,
+        "duplicate_behavior": false,
+        "duplicate_of": null,
+        "evaluation_metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.034414571011438966,
+          "total_runtime_seconds": 6.021569916978478,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize"
+        }
+      },
+      "behavior_signature": "7a91161390a3cf086fba664638422455b2f72ad4fc037ad27dd5efa1f28a5430",
+      "parent_values": [],
+      "parents": [
+        {
+          "id": "8906295b-68cf-42c6-956c-a10143383014",
+          "timestep": 0
+        }
+      ]
+    }
+  ]
+}

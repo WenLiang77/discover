@@ -1,0 +1,77 @@
+```python
+import numpy as np
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+from statsmodels.tsa.arima.model import ARIMA
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.tsa.seasonal import seasonal_decompose
+from sklearn.preprocessing import PowerTransformer
+from sklearn.impute import SimpleImputer
+
+def covid_forecast(train_values, horizon, **kwargs):
+    forecasted_values = np.zeros((horizon, train_values.shape[1]))
+    
+    for region in range(train_values.shape[1]):
+        region_data = train_values[:, region]
+        
+        # Handle missing values
+        imputer = SimpleImputer(strategy='mean')
+        region_data = imputer.fit_transform(region_data.reshape(-1, 1)).flatten()
+        
+        # Apply power transformation
+        pt = PowerTransformer(method='yeo-johnson')
+        transformed_data = pt.fit_transform(region_data.reshape(-1, 1)).flatten()
+        
+        # Decompose the time series
+        try:
+            decomposition = seasonal_decompose(transformed_data, model='additive', period=7)
+            trend = decomposition.trend
+            seasonal = decomposition.seasonal
+            
+            # Fit SARIMAX model on trend component
+            sarimax_model_trend = SARIMAX(trend, order=(1, 1, 1), seasonal_order=(1, 1, 1, 7))
+            sarimax_fitted_model_trend = sarimax_model_trend.fit(disp=False)
+            
+            # Get forecast for trend component
+            trend_forecast = sarimax_fitted_model_trend.get_forecast(steps=horizon).predicted_mean
+            
+            # Fit ARIMA model on seasonal component
+            arima_model_seasonal = ARIMA(seasonal, order=(1, 1, 1))
+            arima_fitted_model_seasonal = arima_model_seasonal.fit(disp=False)
+            
+            # Get forecast for seasonal component
+            seasonal_forecast = arima_fitted_model_seasonal.forecast(steps=horizon)
+            
+            # Combine forecasts
+            combined_forecast = trend_forecast + seasonal_forecast
+            
+            # Invert the power transformation
+            inverse_transformed_forecast = pt.inverse_transform(combined_forecast.reshape(-1, 1)).flatten()
+            
+            # Clip negative values to zero
+            forecasted_values[:, region] = np.maximum(inverse_transformed_forecast, 0)
+        except Exception as e:
+            try:
+                # If decomposition fails, fit a simpler SARIMAX model directly on the original data
+                sarimax_model_direct = SARIMAX(region_data, order=(1, 1, 1), seasonal_order=(1, 1, 1, 7))
+                sarimax_fitted_model_direct = sarimax_model_direct.fit(disp=False)
+                
+                # Get forecast
+                direct_forecast = sarimax_fitted_model_direct.get_forecast(steps=horizon).predicted_mean
+                
+                # Clip negative values to zero
+                forecasted_values[:, region] = np.maximum(direct_forecast, 0)
+            except Exception as e:
+                # Fallback to exponential smoothing if all else fails
+                es_model = ExponentialSmoothing(region_data, trend='add', seasonal=None)
+                es_fitted_model = es_model.fit()
+                
+                # Get forecast
+                fallback_forecast = es_fitted_model.forecast(steps=horizon)
+                
+                # Clip negative values to zero
+                forecasted_values[:, region] = np.maximum(fallback_forecast, 0)
+    
+    return forecasted_values
+```
+
+This implementation includes handling missing values using `SimpleImputer`, applying a power transformation to stabilize variance, decomposing the time series into trend and seasonal components, fitting separate models for each component, combining the forecasts, and finally clipping negative values to zero. This approach aims to handle various challenges such as zero inflation, non-stationarity, and potential model failures gracefully.

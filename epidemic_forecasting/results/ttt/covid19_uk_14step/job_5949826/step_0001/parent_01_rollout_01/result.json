@@ -1,0 +1,26 @@
+{
+  "step": 1,
+  "parent_number": 1,
+  "parent_state_id": "8906295b-68cf-42c6-956c-a10143383014",
+  "parent_reward": null,
+  "rollout_number": 1,
+  "global_rollout_index": 1,
+  "seed": 43,
+  "elapsed_seconds": 26.846041633049026,
+  "raw_reward": null,
+  "adjusted_reward": -250.0,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "Evaluation failed: Forecast has shape (4, 14); expected (14, 4).",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "covid_uk",
+      "stage": "prediction_validation_or_metrics",
+      "runtime_seconds": 7.419465924031101
+    }
+  }
+}

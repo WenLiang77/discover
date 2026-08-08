@@ -1,0 +1,52 @@
+```python
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.tsa.seasonal import seasonal_decompose
+from sklearn.preprocessing import StandardScaler
+
+def covid_forecast(train_values, horizon, **kwargs):
+    forecasted_values = np.zeros((horizon, train_values.shape[1]))
+    
+    for region in range(train_values.shape[1]):
+        region_data = train_values[:, region]
+        
+        # Decompose the time series to handle seasonality and trend
+        decomposition = seasonal_decompose(region_data, model='additive')
+        trend = decomposition.trend
+        seasonal = decomposition.seasonal
+        residual = decomposition.resid
+        
+        # Scale the residuals to stabilize variance
+        scaler = StandardScaler()
+        scaled_residuals = scaler.fit_transform(residual.reshape(-1, 1)).flatten()
+        
+        # Combine trend, seasonal, and scaled residuals
+        combined_series = trend + seasonal + scaled_residuals
+        
+        # Fit an ARIMA model on the combined series
+        try:
+            model = ARIMA(combined_series, order=(1, 1, 1), seasonal_order=(0, 1, 1, 12))
+            fitted_model = model.fit()
+            forecast = fitted_model.forecast(steps=horizon)
+            
+            # Inverse transform the forecast to get back to the original scale
+            inverse_forecast = scaler.inverse_transform(forecast.reshape(-1, 1)).flatten()
+            inverse_forecast += trend[-horizon:] - trend[-horizon-1:-1]
+            inverse_forecast += seasonal[-horizon:] - seasonal[-horizon-1:-1]
+            
+            forecasted_values[:, region] = np.maximum(inverse_forecast, 0)
+        except Exception as e:
+            forecasted_values[:, region] = 0
+    
+    return forecasted_values
+```
+
+### Explanation:
+1. **Seasonal Decomposition**: The time series is decomposed into trend, seasonal, and residual components to handle these structures separately.
+2. **Scaling Residuals**: The residuals are standardized to stabilize their variance, which can help improve the performance of the ARIMA model.
+3. **Combining Components**: The trend, seasonal, and scaled residuals are combined to form a new series that is more suitable for modeling.
+4. **ARIMA Modeling**: An ARIMA model is fit on the combined series. This model accounts for both autoregressive and moving average components, as well as potential seasonality.
+5. **Forecasting and Inverse Transformation**: The forecasted values from the ARIMA model are transformed back to the original scale by reversing the operations performed during decomposition and scaling.
+
+This approach ensures that the model can handle various characteristics of the time series data, including seasonality and trend, while also being robust to noise and zero-inflation.
