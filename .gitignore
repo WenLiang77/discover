@@ -237,3 +237,10 @@ openproblems/
 data/
 .venv_epidemic/
 .venv_epidemic_py36_broken/
+
+# Large intermediate TTT LoRA checkpoints
+epidemic_forecasting/results/**/lora_adapter/
+
+# Keep official epidemic forecasting experiment logs
+!epidemic_forecasting/results/logs/
+!epidemic_forecasting/results/logs/**

@@ -84,7 +84,7 @@ def make_covid19_config(
     return TaskConfig(
         task_id=(
             f"covid19_{clean_dataset_id}_"
-            f"{forecast_horizon}step"
+            f"{forecast_horizon}days"
         ),
         disease_name="COVID-19",
         function_name=FUNCTION_NAME,

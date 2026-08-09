@@ -1,0 +1,48 @@
+{
+  "step": 0,
+  "states": [
+    {
+      "type": "SearchState",
+      "id": "8906295b-68cf-42c6-956c-a10143383014",
+      "timestep": 0,
+      "code": "",
+      "value": null,
+      "metrics": {},
+      "observation": "No model-generated candidate exists yet.",
+      "metadata": {
+        "source": "generation_root",
+        "task_id": "covid19_uk_14days"
+      },
+      "behavior_signature": null,
+      "parent_values": [],
+      "parents": []
+    }
+  ],
+  "initial_states": [
+    {
+      "type": "SearchState",
+      "id": "8906295b-68cf-42c6-956c-a10143383014",
+      "timestep": 0,
+      "code": "",
+      "value": null,
+      "metrics": {},
+      "observation": "No model-generated candidate exists yet.",
+      "metadata": {
+        "source": "generation_root",
+        "task_id": "covid19_uk_14days"
+      },
+      "behavior_signature": null,
+      "parent_values": [],
+      "parents": []
+    }
+  ],
+  "puct_n": {},
+  "puct_m": {},
+  "puct_T": 0,
+  "settings": {
+    "max_buffer_size": 1000,
+    "batch_size": 1,
+    "puct_c": 1.0,
+    "topk_children": 2
+  }
+}
