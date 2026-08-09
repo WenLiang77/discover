@@ -1,0 +1,46 @@
+```python
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+
+def covid_forecast(train_values, horizon, **kwargs):
+    """
+    Multivariate COVID-19 incidence forecasting using ARIMA models.
+    
+    Parameters:
+    - train_values: numpy.ndarray of shape (T, N), where T is the number of historical time steps and N is the number of geographical regions.
+    - horizon: int, the number of future time steps to predict.
+    - kwargs: additional keyword arguments, such as 'budget_s', 'random_state', 'frequency', and 'time_index'.
+    
+    Returns:
+    - numpy.ndarray of shape (horizon, N) containing predicted future values.
+    """
+    
+    # Ensure the input data is a numpy array
+    train_values = np.array(train_values)
+    
+    # Get the number of historical time steps and regions
+    T, N = train_values.shape
+    
+    # Initialize the forecasted values array
+    forecasted_values = np.zeros((horizon, N))
+    
+    # Iterate over each region
+    for i in range(N):
+        # Fit an ARIMA model to the historical data for the current region
+        try:
+            model = ARIMA(train_values[:, i], order=(5, 1, 0))  # Adjust the order as needed
+            model_fit = model.fit()
+            
+            # Forecast the future values for the current region
+            forecast = model_fit.forecast(steps=horizon)
+            forecasted_values[:, i] = np.maximum(forecast, 0)  # Clip negative predictions to zero
+            
+        except Exception as e:
+            # If fitting fails, fill the forecast with zeros
+            forecasted_values[:, i] = 0
+            print(f"Failed to fit ARIMA model for region {i}: {e}")
+    
+    return forecasted_values
+```
+
+This implementation uses an ARIMA model for each geographical region to forecast future COVID-19 incidence. The ARIMA model is fitted to the historical data for each region, and the forecasts are clipped to ensure non-negative values. If fitting fails, the forecast is filled with zeros. This approach ensures robustness to various characteristics of the data, including noise and seasonality.

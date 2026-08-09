@@ -1,0 +1,28 @@
+{
+  "step": 1,
+  "parent_number": 1,
+  "parent_state_id": "195469e8-3f35-4a08-bd31-450af76cb8ac",
+  "parent_reward": null,
+  "rollout_number": 5,
+  "global_rollout_index": 5,
+  "seed": 47,
+  "elapsed_seconds": 36.29590432008263,
+  "raw_reward": null,
+  "adjusted_reward": -250.0,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "ImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "covid_us",
+      "stage": "execution",
+      "runtime_seconds": 6.319472568924539,
+      "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 382, in _candidate_worker\n    exec(compiled, namespace, namespace)\n  File \"<generated_forecaster>\", line 4, in <module>\nImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)\n",
+      "timed_out": false
+    }
+  }
+}

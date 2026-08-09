@@ -1,0 +1,21 @@
+{
+  "attempt": 1,
+  "seed": 42,
+  "elapsed_seconds": 411.043835127959,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "TimeoutError: candidate exceeded the runtime budget of 400.000 seconds.",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "covid_us",
+      "stage": "execution",
+      "runtime_seconds": 400.1205002530478,
+      "traceback": null,
+      "timed_out": true
+    }
+  }
+}

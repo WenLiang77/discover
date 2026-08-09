@@ -1,0 +1,25 @@
+{
+  "step": 10,
+  "parent_number": 1,
+  "parent_state_id": "f1b8b628-f701-4409-ba3d-fdf92fed6099",
+  "parent_reward": -55.751784407422136,
+  "rollout_number": 5,
+  "global_rollout_index": 50,
+  "seed": 92,
+  "elapsed_seconds": 25.654888985911384,
+  "raw_reward": null,
+  "adjusted_reward": -250.0,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "Static validation failed: Importing from 'statsmodels.tools.eval_measures' is not allowed.",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "covid_us",
+      "stage": "static_validation"
+    }
+  }
+}

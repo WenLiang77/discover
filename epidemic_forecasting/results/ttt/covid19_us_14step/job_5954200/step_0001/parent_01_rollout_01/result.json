@@ -1,0 +1,26 @@
+{
+  "step": 1,
+  "parent_number": 1,
+  "parent_state_id": "195469e8-3f35-4a08-bd31-450af76cb8ac",
+  "parent_reward": null,
+  "rollout_number": 1,
+  "global_rollout_index": 1,
+  "seed": 43,
+  "elapsed_seconds": 73.45190599106718,
+  "raw_reward": null,
+  "adjusted_reward": -250.0,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "Evaluation failed: Forecast has shape (56, 14); expected (14, 56).",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "covid_us",
+      "stage": "prediction_validation_or_metrics",
+      "runtime_seconds": 52.18099331809208
+    }
+  }
+}

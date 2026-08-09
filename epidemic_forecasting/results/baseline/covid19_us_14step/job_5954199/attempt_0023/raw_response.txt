@@ -1,0 +1,36 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+def covid_forecast(train_values, horizon, **kwargs):
+    """
+    Forecast COVID-19 incidence data using SARIMAX models for each region.
+
+    Parameters:
+    train_values (np.ndarray): Historical incidence data with shape (T, N).
+    horizon (int): Number of future time steps to predict.
+    
+    Returns:
+    np.ndarray: Predicted incidence data with shape (horizon, N).
+    """
+    N = train_values.shape[1]
+    forecast_array = np.zeros((horizon, N))
+    
+    for i in range(N):
+        try:
+            # Fit SARIMAX model for region i
+            model = SARIMAX(train_values[:, i], order=(1, 1, 0), seasonal_order=(1, 1, 0, 7))
+            results = model.fit(disp=False)
+            
+            # Make forecast
+            forecast = results.forecast(steps=horizon)
+            forecast_array[:, i] = forecast.clip(0)
+        except Exception as e:
+            # Handle fitting failure by filling with zeros
+            print(f"Failed to fit model for region {i}: {e}")
+            forecast_array[:, i] = 0
+    
+    return forecast_array
+```
+
+This forecasting algorithm uses SARIMAX models, which are capable of handling both trend and seasonality in time series data. The model is fitted for each region individually, and forecasts are made based on these fits. If a model fails to fit due to some reason, the corresponding region's forecast is filled with zeros. This ensures that the function always returns a valid prediction array without encountering non-finite or negative values.

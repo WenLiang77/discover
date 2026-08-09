@@ -1,0 +1,18 @@
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+def covid_forecast(train_values, horizon, **kwargs):
+    forecasted_values = np.zeros((horizon, train_values.shape[1]))
+    for region in range(train_values.shape[1]):
+        region_data = train_values[:, region]
+        if len(region_data) < 2 * horizon or np.mean(region_data == 0) > 0.5:
+            forecasted_values[:, region] = np.mean(region_data)
+            continue
+        try:
+            model = SARIMAX(region_data, order=(1, 1, 1), seasonal_order=(1, 1, 1, 7))
+            fitted_model = model.fit(disp=False)
+            forecast = fitted_model.get_forecast(steps=horizon).predicted_mean
+            forecasted_values[:, region] = np.maximum(forecast, 0)
+        except Exception as e:
+            forecasted_values[:, region] = np.mean(region_data)
+    return forecasted_values

@@ -1,0 +1,21 @@
+{
+  "attempt": 16,
+  "seed": 57,
+  "elapsed_seconds": 12.205081767053343,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "ValueError: could not broadcast input array from shape (336,) into shape (1143,56)",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "covid_us",
+      "stage": "execution",
+      "runtime_seconds": 0.8809837369481102,
+      "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 398, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 7, in covid_forecast\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/numpy/lib/_type_check_impl.py\", line 489, in nan_to_num\n    _nx.copyto(d, nan, where=idx_nan)\nValueError: could not broadcast input array from shape (336,) into shape (1143,56)\n",
+      "timed_out": false
+    }
+  }
+}

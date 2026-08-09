@@ -1,0 +1,1036 @@
+{
+  "history": [
+    {
+      "ok": false,
+      "reward": -250.0,
+      "metrics": {},
+      "error": "Evaluation failed: Forecast has shape (56, 14); expected (14, 56).",
+      "behavior_signature": null,
+      "metadata": {
+        "dataset_id": "covid_us",
+        "stage": "prediction_validation_or_metrics",
+        "runtime_seconds": 52.18099331809208
+      },
+      "duplicate_valid_behavior": false,
+      "raw_reward": null
+    },
+    {
+      "ok": true,
+      "reward": -166.2910575228898,
+      "metrics": {
+        "smape": 166.2910575228898,
+        "mae": 879.9084719724906,
+        "rmse": 3352.09933995485,
+        "mase": 0.6318090850702849
+      },
+      "error": null,
+      "behavior_signature": "89e54045a3579b12c37d9c147684f2aa4eb931f010197fce4f48e5c0e846a2ef",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 1.1328909270232543,
+        "total_runtime_seconds": 7.371515305014327,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": false,
+      "raw_reward": -166.2910575228898
+    },
+    {
+      "ok": false,
+      "reward": -250.0,
+      "metrics": {},
+      "error": "ImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)",
+      "behavior_signature": null,
+      "metadata": {
+        "dataset_id": "covid_us",
+        "stage": "execution",
+        "runtime_seconds": 6.308667964069173,
+        "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 382, in _candidate_worker\n    exec(compiled, namespace, namespace)\n  File \"<generated_forecaster>\", line 6, in <module>\nImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)\n",
+        "timed_out": false
+      },
+      "duplicate_valid_behavior": false,
+      "raw_reward": null
+    },
+    {
+      "ok": false,
+      "reward": -250.0,
+      "metrics": {},
+      "error": "TimeoutError: candidate exceeded the runtime budget of 400.000 seconds.",
+      "behavior_signature": null,
+      "metadata": {
+        "dataset_id": "covid_us",
+        "stage": "execution",
+        "runtime_seconds": 400.1107574769994,
+        "traceback": null,
+        "timed_out": true
+      },
+      "duplicate_valid_behavior": false,
+      "raw_reward": null
+    },
+    {
+      "ok": false,
+      "reward": -250.0,
+      "metrics": {},
+      "error": "ImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)",
+      "behavior_signature": null,
+      "metadata": {
+        "dataset_id": "covid_us",
+        "stage": "execution",
+        "runtime_seconds": 6.319472568924539,
+        "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 382, in _candidate_worker\n    exec(compiled, namespace, namespace)\n  File \"<generated_forecaster>\", line 4, in <module>\nImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)\n",
+        "timed_out": false
+      },
+      "duplicate_valid_behavior": false,
+      "raw_reward": null
+    },
+    {
+      "ok": true,
+      "reward": -62.97133768459883,
+      "metrics": {
+        "smape": 62.97133768459883,
+        "mae": 432.83285326623474,
+        "rmse": 3165.964481815877,
+        "mase": 0.2863028877583552
+      },
+      "error": null,
+      "behavior_signature": "8cab41ed05ddcfaf6c2370ee467794d79ce78a8ec135031a978144f7c90ed017",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 46.09400091995485,
+        "total_runtime_seconds": 51.61517445300706,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": false,
+      "raw_reward": -62.97133768459883
+    },
+    {
+      "ok": true,
+      "reward": -62.97133768459883,
+      "metrics": {
+        "smape": 62.97133768459883,
+        "mae": 432.83285326623474,
+        "rmse": 3165.964481815877,
+        "mase": 0.2863028877583552
+      },
+      "error": null,
+      "behavior_signature": "8cab41ed05ddcfaf6c2370ee467794d79ce78a8ec135031a978144f7c90ed017",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 45.896419396973215,
+        "total_runtime_seconds": 51.429024626966566,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": true,
+      "raw_reward": -62.97133768459883
+    },
+    {
+      "ok": false,
+      "reward": -250.0,
+      "metrics": {},
+      "error": "ValueError: You must specify a period or x must be a pandas object with a PeriodIndex or a DatetimeIndex with a freq not set to None",
+      "behavior_signature": null,
+      "metadata": {
+        "dataset_id": "covid_us",
+        "stage": "execution",
+        "runtime_seconds": 5.746156358043663,
+        "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 398, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 11, in covid_forecast\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/seasonal.py\", line 167, in seasonal_decompose\n    raise ValueError(\nValueError: You must specify a period or x must be a pandas object with a PeriodIndex or a DatetimeIndex with a freq not set to None\n",
+        "timed_out": false
+      },
+      "duplicate_valid_behavior": false,
+      "raw_reward": null
+    },
+    {
+      "ok": true,
+      "reward": -68.23351076296902,
+      "metrics": {
+        "smape": 68.23351076296902,
+        "mae": 433.35845830321756,
+        "rmse": 3165.9659219995383,
+        "mase": 0.3157971376162668
+      },
+      "error": null,
+      "behavior_signature": "323379821cbd42854bf43747799d2620053b89e2ad787a9d3da498d333ea022b",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 43.997930429992266,
+        "total_runtime_seconds": 49.4897913900204,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": false,
+      "raw_reward": -68.23351076296902
+    },
+    {
+      "ok": true,
+      "reward": -62.97133768459883,
+      "metrics": {
+        "smape": 62.97133768459883,
+        "mae": 432.83285326623474,
+        "rmse": 3165.964481815877,
+        "mase": 0.2863028877583552
+      },
+      "error": null,
+      "behavior_signature": "8cab41ed05ddcfaf6c2370ee467794d79ce78a8ec135031a978144f7c90ed017",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 45.980255135917105,
+        "total_runtime_seconds": 51.48767976695672,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": true,
+      "raw_reward": -62.97133768459883
+    },
+    {
+      "ok": true,
+      "reward": -166.29106108801716,
+      "metrics": {
+        "smape": 166.29106108801716,
+        "mae": 879.9120564180538,
+        "rmse": 3352.1093632802167,
+        "mase": 0.6318104239152115
+      },
+      "error": null,
+      "behavior_signature": "f7a69ad3dfa14bb5528fb40f86150c1bb1ac3385391d74056f9a5d38680835ed",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 47.25294421601575,
+        "total_runtime_seconds": 52.95473385893274,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": false,
+      "raw_reward": -166.29106108801716
+    },
+    {
+      "ok": false,
+      "reward": -250.0,
+      "metrics": {},
+      "error": "NameError: name 'print' is not defined",
+      "behavior_signature": null,
+      "metadata": {
+        "dataset_id": "covid_us",
+        "stage": "execution",
+        "runtime_seconds": 5.586021451978013,
+        "traceback": "Traceback (most recent call last):\n  File \"<generated_forecaster>\", line 12, in covid_forecast\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/seasonal.py\", line 157, in seasonal_decompose\n    raise ValueError(\nValueError: Multiplicative seasonality is not appropriate for zero and negative values\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 398, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 27, in covid_forecast\nNameError: name 'print' is not defined\n",
+        "timed_out": false
+      },
+      "duplicate_valid_behavior": false,
+      "raw_reward": null
+    },
+    {
+      "ok": false,
+      "reward": -250.0,
+      "metrics": {},
+      "error": "ValueError: You must specify a period or x must be a pandas object with a PeriodIndex or a DatetimeIndex with a freq not set to None",
+      "behavior_signature": null,
+      "metadata": {
+        "dataset_id": "covid_us",
+        "stage": "execution",
+        "runtime_seconds": 5.513351497007534,
+        "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 398, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 27, in covid_forecast\n  File \"<generated_forecaster>\", line 15, in detect_seasonality\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/seasonal.py\", line 167, in seasonal_decompose\n    raise ValueError(\nValueError: You must specify a period or x must be a pandas object with a PeriodIndex or a DatetimeIndex with a freq not set to None\n",
+        "timed_out": false
+      },
+      "duplicate_valid_behavior": false,
+      "raw_reward": null
+    },
+    {
+      "ok": true,
+      "reward": -62.97133768459883,
+      "metrics": {
+        "smape": 62.97133768459883,
+        "mae": 432.83285326623474,
+        "rmse": 3165.964481815877,
+        "mase": 0.2863028877583552
+      },
+      "error": null,
+      "behavior_signature": "8cab41ed05ddcfaf6c2370ee467794d79ce78a8ec135031a978144f7c90ed017",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 46.05238228500821,
+        "total_runtime_seconds": 51.6024183309637,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": true,
+      "raw_reward": -62.97133768459883
+    },
+    {
+      "ok": false,
+      "reward": -250.0,
+      "metrics": {},
+      "error": "Static validation failed: Importing from 'statsmodels.graphics.tsaplots' is not allowed.",
+      "behavior_signature": null,
+      "metadata": {
+        "dataset_id": "covid_us",
+        "stage": "static_validation"
+      },
+      "duplicate_valid_behavior": false,
+      "raw_reward": null
+    },
+    {
+      "ok": true,
+      "reward": -62.97133768459883,
+      "metrics": {
+        "smape": 62.97133768459883,
+        "mae": 432.83285326623474,
+        "rmse": 3165.964481815877,
+        "mase": 0.2863028877583552
+      },
+      "error": null,
+      "behavior_signature": "8cab41ed05ddcfaf6c2370ee467794d79ce78a8ec135031a978144f7c90ed017",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 46.23968682996929,
+        "total_runtime_seconds": 51.83612234296743,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": true,
+      "raw_reward": -62.97133768459883
+    },
+    {
+      "ok": true,
+      "reward": -62.97133768459883,
+      "metrics": {
+        "smape": 62.97133768459883,
+        "mae": 432.83285326623474,
+        "rmse": 3165.964481815877,
+        "mase": 0.2863028877583552
+      },
+      "error": null,
+      "behavior_signature": "8cab41ed05ddcfaf6c2370ee467794d79ce78a8ec135031a978144f7c90ed017",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 45.63510588102508,
+        "total_runtime_seconds": 51.23338819202036,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": true,
+      "raw_reward": -62.97133768459883
+    },
+    {
+      "ok": false,
+      "reward": -250.0,
+      "metrics": {},
+      "error": "ValueError: Multiplicative seasonality is not appropriate for zero and negative values",
+      "behavior_signature": null,
+      "metadata": {
+        "dataset_id": "covid_us",
+        "stage": "execution",
+        "runtime_seconds": 5.971202921005897,
+        "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 398, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 51, in covid_forecast\n  File \"<generated_forecaster>\", line 16, in preprocess_data\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/seasonal.py\", line 157, in seasonal_decompose\n    raise ValueError(\nValueError: Multiplicative seasonality is not appropriate for zero and negative values\n",
+        "timed_out": false
+      },
+      "duplicate_valid_behavior": false,
+      "raw_reward": null
+    },
+    {
+      "ok": false,
+      "reward": -250.0,
+      "metrics": {},
+      "error": "Static validation failed: Importing from 'statsmodels.tsa.exponential_smoothing.exponential_smoothing' is not allowed.",
+      "behavior_signature": null,
+      "metadata": {
+        "dataset_id": "covid_us",
+        "stage": "static_validation"
+      },
+      "duplicate_valid_behavior": false,
+      "raw_reward": null
+    },
+    {
+      "ok": true,
+      "reward": -117.82522718953405,
+      "metrics": {
+        "smape": 117.82522718953405,
+        "mae": 577.4212401573413,
+        "rmse": 3154.694000700744,
+        "mase": 0.42897275833925963
+      },
+      "error": null,
+      "behavior_signature": "c5f972bf55af4fa09322b09e2065ae83ba1d87de4f5ec1156d85805299f44403",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 38.31039117707405,
+        "total_runtime_seconds": 44.05829554796219,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": false,
+      "raw_reward": -117.82522718953405
+    },
+    {
+      "ok": false,
+      "reward": -250.0,
+      "metrics": {},
+      "error": "ValueError: Multiplicative seasonality is not appropriate for zero and negative values",
+      "behavior_signature": null,
+      "metadata": {
+        "dataset_id": "covid_us",
+        "stage": "execution",
+        "runtime_seconds": 5.64631017006468,
+        "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 398, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 39, in covid_forecast\n  File \"<generated_forecaster>\", line 10, in preprocess_data\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/seasonal.py\", line 157, in seasonal_decompose\n    raise ValueError(\nValueError: Multiplicative seasonality is not appropriate for zero and negative values\n",
+        "timed_out": false
+      },
+      "duplicate_valid_behavior": false,
+      "raw_reward": null
+    },
+    {
+      "ok": true,
+      "reward": -62.46363467254979,
+      "metrics": {
+        "smape": 62.46363467254979,
+        "mae": 433.04458125120954,
+        "rmse": 3166.355221379238,
+        "mase": 0.28641406355236654
+      },
+      "error": null,
+      "behavior_signature": "cdff0e5236b2237863c4b35de96b57d69d049dcfc08182665f4b7feef5113802",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 45.72651092300657,
+        "total_runtime_seconds": 51.18169921205845,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": false,
+      "raw_reward": -62.46363467254979
+    },
+    {
+      "ok": true,
+      "reward": -62.97133768459883,
+      "metrics": {
+        "smape": 62.97133768459883,
+        "mae": 432.83285326623474,
+        "rmse": 3165.964481815877,
+        "mase": 0.2863028877583552
+      },
+      "error": null,
+      "behavior_signature": "8cab41ed05ddcfaf6c2370ee467794d79ce78a8ec135031a978144f7c90ed017",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 45.651672795997,
+        "total_runtime_seconds": 51.27289923001081,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": true,
+      "raw_reward": -62.97133768459883
+    },
+    {
+      "ok": true,
+      "reward": -63.2888020760657,
+      "metrics": {
+        "smape": 63.2888020760657,
+        "mae": 439.05565442600516,
+        "rmse": 3167.7944048158392,
+        "mase": 0.2910439629496822
+      },
+      "error": null,
+      "behavior_signature": "1cde31fc3c57465f699698afed3a229be37ab6618fd1456de0feb2cec69ede5c",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 45.867991577018984,
+        "total_runtime_seconds": 51.36620256397873,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": false,
+      "raw_reward": -63.2888020760657
+    },
+    {
+      "ok": false,
+      "reward": -250.0,
+      "metrics": {},
+      "error": "ValueError: You must specify a period or x must be a pandas object with a PeriodIndex or a DatetimeIndex with a freq not set to None",
+      "behavior_signature": null,
+      "metadata": {
+        "dataset_id": "covid_us",
+        "stage": "execution",
+        "runtime_seconds": 5.616892624995671,
+        "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 398, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 31, in covid_forecast\n  File \"<generated_forecaster>\", line 9, in preprocess_data\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/seasonal.py\", line 167, in seasonal_decompose\n    raise ValueError(\nValueError: You must specify a period or x must be a pandas object with a PeriodIndex or a DatetimeIndex with a freq not set to None\n",
+        "timed_out": false
+      },
+      "duplicate_valid_behavior": false,
+      "raw_reward": null
+    },
+    {
+      "ok": true,
+      "reward": -56.78149791450785,
+      "metrics": {
+        "smape": 56.78149791450785,
+        "mae": 390.4775656614012,
+        "rmse": 3031.3308537735948,
+        "mase": 0.2663880468019476
+      },
+      "error": null,
+      "behavior_signature": "1a4d15d8b9f3ba9063753d3dd1a43cf164972bea84bd8f95407fecdabde43c70",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 22.741325255017728,
+        "total_runtime_seconds": 28.234643448027782,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": false,
+      "raw_reward": -56.78149791450785
+    },
+    {
+      "ok": true,
+      "reward": -62.46363467254979,
+      "metrics": {
+        "smape": 62.46363467254979,
+        "mae": 433.04458125120954,
+        "rmse": 3166.355221379238,
+        "mase": 0.28641406355236654
+      },
+      "error": null,
+      "behavior_signature": "cdff0e5236b2237863c4b35de96b57d69d049dcfc08182665f4b7feef5113802",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 46.004448591033,
+        "total_runtime_seconds": 51.5058799328981,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": true,
+      "raw_reward": -62.46363467254979
+    },
+    {
+      "ok": true,
+      "reward": -62.46363467254979,
+      "metrics": {
+        "smape": 62.46363467254979,
+        "mae": 433.04458125120954,
+        "rmse": 3166.355221379238,
+        "mase": 0.28641406355236654
+      },
+      "error": null,
+      "behavior_signature": "cdff0e5236b2237863c4b35de96b57d69d049dcfc08182665f4b7feef5113802",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 45.68680466292426,
+        "total_runtime_seconds": 51.35767226398457,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": true,
+      "raw_reward": -62.46363467254979
+    },
+    {
+      "ok": true,
+      "reward": -62.46363467254979,
+      "metrics": {
+        "smape": 62.46363467254979,
+        "mae": 433.04458125120954,
+        "rmse": 3166.355221379238,
+        "mase": 0.28641406355236654
+      },
+      "error": null,
+      "behavior_signature": "cdff0e5236b2237863c4b35de96b57d69d049dcfc08182665f4b7feef5113802",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 45.89117926801555,
+        "total_runtime_seconds": 51.346546026994474,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": true,
+      "raw_reward": -62.46363467254979
+    },
+    {
+      "ok": true,
+      "reward": -62.46363467254979,
+      "metrics": {
+        "smape": 62.46363467254979,
+        "mae": 433.04458125120954,
+        "rmse": 3166.355221379238,
+        "mase": 0.28641406355236654
+      },
+      "error": null,
+      "behavior_signature": "cdff0e5236b2237863c4b35de96b57d69d049dcfc08182665f4b7feef5113802",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 45.97276273893658,
+        "total_runtime_seconds": 51.512970441021025,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": true,
+      "raw_reward": -62.46363467254979
+    },
+    {
+      "ok": true,
+      "reward": -56.78149791450785,
+      "metrics": {
+        "smape": 56.78149791450785,
+        "mae": 390.4775656614012,
+        "rmse": 3031.3308537735948,
+        "mase": 0.2663880468019476
+      },
+      "error": null,
+      "behavior_signature": "1a4d15d8b9f3ba9063753d3dd1a43cf164972bea84bd8f95407fecdabde43c70",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 23.04504747397732,
+        "total_runtime_seconds": 28.56001981301233,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": true,
+      "raw_reward": -56.78149791450785
+    },
+    {
+      "ok": true,
+      "reward": -56.78149791450785,
+      "metrics": {
+        "smape": 56.78149791450785,
+        "mae": 390.4775656614012,
+        "rmse": 3031.3308537735948,
+        "mase": 0.2663880468019476
+      },
+      "error": null,
+      "behavior_signature": "1a4d15d8b9f3ba9063753d3dd1a43cf164972bea84bd8f95407fecdabde43c70",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 22.907249587005936,
+        "total_runtime_seconds": 28.33828869194258,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": true,
+      "raw_reward": -56.78149791450785
+    },
+    {
+      "ok": false,
+      "reward": -250.0,
+      "metrics": {},
+      "error": "Evaluation failed: Forecast contains NaN or infinite values.",
+      "behavior_signature": null,
+      "metadata": {
+        "dataset_id": "covid_us",
+        "stage": "prediction_validation_or_metrics",
+        "runtime_seconds": 20.449619252001867
+      },
+      "duplicate_valid_behavior": false,
+      "raw_reward": null
+    },
+    {
+      "ok": true,
+      "reward": -56.78149791450785,
+      "metrics": {
+        "smape": 56.78149791450785,
+        "mae": 390.4775656614012,
+        "rmse": 3031.3308537735948,
+        "mase": 0.2663880468019476
+      },
+      "error": null,
+      "behavior_signature": "1a4d15d8b9f3ba9063753d3dd1a43cf164972bea84bd8f95407fecdabde43c70",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 22.59094823698979,
+        "total_runtime_seconds": 28.10545800998807,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": true,
+      "raw_reward": -56.78149791450785
+    },
+    {
+      "ok": true,
+      "reward": -56.78149791450785,
+      "metrics": {
+        "smape": 56.78149791450785,
+        "mae": 390.4775656614012,
+        "rmse": 3031.3308537735948,
+        "mase": 0.2663880468019476
+      },
+      "error": null,
+      "behavior_signature": "1a4d15d8b9f3ba9063753d3dd1a43cf164972bea84bd8f95407fecdabde43c70",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 23.265105776954442,
+        "total_runtime_seconds": 28.263199554989114,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": true,
+      "raw_reward": -56.78149791450785
+    },
+    {
+      "ok": true,
+      "reward": -56.78149791450785,
+      "metrics": {
+        "smape": 56.78149791450785,
+        "mae": 390.4775656614012,
+        "rmse": 3031.3308537735948,
+        "mase": 0.2663880468019476
+      },
+      "error": null,
+      "behavior_signature": "1a4d15d8b9f3ba9063753d3dd1a43cf164972bea84bd8f95407fecdabde43c70",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 22.80509224999696,
+        "total_runtime_seconds": 27.297706309938803,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": true,
+      "raw_reward": -56.78149791450785
+    },
+    {
+      "ok": true,
+      "reward": -56.78149791450785,
+      "metrics": {
+        "smape": 56.78149791450785,
+        "mae": 390.4775656614012,
+        "rmse": 3031.3308537735948,
+        "mase": 0.2663880468019476
+      },
+      "error": null,
+      "behavior_signature": "1a4d15d8b9f3ba9063753d3dd1a43cf164972bea84bd8f95407fecdabde43c70",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 22.96389424102381,
+        "total_runtime_seconds": 27.447399600059725,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": true,
+      "raw_reward": -56.78149791450785
+    },
+    {
+      "ok": true,
+      "reward": -187.87348592727832,
+      "metrics": {
+        "smape": 187.87348592727832,
+        "mae": 534.961548016284,
+        "rmse": 3451.3661142577193,
+        "mase": 0.3849158789580872
+      },
+      "error": null,
+      "behavior_signature": "f1a20e0a7bcf700d39c6424f0b4bdb9790fff472d029009d02d2f9c60bb771f4",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 1.7187658119946718,
+        "total_runtime_seconds": 6.200142925023101,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": false,
+      "raw_reward": -187.87348592727832
+    },
+    {
+      "ok": true,
+      "reward": -56.78149791450785,
+      "metrics": {
+        "smape": 56.78149791450785,
+        "mae": 390.4775656614012,
+        "rmse": 3031.3308537735948,
+        "mase": 0.2663880468019476
+      },
+      "error": null,
+      "behavior_signature": "1a4d15d8b9f3ba9063753d3dd1a43cf164972bea84bd8f95407fecdabde43c70",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 22.917503715958446,
+        "total_runtime_seconds": 27.426828711060807,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": true,
+      "raw_reward": -56.78149791450785
+    },
+    {
+      "ok": true,
+      "reward": -56.78149791450785,
+      "metrics": {
+        "smape": 56.78149791450785,
+        "mae": 390.4775656614012,
+        "rmse": 3031.3308537735948,
+        "mase": 0.2663880468019476
+      },
+      "error": null,
+      "behavior_signature": "1a4d15d8b9f3ba9063753d3dd1a43cf164972bea84bd8f95407fecdabde43c70",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 22.781920747016557,
+        "total_runtime_seconds": 27.369797009974718,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": true,
+      "raw_reward": -56.78149791450785
+    },
+    {
+      "ok": true,
+      "reward": -56.78149791450785,
+      "metrics": {
+        "smape": 56.78149791450785,
+        "mae": 390.4775656614012,
+        "rmse": 3031.3308537735948,
+        "mase": 0.2663880468019476
+      },
+      "error": null,
+      "behavior_signature": "1a4d15d8b9f3ba9063753d3dd1a43cf164972bea84bd8f95407fecdabde43c70",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 22.53259437996894,
+        "total_runtime_seconds": 26.996934433002025,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": true,
+      "raw_reward": -56.78149791450785
+    },
+    {
+      "ok": true,
+      "reward": -166.2908707646594,
+      "metrics": {
+        "smape": 166.2908707646594,
+        "mae": 879.9169702682592,
+        "rmse": 3352.099945391598,
+        "mase": 0.6318115677499601
+      },
+      "error": null,
+      "behavior_signature": "41d86db495f0a1069ea4d5e9335881b691193a97a81db65c01b59be22a284f03",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 50.25306687701959,
+        "total_runtime_seconds": 54.78892726392951,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": false,
+      "raw_reward": -166.2908707646594
+    },
+    {
+      "ok": true,
+      "reward": -55.751784407422136,
+      "metrics": {
+        "smape": 55.751784407422136,
+        "mae": 390.29428900843044,
+        "rmse": 3032.3722135983953,
+        "mase": 0.26648247802897845
+      },
+      "error": null,
+      "behavior_signature": "9ab130fed18d958f6ca5b045219e59fea79021c0e4ac80e69ac56d8e0b26d2c0",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 37.152430061018094,
+        "total_runtime_seconds": 41.62322238506749,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": false,
+      "raw_reward": -55.751784407422136
+    },
+    {
+      "ok": true,
+      "reward": -56.78149791450785,
+      "metrics": {
+        "smape": 56.78149791450785,
+        "mae": 390.4775656614012,
+        "rmse": 3031.3308537735948,
+        "mase": 0.2663880468019476
+      },
+      "error": null,
+      "behavior_signature": "1a4d15d8b9f3ba9063753d3dd1a43cf164972bea84bd8f95407fecdabde43c70",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 22.57481070794165,
+        "total_runtime_seconds": 27.012318019988015,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": true,
+      "raw_reward": -56.78149791450785
+    },
+    {
+      "ok": true,
+      "reward": -56.78149791450785,
+      "metrics": {
+        "smape": 56.78149791450785,
+        "mae": 390.4775656614012,
+        "rmse": 3031.3308537735948,
+        "mase": 0.2663880468019476
+      },
+      "error": null,
+      "behavior_signature": "1a4d15d8b9f3ba9063753d3dd1a43cf164972bea84bd8f95407fecdabde43c70",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 22.53356522892136,
+        "total_runtime_seconds": 27.00506277801469,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": true,
+      "raw_reward": -56.78149791450785
+    },
+    {
+      "ok": false,
+      "reward": -250.0,
+      "metrics": {},
+      "error": "NameError: name 'AttributeError' is not defined",
+      "behavior_signature": null,
+      "metadata": {
+        "dataset_id": "covid_us",
+        "stage": "execution",
+        "runtime_seconds": 5.081122603034601,
+        "traceback": "Traceback (most recent call last):\n  File \"<generated_forecaster>\", line 22, in covid_forecast\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/pandas/util/_decorators.py\", line 220, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/pandas/util/_decorators.py\", line 220, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/pandas/util/_decorators.py\", line 220, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\nTypeError: ExponentialSmoothing.fit() got an unexpected keyword argument 'disp'\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 398, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 28, in covid_forecast\nNameError: name 'AttributeError' is not defined\n",
+        "timed_out": false
+      },
+      "duplicate_valid_behavior": false,
+      "raw_reward": null
+    },
+    {
+      "ok": true,
+      "reward": -55.751784407422136,
+      "metrics": {
+        "smape": 55.751784407422136,
+        "mae": 390.29428900843044,
+        "rmse": 3032.3722135983953,
+        "mase": 0.26648247802897845
+      },
+      "error": null,
+      "behavior_signature": "9ab130fed18d958f6ca5b045219e59fea79021c0e4ac80e69ac56d8e0b26d2c0",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 37.61610563797876,
+        "total_runtime_seconds": 42.00236835493706,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": true,
+      "raw_reward": -55.751784407422136
+    },
+    {
+      "ok": true,
+      "reward": -166.2910595728302,
+      "metrics": {
+        "smape": 166.2910595728302,
+        "mae": 879.9120645285483,
+        "rmse": 3352.109361645463,
+        "mase": 0.6318104662966444
+      },
+      "error": null,
+      "behavior_signature": "6bddc04e00c8b8f15d8c7a07cc08e5c82e3f8fddd1ca8c58f2cda6fa6a075e3f",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 1.2229353829752654,
+        "total_runtime_seconds": 5.748238096013665,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": false,
+      "raw_reward": -166.2910595728302
+    },
+    {
+      "ok": true,
+      "reward": -55.751784407422136,
+      "metrics": {
+        "smape": 55.751784407422136,
+        "mae": 390.29428900843044,
+        "rmse": 3032.3722135983953,
+        "mase": 0.26648247802897845
+      },
+      "error": null,
+      "behavior_signature": "9ab130fed18d958f6ca5b045219e59fea79021c0e4ac80e69ac56d8e0b26d2c0",
+      "metadata": {
+        "dataset_id": "covid_us",
+        "forecast_horizon": 14,
+        "number_of_locations": 56,
+        "candidate_runtime_seconds": 37.628382860915735,
+        "total_runtime_seconds": 42.06737175898161,
+        "primary_metric": "smape",
+        "primary_metric_direction": "minimize"
+      },
+      "duplicate_valid_behavior": true,
+      "raw_reward": -55.751784407422136
+    },
+    {
+      "ok": false,
+      "reward": -250.0,
+      "metrics": {},
+      "error": "Static validation failed: Importing from 'statsmodels.tools.eval_measures' is not allowed.",
+      "behavior_signature": null,
+      "metadata": {
+        "dataset_id": "covid_us",
+        "stage": "static_validation"
+      },
+      "duplicate_valid_behavior": false,
+      "raw_reward": null
+    }
+  ]
+}

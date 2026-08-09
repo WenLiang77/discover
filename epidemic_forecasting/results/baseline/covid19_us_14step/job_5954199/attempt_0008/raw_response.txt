@@ -1,0 +1,43 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+def covid_forecast(train_values, horizon, **kwargs):
+    """
+    Forecast COVID-19 incidence data using a SARIMA model.
+    
+    Parameters:
+    train_values (np.array): A 2D numpy array of shape (T, N) representing historical incidence data.
+    horizon (int): Number of future time steps to predict.
+    **kwargs: Additional keyword arguments (not used).
+    
+    Returns:
+    np.array: A 2D numpy array of shape (horizon, N) containing forecasted incidence data.
+    """
+    T, N = train_values.shape
+    
+    # Initialize the forecast array with zeros
+    forecast = np.zeros((horizon, N))
+    
+    # Fit a SARIMA model for each region
+    for n in range(N):
+        try:
+            # Fit a SARIMA model with default parameters
+            model = SARIMAX(train_values[:, n], order=(1, 1, 1), seasonal_order=(0, 0, 0, 7))
+            fitted_model = model.fit(disp=False)
+            
+            # Forecast the next `horizon` steps
+            forecast[:, n] = fitted_model.forecast(steps=horizon)
+        except Exception as e:
+            # If fitting fails, use a simple exponential smoothing
+            alpha = 0.1
+            smoothed_data = np.cumsum(alpha * train_values[:, n] + (1 - alpha) * np.arange(1, T + 1)) / np.arange(1, T + 1)
+            forecast[:, n] = smoothed_data[-1] * np.ones(horizon)
+    
+    # Ensure non-finite values and clip negative predictions to zero
+    forecast = np.clip(np.nan_to_num(forecast), 0, None)
+    
+    return forecast
+```
+
+This implementation uses the SARIMAX model from statsmodels to fit a time series model to each region's historical incidence data. If fitting the SARIMAX model fails, it falls back to a simple exponential smoothing approach. The forecast is then sanitized to ensure all values are non-negative. This approach aims to handle various types of time series characteristics while providing a robust fallback mechanism.

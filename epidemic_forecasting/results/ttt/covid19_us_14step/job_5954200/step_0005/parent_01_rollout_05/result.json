@@ -1,0 +1,28 @@
+{
+  "step": 5,
+  "parent_number": 1,
+  "parent_state_id": "61031f42-95a5-46d7-bf64-2e37be886b9f",
+  "parent_reward": -62.97133768459883,
+  "rollout_number": 5,
+  "global_rollout_index": 25,
+  "seed": 67,
+  "elapsed_seconds": 33.04823863203637,
+  "raw_reward": null,
+  "adjusted_reward": -250.0,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "ValueError: You must specify a period or x must be a pandas object with a PeriodIndex or a DatetimeIndex with a freq not set to None",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "covid_us",
+      "stage": "execution",
+      "runtime_seconds": 5.616892624995671,
+      "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 398, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 31, in covid_forecast\n  File \"<generated_forecaster>\", line 9, in preprocess_data\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/seasonal.py\", line 167, in seasonal_decompose\n    raise ValueError(\nValueError: You must specify a period or x must be a pandas object with a PeriodIndex or a DatetimeIndex with a freq not set to None\n",
+      "timed_out": false
+    }
+  }
+}

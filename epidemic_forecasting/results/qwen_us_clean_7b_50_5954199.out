@@ -1,0 +1,481 @@
+Job ID: 5954199
+Node: nid010506
+Start: 2026-08-09T02:41:06+00:00
+Python: /scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/bin/python
+Python 3.11.7
+torch: 2.11.0+cu126
+CUDA available: True
+GPU: NVIDIA GH200 120GB
+BF16 supported: True
+GPU 0: NVIDIA GH200 120GB (UUID: GPU-a298adf1-7ce1-15e1-36cf-836c58ad4c0b)
+================================================================================
+COVID-19 Qwen-only baseline
+================================================================================
+Output directory: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/results/baseline/covid19_us_14step/job_5954199
+Task: {'task_id': 'covid19_us_14step', 'disease_name': 'COVID-19', 'dataset_id': 'covid_us', 'function_name': 'covid_forecast', 'prompt_path': '/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/prompt.txt', 'forecast_horizon': 14, 'frequency': 'daily', 'number_of_locations': 56, 'training_observations': 1143, 'test_observations': 14, 'primary_metric': 'smape', 'primary_metric_direction': 'minimize', 'runtime_budget_seconds': 400.0}
+================================================================================
+Loading inference-only baseline model
+================================================================================
+Model: Qwen/Qwen2.5-Coder-7B-Instruct
+Compute dtype: torch.bfloat16
+
+--------------------------------------------------------------------------------
+Attempt 1/50 (seed=42)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: TimeoutError: candidate exceeded the runtime budget of 400.000 seconds.
+
+--------------------------------------------------------------------------------
+Attempt 2/50 (seed=43)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: Evaluation failed: Forecast has shape (56, 14); expected (14, 56).
+
+--------------------------------------------------------------------------------
+Attempt 3/50 (seed=44)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -166.2910575228898
+Metrics: {'smape': 166.2910575228898, 'mae': 879.9084719724906, 'rmse': 3352.09933995485, 'mase': 0.6318090850702849}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 4/50 (seed=45)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: ImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)
+
+--------------------------------------------------------------------------------
+Attempt 5/50 (seed=46)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: TimeoutError: candidate exceeded the runtime budget of 400.000 seconds.
+
+--------------------------------------------------------------------------------
+Attempt 6/50 (seed=47)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: ImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)
+
+--------------------------------------------------------------------------------
+Attempt 7/50 (seed=48)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: NameError: name 'print' is not defined
+
+--------------------------------------------------------------------------------
+Attempt 8/50 (seed=49)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -166.3830524087798
+Metrics: {'smape': 166.3830524087798, 'mae': 862.6465415223888, 'rmse': 3331.5857065863083, 'mase': 0.6239759035358466}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 9/50 (seed=50)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -60.45918367346938
+Metrics: {'smape': 60.45918367346938, 'mae': 490.44132653061223, 'rmse': 3413.782004834318, 'mase': 0.3711574393640355}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 10/50 (seed=51)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -62.97133768459883
+Metrics: {'smape': 62.97133768459883, 'mae': 432.83285326623474, 'rmse': 3165.964481815877, 'mase': 0.2863028877583552}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 11/50 (seed=52)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -60.45918367346938
+Metrics: {'smape': 60.45918367346938, 'mae': 490.44132653061223, 'rmse': 3413.782004834318, 'mase': 0.3711574393640355}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 12/50 (seed=53)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -62.97133768459883
+Metrics: {'smape': 62.97133768459883, 'mae': 432.83285326623474, 'rmse': 3165.964481815877, 'mase': 0.2863028877583552}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 13/50 (seed=54)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -156.55203930464648
+Metrics: {'smape': 156.55203930464648, 'mae': 825.1666776887153, 'rmse': 3350.484075946305, 'mase': 0.6162531932207563}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 14/50 (seed=55)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: NameError: name 'print' is not defined
+
+--------------------------------------------------------------------------------
+Attempt 15/50 (seed=56)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -62.97133768459883
+Metrics: {'smape': 62.97133768459883, 'mae': 432.83285326623474, 'rmse': 3165.964481815877, 'mase': 0.2863028877583552}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 16/50 (seed=57)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: ValueError: could not broadcast input array from shape (336,) into shape (1143,56)
+
+--------------------------------------------------------------------------------
+Attempt 17/50 (seed=58)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -60.45918367346938
+Metrics: {'smape': 60.45918367346938, 'mae': 490.44132653061223, 'rmse': 3413.782004834318, 'mase': 0.3711574393640355}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 18/50 (seed=59)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -62.97133768459883
+Metrics: {'smape': 62.97133768459883, 'mae': 432.83285326623474, 'rmse': 3165.964481815877, 'mase': 0.2863028877583552}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 19/50 (seed=60)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -62.97133768459883
+Metrics: {'smape': 62.97133768459883, 'mae': 432.83285326623474, 'rmse': 3165.964481815877, 'mase': 0.2863028877583552}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 20/50 (seed=61)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: TimeoutError: candidate exceeded the runtime budget of 400.000 seconds.
+
+--------------------------------------------------------------------------------
+Attempt 21/50 (seed=62)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: ImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)
+
+--------------------------------------------------------------------------------
+Attempt 22/50 (seed=63)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -166.2910575228898
+Metrics: {'smape': 166.2910575228898, 'mae': 879.9084719724906, 'rmse': 3352.09933995485, 'mase': 0.6318090850702849}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 23/50 (seed=64)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -55.21875339544449
+Metrics: {'smape': 55.21875339544449, 'mae': 317.15154011471503, 'rmse': 3011.0143752249455, 'mase': 0.23016926465839355}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 24/50 (seed=65)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: NameError: name 'print' is not defined
+
+--------------------------------------------------------------------------------
+Attempt 25/50 (seed=66)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: ValueError: SARIMAX models require univariate `endog`. Got shape (1143, 56).
+
+--------------------------------------------------------------------------------
+Attempt 26/50 (seed=67)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -60.20654095794018
+Metrics: {'smape': 60.20654095794018, 'mae': 314.63570953311887, 'rmse': 3018.478097966652, 'mase': 0.22057842401217004}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 27/50 (seed=68)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -62.97133768459883
+Metrics: {'smape': 62.97133768459883, 'mae': 432.83285326623474, 'rmse': 3165.964481815877, 'mase': 0.2863028877583552}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 28/50 (seed=69)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -62.97133768459883
+Metrics: {'smape': 62.97133768459883, 'mae': 432.83285326623474, 'rmse': 3165.964481815877, 'mase': 0.2863028877583552}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 29/50 (seed=70)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -62.97133768459883
+Metrics: {'smape': 62.97133768459883, 'mae': 432.83285326623474, 'rmse': 3165.964481815877, 'mase': 0.2863028877583552}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 30/50 (seed=71)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: Evaluation failed: Forecast has shape (14, 1143); expected (14, 56).
+
+--------------------------------------------------------------------------------
+Attempt 31/50 (seed=72)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -166.2910575228898
+Metrics: {'smape': 166.2910575228898, 'mae': 879.9084719724906, 'rmse': 3352.09933995485, 'mase': 0.6318090850702849}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 32/50 (seed=73)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -62.97133768459883
+Metrics: {'smape': 62.97133768459883, 'mae': 432.83285326623474, 'rmse': 3165.964481815877, 'mase': 0.2863028877583552}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 33/50 (seed=74)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: ImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)
+
+--------------------------------------------------------------------------------
+Attempt 34/50 (seed=75)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: ValueError: Found input variables with inconsistent numbers of samples: [914, 12824]
+
+--------------------------------------------------------------------------------
+Attempt 35/50 (seed=76)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: ValueError: 'inverse_transform' works only when 'SimpleImputer' is instantiated with 'add_indicator=True'. Got 'add_indicator=False' instead.
+
+--------------------------------------------------------------------------------
+Attempt 36/50 (seed=77)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -133.07586188054032
+Metrics: {'smape': 133.07586188054032, 'mae': 690.5268231455722, 'rmse': 3266.7765490857255, 'mase': 0.5460584610604501}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 37/50 (seed=78)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: ImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)
+
+--------------------------------------------------------------------------------
+Attempt 38/50 (seed=79)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -62.97133768459883
+Metrics: {'smape': 62.97133768459883, 'mae': 432.83285326623474, 'rmse': 3165.964481815877, 'mase': 0.2863028877583552}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 39/50 (seed=80)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -64.67129852229866
+Metrics: {'smape': 64.67129852229866, 'mae': 317.17549092597903, 'rmse': 3011.0009105360227, 'mase': 0.23026085704294827}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 40/50 (seed=81)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: NameError: name 'print' is not defined
+
+--------------------------------------------------------------------------------
+Attempt 41/50 (seed=82)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -80.73502833882311
+Metrics: {'smape': 80.73502833882311, 'mae': 423.46573677806316, 'rmse': 3965.3781111653266, 'mase': 0.2270663603001064}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 42/50 (seed=83)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -62.97133768459883
+Metrics: {'smape': 62.97133768459883, 'mae': 432.83285326623474, 'rmse': 3165.964481815877, 'mase': 0.2863028877583552}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 43/50 (seed=84)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -156.55203930464648
+Metrics: {'smape': 156.55203930464648, 'mae': 825.1666776887153, 'rmse': 3350.484075946305, 'mase': 0.6162531932207563}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 44/50 (seed=85)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -62.97133768459883
+Metrics: {'smape': 62.97133768459883, 'mae': 432.83285326623474, 'rmse': 3165.964481815877, 'mase': 0.2863028877583552}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 45/50 (seed=86)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -156.55203930464648
+Metrics: {'smape': 156.55203930464648, 'mae': 825.1666776887153, 'rmse': 3350.484075946305, 'mase': 0.6162531932207563}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 46/50 (seed=87)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -77.83028048139201
+Metrics: {'smape': 77.83028048139201, 'mae': 490.4867412643725, 'rmse': 3413.7813787634495, 'mase': 0.37127853455090726}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 47/50 (seed=88)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -133.07586188054032
+Metrics: {'smape': 133.07586188054032, 'mae': 690.5268231455722, 'rmse': 3266.7765490857255, 'mase': 0.5460584610604501}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 48/50 (seed=89)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -54.908097104864616
+Metrics: {'smape': 54.908097104864616, 'mae': 360.76735376664783, 'rmse': 2815.9374954367054, 'mase': 0.254881136268764}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 49/50 (seed=90)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -171.0330241825506
+Metrics: {'smape': 171.0330241825506, 'mae': 1960.5152534353508, 'rmse': 4121.320180349088, 'mase': 1.6278152164881554}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 50/50 (seed=91)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -62.97133768459883
+Metrics: {'smape': 62.97133768459883, 'mae': 432.83285326623474, 'rmse': 3165.964481815877, 'mase': 0.2863028877583552}
+Duplicate behavior: True
+Error: None
+
+================================================================================
+Baseline experiment complete
+================================================================================
+Valid generated attempts: 32
+Invalid generated attempts: 18
+Duplicate behaviours: 19
+Best generated: {'attempt': 48, 'reward': -54.908097104864616, 'metrics': {'smape': 54.908097104864616, 'mae': 360.76735376664783, 'rmse': 2815.9374954367054, 'mase': 0.254881136268764}, 'duplicate_valid_behavior': False, 'candidate_path': '/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/results/baseline/covid19_us_14step/job_5954199/attempt_0048/candidate.py'}
+Best model-generated result: {'attempt': 48, 'reward': -54.908097104864616, 'metrics': {'smape': 54.908097104864616, 'mae': 360.76735376664783, 'rmse': 2815.9374954367054, 'mase': 0.254881136268764}, 'duplicate_valid_behavior': False, 'candidate_path': '/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/results/baseline/covid19_us_14step/job_5954199/attempt_0048/candidate.py'}
+Results: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/results/baseline/covid19_us_14step/job_5954199
+End: 2026-08-09T03:26:24+00:00

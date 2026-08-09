@@ -1,0 +1,21 @@
+{
+  "attempt": 14,
+  "seed": 55,
+  "elapsed_seconds": 14.403207955998369,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "NameError: name 'print' is not defined",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "covid_us",
+      "stage": "execution",
+      "runtime_seconds": 1.1280377350049093,
+      "traceback": "Traceback (most recent call last):\n  File \"<generated_forecaster>\", line 12, in fit_exponential_smoothing\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/pandas/util/_decorators.py\", line 220, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py\", line 247, in __init__\n    raise ValueError(\nValueError: endog must be strictly positive when usingmultiplicative trend or seasonal components.\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 398, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 34, in covid_forecast\n  File \"<generated_forecaster>\", line 16, in fit_exponential_smoothing\nNameError: name 'print' is not defined\n",
+      "timed_out": false
+    }
+  }
+}

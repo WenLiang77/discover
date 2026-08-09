@@ -1,0 +1,28 @@
+{
+  "step": 1,
+  "parent_number": 1,
+  "parent_state_id": "195469e8-3f35-4a08-bd31-450af76cb8ac",
+  "parent_reward": null,
+  "rollout_number": 4,
+  "global_rollout_index": 4,
+  "seed": 46,
+  "elapsed_seconds": 428.92362125602085,
+  "raw_reward": null,
+  "adjusted_reward": -250.0,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "TimeoutError: candidate exceeded the runtime budget of 400.000 seconds.",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "covid_us",
+      "stage": "execution",
+      "runtime_seconds": 400.1107574769994,
+      "traceback": null,
+      "timed_out": true
+    }
+  }
+}

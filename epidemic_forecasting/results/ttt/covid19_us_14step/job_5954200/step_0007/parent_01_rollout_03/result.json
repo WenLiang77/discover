@@ -1,0 +1,26 @@
+{
+  "step": 7,
+  "parent_number": 1,
+  "parent_state_id": "35c16be9-c6da-4c8e-a7b1-79b87c28ebef",
+  "parent_reward": -56.78149791450785,
+  "rollout_number": 3,
+  "global_rollout_index": 33,
+  "seed": 75,
+  "elapsed_seconds": 43.1029757920187,
+  "raw_reward": null,
+  "adjusted_reward": -250.0,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "Evaluation failed: Forecast contains NaN or infinite values.",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "covid_us",
+      "stage": "prediction_validation_or_metrics",
+      "runtime_seconds": 20.449619252001867
+    }
+  }
+}

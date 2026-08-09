@@ -1,0 +1,25 @@
+{
+  "step": 4,
+  "parent_number": 1,
+  "parent_state_id": "61031f42-95a5-46d7-bf64-2e37be886b9f",
+  "parent_reward": -62.97133768459883,
+  "rollout_number": 4,
+  "global_rollout_index": 19,
+  "seed": 61,
+  "elapsed_seconds": 24.336545458063483,
+  "raw_reward": null,
+  "adjusted_reward": -250.0,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "Static validation failed: Importing from 'statsmodels.tsa.exponential_smoothing.exponential_smoothing' is not allowed.",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "covid_us",
+      "stage": "static_validation"
+    }
+  }
+}

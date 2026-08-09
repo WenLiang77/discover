@@ -1,0 +1,38 @@
+```python
+import numpy as np
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from sklearn.preprocessing import MinMaxScaler
+
+def covid_forecast(train_values, horizon, **kwargs):
+    forecasted_values = np.zeros((horizon, train_values.shape[1]))
+    scaler = MinMaxScaler(feature_range=(0, 1))
+    for region in range(train_values.shape[1]):
+        region_data = train_values[:, region]
+        # Ensure positive values for scaling
+        region_data += 1e-06
+        region_data_scaled = scaler.fit_transform(region_data.reshape(-1, 1)).flatten()
+        
+        try:
+            # Attempt to fit a SARIMAX model
+            model = SARIMAX(region_data_scaled, order=(1, 1, 1), seasonal_order=(1, 1, 1, 7))
+            fitted_model = model.fit(disp=False)
+            forecast_scaled = fitted_model.get_forecast(steps=horizon).predicted_mean
+        except (ValueError, AttributeError):
+            try:
+                # If SARIMAX fails, try an exponential smoothing model
+                model = ExponentialSmoothing(region_data_scaled, trend='add', seasonal=None)
+                fitted_model = model.fit()
+                forecast_scaled = fitted_model.forecast(steps=horizon)
+            except Exception:
+                # If both fail, use a simple mean forecast
+                forecast_scaled = np.full(horizon, np.mean(region_data_scaled))
+        
+        # Inverse transform back to original scale
+        forecast_original_scale = scaler.inverse_transform(forecast_scaled.reshape(-1, 1)).flatten()
+        
+        # Clip negative predictions to zero
+        forecasted_values[:, region] = np.maximum(forecast_original_scale, 0)
+    
+    return forecasted_values
+```

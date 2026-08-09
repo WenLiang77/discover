@@ -1,0 +1,25 @@
+{
+  "step": 3,
+  "parent_number": 1,
+  "parent_state_id": "61031f42-95a5-46d7-bf64-2e37be886b9f",
+  "parent_reward": -62.97133768459883,
+  "rollout_number": 5,
+  "global_rollout_index": 15,
+  "seed": 57,
+  "elapsed_seconds": 36.651116687920876,
+  "raw_reward": null,
+  "adjusted_reward": -250.0,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "Static validation failed: Importing from 'statsmodels.graphics.tsaplots' is not allowed.",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "covid_us",
+      "stage": "static_validation"
+    }
+  }
+}

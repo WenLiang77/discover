@@ -1,0 +1,48 @@
+```python
+import numpy as np
+from statsmodels.tsa.seasonal import seasonal_decompose
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_absolute_error, mean_squared_error, symmetric_mean_absolute_percentage_error
+
+def decompose_and_fit(region_data, horizon):
+    # Decompose the time series into trend, seasonal, and residual components
+    decomposition = seasonal_decompose(region_data, model='additive', period=7)
+    
+    # Fit a linear regression model on the residuals
+    model = LinearRegression()
+    model.fit(range(len(decomposition.resid)), decomposition.resid)
+    
+    # Predict the next few time steps based on the linear model
+    last_point = len(decomposition.resid) - 1
+    predicted_resid = np.array([model.predict(np.array([[i + last_point + 1]]))[0] for i in range(horizon)])
+    
+    # Reconstruct the forecasted time series
+    forecasted_values = decomposition.trend[-1] + decomposition.seasonal[-1] + predicted_resid
+    
+    return forecasted_values
+
+def covid_forecast(train_values, horizon, **kwargs):
+    num_regions = train_values.shape[1]
+    forecasts = np.zeros((horizon, num_regions))
+    
+    for region in range(num_regions):
+        region_data = train_values[:, region]
+        
+        try:
+            forecast = decompose_and_fit(region_data, horizon)
+            forecasts[:, region] = forecast
+        except Exception as e:
+            # If fitting fails, use a simple moving average as a fallback
+            moving_avg = np.convolve(region_data, np.ones(horizon), 'valid') / horizon
+            forecast = np.pad(moving_avg, (0, horizon - len(moving_avg)), mode='constant', constant_values=np.nan)
+            forecast[np.isnan(forecast)] = 0
+            forecasts[:, region] = forecast
+    
+    # Ensure non-finite values are replaced with zero and negative predictions are clipped to zero
+    forecasts[np.isinf(forecasts)] = 0
+    forecasts[forecasts < 0] = 0
+    
+    return forecasts
+```
+
+This solution uses a combination of seasonal decomposition and linear regression to forecast COVID-19 incidence data for multiple regions. It handles short, sparse, noisy, zero-inflated, and non-stationary series by decomposing the time series into trend, seasonal, and residual components. For each region, it fits a linear regression model on the residuals and predicts the next few time steps based on this model. If fitting fails, it falls back to a simple moving average. Non-finite values and negative predictions are sanitized by replacing them with zero.

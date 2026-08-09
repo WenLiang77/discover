@@ -1,0 +1,52 @@
+```python
+import numpy as np
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from sklearn.preprocessing import StandardScaler
+
+def covid_forecast(train_values, horizon, **kwargs):
+    forecasted_values = np.zeros((horizon, train_values.shape[1]))
+    scaler = StandardScaler(with_mean=False)
+    
+    for region in range(train_values.shape[1]):
+        region_data = train_values[:, region]
+        
+        # Add a small constant to avoid log(0)
+        region_data += 1e-06
+        
+        # Scale the data
+        region_data_scaled = scaler.fit_transform(region_data.reshape(-1, 1)).flatten()
+        
+        # Try fitting a SARIMAX model
+        try:
+            model = SARIMAX(region_data_scaled, order=(1, 1, 1), seasonal_order=(1, 1, 1, 7))
+            fitted_model = model.fit(disp=False)
+            forecast_scaled = fitted_model.get_forecast(steps=horizon).predicted_mean
+        except Exception as _:
+            # If SARIMAX fails, try Exponential Smoothing
+            try:
+                model = ExponentialSmoothing(region_data_scaled, trend='add', seasonal=None)
+                fitted_model = model.fit()
+                forecast_scaled = fitted_model.forecast(steps=horizon)
+            except Exception as _:
+                # If both fail, use a simple moving average
+                forecast_scaled = np.full(horizon, np.mean(region_data_scaled))
+        
+        # Inverse transform the forecast back to original scale
+        forecast_original_scale = scaler.inverse_transform(forecast_scaled.reshape(-1, 1)).flatten()
+        
+        # Ensure non-negative forecasts
+        forecasted_values[:, region] = np.maximum(forecast_original_scale, 0)
+    
+    return forecasted_values
+```
+
+This implementation includes the following improvements over the initial candidate:
+
+1. **Handling Zero Values**: A small constant (1e-06) is added to the region data to avoid taking the logarithm of zero when scaling.
+2. **SARIMAX Model**: Initially attempts to fit a SARIMAX model but handles exceptions if it fails.
+3. **Exponential Smoothing**: As a fallback, uses Exponential Smoothing if SARIMAX fails.
+4. **Simple Moving Average**: As a last resort, uses a simple moving average if both previous methods fail.
+5. **Non-Negative Forecasts**: Ensures that all forecasted values are non-negative by clipping any negative values to zero after inverse transformation.
+
+This approach ensures robustness to various characteristics of the data and provides a fallback mechanism for different types of errors during model fitting.

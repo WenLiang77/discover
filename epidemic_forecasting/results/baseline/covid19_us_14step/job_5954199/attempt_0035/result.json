@@ -1,0 +1,21 @@
+{
+  "attempt": 35,
+  "seed": 76,
+  "elapsed_seconds": 14.899079105001874,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "ValueError: 'inverse_transform' works only when 'SimpleImputer' is instantiated with 'add_indicator=True'. Got 'add_indicator=False' instead.",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "covid_us",
+      "stage": "execution",
+      "runtime_seconds": 1.3720725330058485,
+      "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 398, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 39, in covid_forecast\n  File \"<generated_forecaster>\", line 32, in postprocess_forecasts\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/impute/_base.py\", line 721, in inverse_transform\n    raise ValueError(\nValueError: 'inverse_transform' works only when 'SimpleImputer' is instantiated with 'add_indicator=True'. Got 'add_indicator=False' instead.\n",
+      "timed_out": false
+    }
+  }
+}

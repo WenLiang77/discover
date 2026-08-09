@@ -1,0 +1,35 @@
+{
+  "step": 10,
+  "parent_number": 1,
+  "parent_state_id": "f1b8b628-f701-4409-ba3d-fdf92fed6099",
+  "parent_reward": -55.751784407422136,
+  "rollout_number": 2,
+  "global_rollout_index": 47,
+  "seed": 89,
+  "elapsed_seconds": 62.531799433985725,
+  "raw_reward": -55.751784407422136,
+  "adjusted_reward": -55.751784407422136,
+  "duplicate_valid_behavior": true,
+  "duplicate_of": "step_0009/parent_01_rollout_03",
+  "evaluation": {
+    "ok": true,
+    "reward": -55.751784407422136,
+    "metrics": {
+      "smape": 55.751784407422136,
+      "mae": 390.29428900843044,
+      "rmse": 3032.3722135983953,
+      "mase": 0.26648247802897845
+    },
+    "error": null,
+    "behavior_signature": "9ab130fed18d958f6ca5b045219e59fea79021c0e4ac80e69ac56d8e0b26d2c0",
+    "metadata": {
+      "dataset_id": "covid_us",
+      "forecast_horizon": 14,
+      "number_of_locations": 56,
+      "candidate_runtime_seconds": 37.61610563797876,
+      "total_runtime_seconds": 42.00236835493706,
+      "primary_metric": "smape",
+      "primary_metric_direction": "minimize"
+    }
+  }
+}

@@ -1,0 +1,45 @@
+```python
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+def covid_forecast(train_values, horizon, **kwargs):
+    # Ensure train_values is a NumPy array
+    train_values = np.array(train_values)
+    
+    # Initialize the scaler
+    scaler = StandardScaler()
+    
+    # Fit the scaler on the training data
+    scaler.fit(train_values)
+    
+    # Transform the training data
+    scaled_train_values = scaler.transform(train_values)
+    
+    # Prepare the forecasted array
+    forecasted_values = np.zeros((horizon, train_values.shape[1]))
+    
+    # Loop through each region to forecast
+    for i in range(train_values.shape[1]):
+        try:
+            # Fit the SARIMAX model for the current region
+            model = SARIMAX(scaled_train_values[:, i], order=(5, 1, 0), seasonal_order=(1, 1, 0, 7))
+            results = model.fit(disp=False)
+            
+            # Predict the next 'horizon' time steps
+            forecast = results.get_forecast(steps=horizon)
+            
+            # Get the predicted mean
+            forecasted_mean = forecast.predicted_mean
+            
+            # Inverse transform the forecasted values
+            inverse_transformed_forecast = scaler.inverse_transform(forecasted_mean.reshape(-1, 1))[:, 0]
+            
+            # Assign the forecasted values to the result array
+            forecasted_values[:, i] = inverse_transformed_forecast.clip(0)
+        except Exception as e:
+            # If fitting fails, fill the forecast with zeros
+            forecasted_values[:, i] = 0
+    
+    return forecasted_values
+```

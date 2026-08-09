@@ -1,0 +1,19 @@
+{
+  "attempt": 2,
+  "seed": 43,
+  "elapsed_seconds": 57.28066528297495,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "Evaluation failed: Forecast has shape (56, 14); expected (14, 56).",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "covid_us",
+      "stage": "prediction_validation_or_metrics",
+      "runtime_seconds": 46.493325786083005
+    }
+  }
+}

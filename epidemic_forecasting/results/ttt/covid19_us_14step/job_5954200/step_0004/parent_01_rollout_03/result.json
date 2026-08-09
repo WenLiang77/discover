@@ -1,0 +1,28 @@
+{
+  "step": 4,
+  "parent_number": 1,
+  "parent_state_id": "61031f42-95a5-46d7-bf64-2e37be886b9f",
+  "parent_reward": -62.97133768459883,
+  "rollout_number": 3,
+  "global_rollout_index": 18,
+  "seed": 60,
+  "elapsed_seconds": 37.593358413898386,
+  "raw_reward": null,
+  "adjusted_reward": -250.0,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "ValueError: Multiplicative seasonality is not appropriate for zero and negative values",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "covid_us",
+      "stage": "execution",
+      "runtime_seconds": 5.971202921005897,
+      "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 398, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 51, in covid_forecast\n  File \"<generated_forecaster>\", line 16, in preprocess_data\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/seasonal.py\", line 157, in seasonal_decompose\n    raise ValueError(\nValueError: Multiplicative seasonality is not appropriate for zero and negative values\n",
+      "timed_out": false
+    }
+  }
+}

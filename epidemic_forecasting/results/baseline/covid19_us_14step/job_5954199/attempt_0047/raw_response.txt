@@ -1,0 +1,25 @@
+```python
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn.multioutput import MultiOutputRegressor
+
+def covid_forecast(train_values, horizon, **kwargs):
+    # Ensure the training data is non-negative
+    train_values = np.maximum(train_values, 0)
+    
+    # Initialize the multi-output linear regression model
+    model = MultiOutputRegressor(LinearRegression())
+    
+    # Fit the model to the training data
+    model.fit(train_values[:-horizon], train_values[horizon:])
+    
+    # Predict the future values
+    forecast = model.predict(train_values[-horizon:])
+    
+    # Ensure the forecasted values are non-negative
+    forecast = np.maximum(forecast, 0)
+    
+    return forecast
+```
+
+This forecasting algorithm uses a multi-output linear regression model to predict the future COVID-19 incidence across different geographical regions. The model is trained on the historical data and then used to make predictions for the specified horizon. Non-negative values are ensured in both the training data and the forecasted values to meet the problem requirements.

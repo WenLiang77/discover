@@ -1,0 +1,26 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+def covid_forecast(train_values, horizon, **kwargs):
+    # Initialize the forecasted values array with zeros
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    
+    # Iterate over each region
+    for i in range(train_values.shape[1]):
+        try:
+            # Fit a SARIMAX model to the historical data for the current region
+            model = SARIMAX(train_values[:, i], order=(1, 1, 1), seasonal_order=(1, 1, 1, 7))
+            model_fit = model.fit(disp=False)
+            
+            # Perform the forecast
+            forecast[:, i] = model_fit.forecast(steps=horizon)
+        except Exception as e:
+            # If fitting fails, fill the forecast with zeros
+            forecast[:, i] = 0
+    
+    # Ensure all forecasted values are non-negative
+    forecast = np.maximum(forecast, 0)
+    
+    return forecast
+```

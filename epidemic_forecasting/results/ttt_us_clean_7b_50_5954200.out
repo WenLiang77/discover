@@ -1,0 +1,151 @@
+Job ID: 5954200
+Node: nid010537
+Start: 2026-08-09T02:41:07+00:00
+Python: /scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/bin/python
+Python 3.11.7
+torch: 2.11.0+cu126
+CUDA available: True
+GPU: NVIDIA GH200 120GB
+BF16 supported: True
+GPU 0: NVIDIA GH200 120GB (UUID: GPU-f75c1085-dc73-855b-ffc0-b90a1ee0d571)
+================================================================================
+Local TTT epidemic forecasting
+================================================================================
+Output directory: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/results/ttt/covid19_us_14step/job_5954200
+Task: {'task_id': 'covid19_us_14step', 'disease_name': 'COVID-19', 'dataset_id': 'covid_us', 'function_name': 'covid_forecast', 'prompt_path': '/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/prompt.txt', 'forecast_horizon': 14, 'frequency': 'daily', 'number_of_locations': 56, 'training_observations': 1143, 'test_observations': 14, 'primary_metric': 'smape', 'primary_metric_direction': 'minimize', 'runtime_budget_seconds': 400.0}
+================================================================================
+Loading tokenizer and local LoRA model
+================================================================================
+Model name: Qwen/Qwen2.5-Coder-7B-Instruct
+LoRA rank: 8
+Compute dtype: torch.bfloat16
+LoRA target modules: ['q_proj', 'k_proj', 'v_proj', 'o_proj', 'gate_proj', 'up_proj', 'down_proj']
+
+Trainable parameters:
+trainable params: 20,185,088 || all params: 7,635,801,600 || trainable%: 0.2643
+================================================================================
+Creating optimizer
+================================================================================
+Number of trainable parameter tensors: 392
+Learning rate: 0.0001
+
+================================================================================
+TTT step 1/10
+================================================================================
+Parent 1, rollout 1: valid=False, raw_reward=None, adjusted_reward=-250.0, duplicate=False
+Parent 1, rollout 2: valid=True, raw_reward=-166.2910575228898, adjusted_reward=-166.2910575228898, duplicate=False
+Parent 1, rollout 3: valid=False, raw_reward=None, adjusted_reward=-250.0, duplicate=False
+Parent 1, rollout 4: valid=False, raw_reward=None, adjusted_reward=-250.0, duplicate=False
+Parent 1, rollout 5: valid=False, raw_reward=None, adjusted_reward=-250.0, duplicate=False
+Training: {'ok': True, 'loss': 0.20640524625778198, 'used_count': 5, 'rewards': [-250.0, -166.2910575228898, -250.0, -250.0, -250.0], 'advantages': [-0.7299396991729736, 10.81151008605957, -0.7299396991729736, -0.7299396991729736, -0.7299396991729736], 'per_sample_ce_losses': [0.20540910959243774, 0.1650412529706955, 0.26227468252182007, 0.31861189007759094, 0.24436329305171967]}
+PUCT stats: {'puct/buffer_size': 2.0, 'puct/sampled_size': 1.0, 'puct/T': 5.0, 'puct/scale_last': 1.0, 'puct/buffer_value/mean': -166.2910575228898, 'puct/buffer_value/std': 0.0, 'puct/buffer_value/min': -166.2910575228898, 'puct/buffer_value/max': -166.2910575228898, 'puct/selected_score/mean': 1.0, 'puct/selected_score/std': 0.0, 'puct/selected_score/min': 1.0, 'puct/selected_score/max': 1.0}
+
+================================================================================
+TTT step 2/10
+================================================================================
+Parent 1, rollout 1: valid=True, raw_reward=-62.97133768459883, adjusted_reward=-62.97133768459883, duplicate=False
+Parent 1, rollout 2: valid=True, raw_reward=-62.97133768459883, adjusted_reward=-62.97133768459883, duplicate=True
+Parent 1, rollout 3: valid=False, raw_reward=None, adjusted_reward=-250.0, duplicate=False
+Parent 1, rollout 4: valid=True, raw_reward=-68.23351076296902, adjusted_reward=-68.23351076296902, duplicate=False
+Parent 1, rollout 5: valid=True, raw_reward=-62.97133768459883, adjusted_reward=-62.97133768459883, duplicate=True
+Training: {'ok': True, 'loss': -0.00023367106914520263, 'used_count': 5, 'rewards': [-62.97133768459883, -62.97133768459883, -250.0, -68.23351076296902, -62.97133768459883], 'advantages': [1.0, 1.0, -1.0, -1.0, 1.0], 'per_sample_ce_losses': [0.11048616468906403, 0.07612979412078857, 0.21724702417850494, 0.14634042978286743, 0.17580313980579376]}
+PUCT stats: {'puct/buffer_size': 3.0, 'puct/sampled_size': 1.0, 'puct/T': 10.0, 'puct/scale_last': 1.0, 'puct/buffer_value/mean': -114.63119760374431, 'puct/buffer_value/std': 51.659859919145475, 'puct/buffer_value/min': -166.2910575228898, 'puct/buffer_value/max': -62.97133768459883, 'puct/sampled_value/mean': -166.2910575228898, 'puct/sampled_value/std': 0.0, 'puct/sampled_value/min': -166.2910575228898, 'puct/sampled_value/max': -166.2910575228898, 'puct/selected_score/mean': -164.65806436103435, 'puct/selected_score/std': 0.0, 'puct/selected_score/min': -164.65806436103435, 'puct/selected_score/max': -164.65806436103435}
+
+================================================================================
+TTT step 3/10
+================================================================================
+Parent 1, rollout 1: valid=True, raw_reward=-166.29106108801716, adjusted_reward=-166.29106108801716, duplicate=False
+Parent 1, rollout 2: valid=False, raw_reward=None, adjusted_reward=-250.0, duplicate=False
+Parent 1, rollout 3: valid=False, raw_reward=None, adjusted_reward=-250.0, duplicate=False
+Parent 1, rollout 4: valid=True, raw_reward=-62.97133768459883, adjusted_reward=-62.97133768459883, duplicate=True
+Parent 1, rollout 5: valid=False, raw_reward=None, adjusted_reward=-250.0, duplicate=False
+Training: {'ok': True, 'loss': 0.04112766459584236, 'used_count': 5, 'rewards': [-166.29106108801716, -250.0, -250.0, -62.97133768459883, -250.0], 'advantages': [-0.29453331232070923, -0.8253563046455383, -0.8253563046455383, 9.522846221923828, -0.8253563046455383], 'per_sample_ce_losses': [0.19764171540737152, 0.18048478662967682, 0.10921472311019897, 0.06898939609527588, 0.18660993874073029]}
+PUCT stats: {'puct/buffer_size': 4.0, 'puct/sampled_size': 1.0, 'puct/T': 15.0, 'puct/scale_last': 103.31971983829095, 'puct/buffer_value/mean': -131.85115209850193, 'puct/buffer_value/std': 48.705383858941794, 'puct/buffer_value/min': -166.29106108801716, 'puct/buffer_value/max': -62.97133768459883, 'puct/sampled_value/mean': -62.97133768459883, 'puct/sampled_value/std': 0.0, 'puct/sampled_value/min': -62.97133768459883, 'puct/sampled_value/max': -62.97133768459883, 'puct/selected_score/mean': 108.36503438952636, 'puct/selected_score/std': 0.0, 'puct/selected_score/min': 108.36503438952636, 'puct/selected_score/max': 108.36503438952636}
+
+================================================================================
+TTT step 4/10
+================================================================================
+Parent 1, rollout 1: valid=True, raw_reward=-62.97133768459883, adjusted_reward=-62.97133768459883, duplicate=True
+Parent 1, rollout 2: valid=True, raw_reward=-62.97133768459883, adjusted_reward=-62.97133768459883, duplicate=True
+Parent 1, rollout 3: valid=False, raw_reward=None, adjusted_reward=-250.0, duplicate=False
+Parent 1, rollout 4: valid=False, raw_reward=None, adjusted_reward=-250.0, duplicate=False
+Parent 1, rollout 5: valid=True, raw_reward=-117.82522718953405, adjusted_reward=-117.82522718953405, duplicate=False
+Training: {'ok': True, 'loss': -0.006537586450576782, 'used_count': 5, 'rewards': [-62.97133768459883, -62.97133768459883, -250.0, -250.0, -117.82522718953405], 'advantages': [2.4440135955810547, 2.4440135955810547, -0.9965872168540955, -0.9965872168540955, -0.6850786805152893], 'per_sample_ce_losses': [0.05933934077620506, 0.04594369977712631, 0.09478531777858734, 0.11093640327453613, 0.12404631078243256]}
+PUCT stats: {'puct/buffer_size': 4.0, 'puct/sampled_size': 1.0, 'puct/T': 20.0, 'puct/scale_last': 103.31972340341832, 'puct/buffer_value/mean': -131.85115209850193, 'puct/buffer_value/std': 48.705383858941794, 'puct/buffer_value/min': -166.29106108801716, 'puct/buffer_value/max': -62.97133768459883, 'puct/sampled_value/mean': -62.97133768459883, 'puct/sampled_value/std': 0.0, 'puct/sampled_value/min': -62.97133768459883, 'puct/sampled_value/max': -62.97133768459883, 'puct/selected_score/mean': -35.419411443687274, 'puct/selected_score/std': 0.0, 'puct/selected_score/min': -35.419411443687274, 'puct/selected_score/max': -35.419411443687274}
+
+================================================================================
+TTT step 5/10
+================================================================================
+Parent 1, rollout 1: valid=False, raw_reward=None, adjusted_reward=-250.0, duplicate=False
+Parent 1, rollout 2: valid=True, raw_reward=-62.46363467254979, adjusted_reward=-62.46363467254979, duplicate=False
+Parent 1, rollout 3: valid=True, raw_reward=-62.97133768459883, adjusted_reward=-62.97133768459883, duplicate=True
+Parent 1, rollout 4: valid=True, raw_reward=-63.2888020760657, adjusted_reward=-63.2888020760657, duplicate=False
+Parent 1, rollout 5: valid=False, raw_reward=None, adjusted_reward=-250.0, duplicate=False
+Training: {'ok': True, 'loss': 0.02718411348760128, 'used_count': 5, 'rewards': [-250.0, -62.46363467254979, -62.97133768459883, -63.2888020760657, -250.0], 'advantages': [-1.0, 5.430779457092285, 0.30131566524505615, -0.35957419872283936, -1.0], 'per_sample_ce_losses': [0.1890854686498642, 0.1030111163854599, 0.06394709646701813, 0.10992015898227692, 0.21416842937469482]}
+PUCT stats: {'puct/buffer_size': 5.0, 'puct/sampled_size': 1.0, 'puct/T': 25.0, 'puct/scale_last': 103.31972340341832, 'puct/buffer_value/mean': -114.5042727420139, 'puct/buffer_value/std': 51.787097648553384, 'puct/buffer_value/min': -166.29106108801716, 'puct/buffer_value/max': -62.46363467254979, 'puct/sampled_value/mean': -62.97133768459883, 'puct/sampled_value/std': 0.0, 'puct/sampled_value/min': -62.97133768459883, 'puct/sampled_value/max': -62.97133768459883, 'puct/selected_score/mean': -45.75423029266919, 'puct/selected_score/std': 0.0, 'puct/selected_score/min': -45.75423029266919, 'puct/selected_score/max': -45.75423029266919}
+
+================================================================================
+TTT step 6/10
+================================================================================
+Parent 1, rollout 1: valid=True, raw_reward=-56.78149791450785, adjusted_reward=-56.78149791450785, duplicate=False
+Parent 1, rollout 2: valid=True, raw_reward=-62.46363467254979, adjusted_reward=-62.46363467254979, duplicate=True
+Parent 1, rollout 3: valid=True, raw_reward=-62.46363467254979, adjusted_reward=-62.46363467254979, duplicate=True
+Parent 1, rollout 4: valid=True, raw_reward=-62.46363467254979, adjusted_reward=-62.46363467254979, duplicate=True
+Parent 1, rollout 5: valid=True, raw_reward=-62.46363467254979, adjusted_reward=-62.46363467254979, duplicate=True
+Training: {'ok': True, 'loss': 0.3683042511343956, 'used_count': 5, 'rewards': [-56.78149791450785, -62.46363467254979, -62.46363467254979, -62.46363467254979, -62.46363467254979], 'advantages': [10.811513900756836, -0.7299396991729736, -0.7299396991729736, -0.7299396991729736, -0.7299396991729736], 'per_sample_ce_losses': [0.2201617807149887, 0.13794976472854614, 0.32216113805770874, 0.07012543082237244, 0.2078532874584198]}
+PUCT stats: {'puct/buffer_size': 6.0, 'puct/sampled_size': 1.0, 'puct/T': 30.0, 'puct/scale_last': 103.82742641546737, 'puct/buffer_value/mean': -102.95971777651269, 'puct/buffer_value/std': 51.75548071165562, 'puct/buffer_value/min': -166.29106108801716, 'puct/buffer_value/max': -56.78149791450785, 'puct/sampled_value/mean': -62.46363467254979, 'puct/sampled_value/std': 0.0, 'puct/sampled_value/min': -62.46363467254979, 'puct/sampled_value/max': -62.46363467254979, 'puct/selected_score/mean': 114.00905644031253, 'puct/selected_score/std': 0.0, 'puct/selected_score/min': 114.00905644031253, 'puct/selected_score/max': 114.00905644031253}
+
+================================================================================
+TTT step 7/10
+================================================================================
+Parent 1, rollout 1: valid=True, raw_reward=-56.78149791450785, adjusted_reward=-56.78149791450785, duplicate=True
+Parent 1, rollout 2: valid=True, raw_reward=-56.78149791450785, adjusted_reward=-56.78149791450785, duplicate=True
+Parent 1, rollout 3: valid=False, raw_reward=None, adjusted_reward=-250.0, duplicate=False
+Parent 1, rollout 4: valid=True, raw_reward=-56.78149791450785, adjusted_reward=-56.78149791450785, duplicate=True
+Parent 1, rollout 5: valid=True, raw_reward=-56.78149791450785, adjusted_reward=-56.78149791450785, duplicate=True
+Training: {'ok': True, 'loss': 0.011266205459833145, 'used_count': 5, 'rewards': [-56.78149791450785, -56.78149791450785, -250.0, -56.78149791450785, -56.78149791450785], 'advantages': [0.3333333730697632, 0.3333333730697632, -1.0, 0.3333333730697632, 0.3333333730697632], 'per_sample_ce_losses': [0.19275833666324615, 0.08811847120523453, 0.1177329570055008, 0.06490025669336319, 0.17641481757164001]}
+PUCT stats: {'puct/buffer_size': 6.0, 'puct/sampled_size': 1.0, 'puct/T': 35.0, 'puct/scale_last': 109.5095631735093, 'puct/buffer_value/mean': -102.95971777651269, 'puct/buffer_value/std': 51.75548071165562, 'puct/buffer_value/min': -166.29106108801716, 'puct/buffer_value/max': -56.78149791450785, 'puct/sampled_value/mean': -56.78149791450785, 'puct/sampled_value/std': 0.0, 'puct/sampled_value/min': -56.78149791450785, 'puct/sampled_value/max': -56.78149791450785, 'puct/selected_score/mean': 117.42520015022014, 'puct/selected_score/std': 0.0, 'puct/selected_score/min': 117.42520015022014, 'puct/selected_score/max': 117.42520015022014}
+
+================================================================================
+TTT step 8/10
+================================================================================
+Parent 1, rollout 1: valid=True, raw_reward=-56.78149791450785, adjusted_reward=-56.78149791450785, duplicate=True
+Parent 1, rollout 2: valid=True, raw_reward=-56.78149791450785, adjusted_reward=-56.78149791450785, duplicate=True
+Parent 1, rollout 3: valid=True, raw_reward=-187.87348592727832, adjusted_reward=-187.87348592727832, duplicate=False
+Parent 1, rollout 4: valid=True, raw_reward=-56.78149791450785, adjusted_reward=-56.78149791450785, duplicate=True
+Parent 1, rollout 5: valid=True, raw_reward=-56.78149791450785, adjusted_reward=-56.78149791450785, duplicate=True
+Training: {'ok': True, 'loss': 0.0019045989960432053, 'used_count': 5, 'rewards': [-56.78149791450785, -56.78149791450785, -187.87348592727832, -56.78149791450785, -56.78149791450785], 'advantages': [0.3333333730697632, 0.3333333730697632, -1.0, 0.3333333730697632, 0.3333333730697632], 'per_sample_ce_losses': [0.05028141662478447, 0.13608434796333313, 0.15343599021434784, 0.10166649520397186, 0.2008446305990219]}
+PUCT stats: {'puct/buffer_size': 6.0, 'puct/sampled_size': 1.0, 'puct/T': 40.0, 'puct/scale_last': 109.5095631735093, 'puct/buffer_value/mean': -102.95971777651269, 'puct/buffer_value/std': 51.75548071165562, 'puct/buffer_value/min': -166.29106108801716, 'puct/buffer_value/max': -56.78149791450785, 'puct/sampled_value/mean': -56.78149791450785, 'puct/sampled_value/std': 0.0, 'puct/sampled_value/min': -56.78149791450785, 'puct/sampled_value/max': -56.78149791450785, 'puct/selected_score/mean': -25.4930512935052, 'puct/selected_score/std': 0.0, 'puct/selected_score/min': -25.4930512935052, 'puct/selected_score/max': -25.4930512935052}
+
+================================================================================
+TTT step 9/10
+================================================================================
+Parent 1, rollout 1: valid=True, raw_reward=-56.78149791450785, adjusted_reward=-56.78149791450785, duplicate=True
+Parent 1, rollout 2: valid=True, raw_reward=-166.2908707646594, adjusted_reward=-166.2908707646594, duplicate=False
+Parent 1, rollout 3: valid=True, raw_reward=-55.751784407422136, adjusted_reward=-55.751784407422136, duplicate=False
+Parent 1, rollout 4: valid=True, raw_reward=-56.78149791450785, adjusted_reward=-56.78149791450785, duplicate=True
+Parent 1, rollout 5: valid=True, raw_reward=-56.78149791450785, adjusted_reward=-56.78149791450785, duplicate=True
+Training: {'ok': True, 'loss': 0.11828003786504268, 'used_count': 5, 'rewards': [-56.78149791450785, -166.2908707646594, -55.751784407422136, -56.78149791450785, -56.78149791450785], 'advantages': [-0.575596272945404, -1.0, 8.899984359741211, -0.575596272945404, -0.575596272945404], 'per_sample_ce_losses': [0.1438034623861313, 0.15389734506607056, 0.10396800190210342, 0.11653445661067963, 0.052409157156944275]}
+PUCT stats: {'puct/buffer_size': 7.0, 'puct/sampled_size': 1.0, 'puct/T': 45.0, 'puct/scale_last': 109.5095631735093, 'puct/buffer_value/mean': -95.09172888166427, 'puct/buffer_value/std': 50.41545132853044, 'puct/buffer_value/min': -166.29106108801716, 'puct/buffer_value/max': -55.751784407422136, 'puct/sampled_value/mean': -56.78149791450785, 'puct/sampled_value/std': 0.0, 'puct/sampled_value/min': -56.78149791450785, 'puct/sampled_value/max': -56.78149791450785, 'puct/selected_score/mean': -38.56842419536549, 'puct/selected_score/std': 0.0, 'puct/selected_score/min': -38.56842419536549, 'puct/selected_score/max': -38.56842419536549}
+
+================================================================================
+TTT step 10/10
+================================================================================
+Parent 1, rollout 1: valid=False, raw_reward=None, adjusted_reward=-250.0, duplicate=False
+Parent 1, rollout 2: valid=True, raw_reward=-55.751784407422136, adjusted_reward=-55.751784407422136, duplicate=True
+Parent 1, rollout 3: valid=True, raw_reward=-166.2910595728302, adjusted_reward=-166.2910595728302, duplicate=False
+Parent 1, rollout 4: valid=True, raw_reward=-55.751784407422136, adjusted_reward=-55.751784407422136, duplicate=True
+Parent 1, rollout 5: valid=False, raw_reward=None, adjusted_reward=-250.0, duplicate=False
+Training: {'ok': True, 'loss': 0.043892934918403625, 'used_count': 5, 'rewards': [-250.0, -55.751784407422136, -166.2910595728302, -55.751784407422136, -250.0], 'advantages': [-0.9711496829986572, 2.5627217292785645, -0.81809401512146, 2.5627217292785645, -0.9711496829986572], 'per_sample_ce_losses': [0.11678491532802582, 0.07744676619768143, 0.08682361245155334, 0.11554393917322159, 0.0933648943901062]}
+PUCT stats: {'puct/buffer_size': 7.0, 'puct/sampled_size': 1.0, 'puct/T': 50.0, 'puct/scale_last': 110.53927668059502, 'puct/buffer_value/mean': -95.09172888166427, 'puct/buffer_value/std': 50.41545132853044, 'puct/buffer_value/min': -166.29106108801716, 'puct/buffer_value/max': -55.751784407422136, 'puct/sampled_value/mean': -55.751784407422136, 'puct/sampled_value/std': 0.0, 'puct/sampled_value/min': -55.751784407422136, 'puct/sampled_value/max': -55.751784407422136, 'puct/selected_score/mean': 131.6766782285227, 'puct/selected_score/std': 0.0, 'puct/selected_score/min': 131.6766782285227, 'puct/selected_score/max': 131.6766782285227}
+
+================================================================================
+TTT experiment complete
+================================================================================
+Valid generated candidates: 35
+Invalid generated candidates: 15
+Duplicate behaviours: 23
+Best generated: {'step': 9, 'parent_number': 1, 'rollout_number': 3, 'raw_reward': -55.751784407422136, 'adjusted_reward': -55.751784407422136, 'metrics': {'smape': 55.751784407422136, 'mae': 390.29428900843044, 'rmse': 3032.3722135983953, 'mase': 0.26648247802897845}, 'duplicate_behavior': False, 'candidate_path': '/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/results/ttt/covid19_us_14step/job_5954200/step_0009/parent_01_rollout_03/candidate.py'}
+Best model-generated result: {'step': 9, 'parent_number': 1, 'rollout_number': 3, 'raw_reward': -55.751784407422136, 'adjusted_reward': -55.751784407422136, 'metrics': {'smape': 55.751784407422136, 'mae': 390.29428900843044, 'rmse': 3032.3722135983953, 'mase': 0.26648247802897845}, 'duplicate_behavior': False, 'candidate_path': '/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/results/ttt/covid19_us_14step/job_5954200/step_0009/parent_01_rollout_03/candidate.py'}
+Results: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/results/ttt/covid19_us_14step/job_5954200
+End: 2026-08-09T03:33:49+00:00

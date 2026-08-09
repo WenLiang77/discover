@@ -1,0 +1,28 @@
+{
+  "step": 3,
+  "parent_number": 1,
+  "parent_state_id": "61031f42-95a5-46d7-bf64-2e37be886b9f",
+  "parent_reward": -62.97133768459883,
+  "rollout_number": 2,
+  "global_rollout_index": 12,
+  "seed": 54,
+  "elapsed_seconds": 28.235182898934,
+  "raw_reward": null,
+  "adjusted_reward": -250.0,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "NameError: name 'print' is not defined",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "covid_us",
+      "stage": "execution",
+      "runtime_seconds": 5.586021451978013,
+      "traceback": "Traceback (most recent call last):\n  File \"<generated_forecaster>\", line 12, in covid_forecast\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/seasonal.py\", line 157, in seasonal_decompose\n    raise ValueError(\nValueError: Multiplicative seasonality is not appropriate for zero and negative values\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 398, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 27, in covid_forecast\nNameError: name 'print' is not defined\n",
+      "timed_out": false
+    }
+  }
+}

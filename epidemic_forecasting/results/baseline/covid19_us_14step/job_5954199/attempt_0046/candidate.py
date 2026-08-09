@@ -1,0 +1,30 @@
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+
+def preprocess_data(train_values):
+    scaler = StandardScaler()
+    scaled_values = scaler.fit_transform(train_values)
+    return (scaled_values, scaler)
+
+def fit_model(scaled_values, region_idx, horizon):
+    try:
+        model = SARIMAX(scaled_values[:, region_idx], order=(1, 1, 0), seasonal_order=(1, 1, 0, 7))
+        model_fit = model.fit(disp=False)
+        forecasted_scaled = model_fit.forecast(steps=horizon + 1)
+        forecasted = np.clip(forecasted_scaled[-horizon:], 0, None)
+        return forecasted
+    except Exception as e:
+        print(f'Model fitting failed for region {region_idx}: {e}')
+        return np.zeros(horizon)
+
+def covid_forecast(train_values, horizon, **kwargs):
+    num_regions = train_values.shape[1]
+    forecast_results = []
+    scaled_values, scaler = preprocess_data(train_values)
+    for region_idx in range(num_regions):
+        forecasted_region = fit_model(scaled_values, region_idx, horizon)
+        forecast_results.append(forecasted_region)
+    forecast_array = np.stack(forecast_results, axis=1)
+    return forecast_array

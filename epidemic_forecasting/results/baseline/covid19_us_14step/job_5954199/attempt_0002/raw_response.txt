@@ -1,0 +1,45 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+def covid_forecast(train_values, horizon, **kwargs):
+    # Ensure train_values is a NumPy array
+    train_values = np.array(train_values)
+    
+    # Get the number of regions (N)
+    N = train_values.shape[1]
+    
+    # Initialize an empty list to store forecasts
+    forecasts = []
+    
+    # Iterate over each region
+    for i in range(N):
+        # Extract the time series for the current region
+        ts = train_values[:, i]
+        
+        try:
+            # Fit a SARIMA model to the time series
+            model = SARIMAX(ts, order=(1, 1, 1), seasonal_order=(1, 1, 1, 7))
+            result = model.fit(disp=False)
+            
+            # Generate the forecast for the specified horizon
+            forecast = result.get_forecast(steps=horizon).predicted_mean
+            
+            # Ensure the forecast contains only finite and non-negative values
+            forecast = np.clip(forecast, a_min=0, a_max=None)
+            
+            # Append the forecast to the list
+            forecasts.append(forecast)
+        except Exception as e:
+            # If fitting fails, return zeros for the forecast
+            print(f"Error fitting model for region {i}: {e}")
+            forecasts.append(np.zeros(horizon))
+    
+    # Convert the list of forecasts into a NumPy array
+    forecasts_array = np.array(forecasts)
+    
+    # Return the forecast array
+    return forecasts_array
+```
+
+This implementation fits a SARIMA model to each region's time series data and generates forecasts for the specified horizon. It handles potential fitting failures by returning zeros for those regions. The forecasts are clipped to ensure they are non-negative.

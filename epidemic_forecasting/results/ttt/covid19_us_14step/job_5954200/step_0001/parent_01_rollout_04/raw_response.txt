@@ -1,0 +1,43 @@
+```python
+import numpy as np
+from statsmodels.tsa.seasonal import seasonal_decompose
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+def covid_forecast(train_values, horizon, **kwargs):
+    # Initialize the forecast array
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    
+    # Loop through each region and fit a SARIMAX model
+    for i in range(train_values.shape[1]):
+        try:
+            # Decompose the series to handle seasonal components
+            decomposition = seasonal_decompose(train_values[:, i], model='additive', period=365)
+            
+            # Fit a SARIMAX model on the decomposed trend component
+            sarimax_model = SARIMAX(decomposition.trend, order=(1, 1, 0), seasonal_order=(1, 1, 0, 365))
+            sarimax_results = sarimax_model.fit(disp=False)
+            
+            # Forecast the next 'horizon' steps
+            forecast_steps = sarimax_results.get_forecast(steps=horizon)
+            forecast[:, i] = forecast_steps.predicted_mean.clip(0)
+        except Exception as e:
+            # If fitting fails, use a simple moving average instead
+            window_size = min(30, train_values.shape[0])
+            rolling_avg = np.convolve(train_values[:, i], np.ones(window_size)/window_size, mode='valid')
+            padded_avg = np.pad(rolling_avg, (window_size//2, window_size//2), 'constant', constant_values=(np.nan, np.nan))
+            forecast[:, i] = padded_avg[:horizon].clip(0)
+    
+    return forecast
+```
+
+This forecasting implementation follows these steps:
+1. Initializes a forecast array filled with zeros.
+2. Iterates over each region in the training data.
+3. Decomposes the time series into trend and seasonality components using additive decomposition.
+4. Fits a SARIMAX model on the trend component to capture both trend and seasonal patterns.
+5. Predicts the next 'horizon' steps using the fitted SARIMAX model.
+6. Clips any negative predictions to zero.
+7. If the SARIMAX model fitting fails due to exceptions (e.g., due to insufficient data or instability), it falls back to a simple moving average approach to ensure a valid forecast.
+8. Returns the final forecast array with shape `(horizon, N)` containing non-negative values.
+
+This approach ensures robustness against various characteristics of real-world time series data, including shortness, sparsity, noise, and non-stationarity.

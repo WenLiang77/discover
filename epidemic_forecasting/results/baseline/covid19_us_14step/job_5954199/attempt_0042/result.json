@@ -1,0 +1,28 @@
+{
+  "attempt": 42,
+  "seed": 83,
+  "elapsed_seconds": 56.316857944009826,
+  "duplicate_valid_behavior": true,
+  "duplicate_of": "attempt_0010",
+  "evaluation": {
+    "ok": true,
+    "reward": -62.97133768459883,
+    "metrics": {
+      "smape": 62.97133768459883,
+      "mae": 432.83285326623474,
+      "rmse": 3165.964481815877,
+      "mase": 0.2863028877583552
+    },
+    "error": null,
+    "behavior_signature": "8cab41ed05ddcfaf6c2370ee467794d79ce78a8ec135031a978144f7c90ed017",
+    "metadata": {
+      "dataset_id": "covid_us",
+      "forecast_horizon": 14,
+      "number_of_locations": 56,
+      "candidate_runtime_seconds": 45.384949289029464,
+      "total_runtime_seconds": 46.22625641501509,
+      "primary_metric": "smape",
+      "primary_metric_direction": "minimize"
+    }
+  }
+}
