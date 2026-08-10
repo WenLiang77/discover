@@ -46,14 +46,22 @@ Ordinary scientific packages:
 - typing
 - warnings
 
-Selected statsmodels modules:
+Time-series modelling:
 
-- statsmodels.tsa.holtwinters
-- statsmodels.tsa.arima.model
-- statsmodels.tsa.statespace.sarimax
-- statsmodels.tsa.seasonal
+- statsmodels.tsa and its submodules
 
-Do not import `statsmodels.api` or any other statsmodels module. Do not import evaluation metrics. The evaluator calculates all reported metrics.
+PyTorch is also permitted for lightweight forecasting models:
+
+- torch
+- torch.nn
+- torch.nn.functional
+- torch.optim
+
+PyTorch models must remain small and CPU-only. Do not call `torch.cuda`, `.cuda()`, or move tensors or models to CUDA. Keep all optimisation loops bounded and modest so that the complete forecasting function remains within the runtime budget.
+
+Do not import evaluation metrics. The evaluator calculates all reported metrics.
+
+Do not use pretrained forecasting foundation models, external checkpoints, or packages that require model downloads. In particular, do not rely on Darts, TimesFM, Chronos, Hugging Face model downloads, or network access.
 
 Do not perform filesystem access, network access, subprocess execution, dynamic code execution, or reflection.
 
@@ -61,9 +69,9 @@ Do not perform filesystem access, network access, subprocess execution, dynamic 
 
 Develop the forecasting logic yourself from the supplied historical data.
 
-The method should be robust to short, sparse, noisy, zero-inflated and non-stationary series. It may use recent trends, smoothing, transformations, lag information, seasonal structure, cross-region information, or small time-series models.
+The method should be robust to short, sparse, noisy, zero-inflated and non-stationary series. It may use recent trends, smoothing, transformations, lag information, seasonal structure, cross-region information, statistical time-series models, classical machine-learning models, or small CPU-based neural networks.
 
-Keep model orders and optimisation costs modest. Handle fitting failures safely and ensure the final array has exactly the required shape. Sanitize non-finite values and clip negative predictions to zero.
+Prefer methods that can be fitted reliably from the available history. Keep model sizes, model orders, epoch counts and optimisation costs modest. Use `random_state` when appropriate for reproducibility. Handle fitting failures safely and ensure the final array has exactly the required shape. Sanitize non-finite values and clip negative predictions to zero.
 
 ## Current Model-Generated Candidate
 
