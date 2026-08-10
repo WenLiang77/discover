@@ -36,15 +36,13 @@ ALLOWED_IMPORT_ROOTS = {
     "scipy",
     "sklearn",
     "statistics",
+    "torch",
     "typing",
     "warnings",
 }
 
 ALLOWED_IMPORT_PREFIXES = {
-    "statsmodels.tsa.arima.model",
-    "statsmodels.tsa.holtwinters",
-    "statsmodels.tsa.seasonal",
-    "statsmodels.tsa.statespace.sarimax",
+    "statsmodels.tsa",
 }
 
 
