@@ -69,6 +69,18 @@ Do not perform filesystem access, network access, subprocess execution, dynamic 
 
 Develop the forecasting logic yourself from the supplied historical data.
 
+The forecast should explicitly model temporal evolution across the full prediction horizon.
+
+For any region whose recent historical observations contain meaningful temporal variation, do not use a constant or near-constant forecast across the whole horizon. In particular, repeatedly returning a recent value, mean, median, or almost identical values with only tiny numerical drift is not an adequate forecasting strategy for a varying time series.
+
+Use information such as recent trend, lag structure, smoothing, autoregression, seasonality, cross-region relationships, machine-learning models, or lightweight neural models to produce meaningful multi-step temporal variation when supported by the historical data.
+
+A constant or near-constant forecast is acceptable only for a genuinely constant, extremely sparse, or persistently zero-valued historical series, or as a last-resort fallback after a modelling failure.
+
+Do not introduce tiny artificial changes merely to avoid flat-forecast detection. Temporal variation in the forecast should arise from the forecasting method itself.
+
+The evaluator may apply a reward penalty when a historically varying series receives a flat or near-flat forecast. The original SMAPE, MAE, RMSE and MASE values are still reported unchanged.
+
 The method should be robust to short, sparse, noisy, zero-inflated and non-stationary series. It may use recent trends, smoothing, transformations, lag information, seasonal structure, cross-region information, statistical time-series models, classical machine-learning models, or small CPU-based neural networks.
 
 Prefer methods that can be fitted reliably from the available history. Keep model sizes, model orders, epoch counts and optimisation costs modest. Use `random_state` when appropriate for reproducibility. Handle fitting failures safely and ensure the final array has exactly the required shape. Sanitize non-finite values and clip negative predictions to zero.

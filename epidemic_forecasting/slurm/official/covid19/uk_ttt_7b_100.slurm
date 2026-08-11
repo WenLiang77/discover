@@ -3,10 +3,10 @@
 #SBATCH --gpus=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
-#SBATCH --job-name=exp8_uk_ttt_10x10
+#SBATCH --job-name=uk_ttt_7b_100
 #SBATCH --time=10:00:00
-#SBATCH --output=epidemic_forecasting/results/logs/covid19/exp8_uk_ttt_10x10_%j.out
-#SBATCH --error=epidemic_forecasting/results/logs/covid19/exp8_uk_ttt_10x10_%j.err
+#SBATCH --output=epidemic_forecasting/results/logs/covid19/uk_ttt_7b_100_%j.out
+#SBATCH --error=epidemic_forecasting/results/logs/covid19/uk_ttt_7b_100_%j.err
 
 set -euo pipefail
 module load cray-python/3.11.7
@@ -48,7 +48,7 @@ PY
 
 nvidia-smi --list-gpus
 
-OUTPUT_DIR="${REPO_ROOT}/epidemic_forecasting/results/covid19/uk_14days/exp8_ttt_10x10/job_${SLURM_JOB_ID}"
+OUTPUT_DIR="${REPO_ROOT}/epidemic_forecasting/results/covid19/uk_14days/uk_ttt_7b_100/job_${SLURM_JOB_ID}"
 
 srun python -m epidemic_forecasting.run_ttt \
     --dataset uk \

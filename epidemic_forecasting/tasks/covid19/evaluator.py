@@ -521,6 +521,121 @@ def validate_predictions(
     return np.ascontiguousarray(array, dtype=np.float64)
 
 
+def analyze_flat_forecast(
+    train_values: np.ndarray,
+    predictions: np.ndarray,
+    recent_window: int = 28,
+    history_cv_floor: float = 0.02,
+    min_history_std: float = 2.0,
+    min_nonzero_fraction: float = 0.25,
+    flat_std_ratio: float = 0.10,
+) -> dict[str, Any]:
+    """
+    Detect flat or near-flat forecasts only when the recent historical
+    series itself contains meaningful temporal variation.
+
+    Constant forecasts are not penalised for genuinely constant,
+    persistently zero, or extremely sparse recent histories.
+    """
+    train_values = np.asarray(
+        train_values,
+        dtype=np.float64,
+    )
+    predictions = np.asarray(
+        predictions,
+        dtype=np.float64,
+    )
+
+    window = min(
+        int(recent_window),
+        train_values.shape[0],
+    )
+    recent = train_values[-window:]
+
+    recent_mean_abs = np.mean(
+        np.abs(recent),
+        axis=0,
+    )
+    recent_std = np.std(
+        recent,
+        axis=0,
+    )
+    forecast_std = np.std(
+        predictions,
+        axis=0,
+    )
+
+    recent_nonzero_fraction = np.mean(
+        recent > 0.0,
+        axis=0,
+    )
+
+    meaningful_history_threshold = np.maximum(
+        float(min_history_std),
+        float(history_cv_floor)
+        * np.maximum(recent_mean_abs, 1.0),
+    )
+
+    historically_variable = (
+        (recent_std > meaningful_history_threshold)
+        & (
+            recent_nonzero_fraction
+            >= float(min_nonzero_fraction)
+        )
+    )
+
+    flat_threshold = np.maximum(
+        1e-8,
+        float(flat_std_ratio) * recent_std,
+    )
+
+    near_flat = (
+        historically_variable
+        & (forecast_std <= flat_threshold)
+    )
+
+    flat_indices = np.flatnonzero(
+        near_flat
+    ).tolist()
+
+    return {
+        "recent_window": int(window),
+        "flat_series_count": int(
+            np.sum(near_flat)
+        ),
+        "flat_series_indices": [
+            int(index)
+            for index in flat_indices
+        ],
+        "historically_variable": [
+            bool(value)
+            for value
+            in historically_variable.tolist()
+        ],
+        "recent_mean_abs": [
+            float(value)
+            for value in recent_mean_abs.tolist()
+        ],
+        "recent_std": [
+            float(value)
+            for value in recent_std.tolist()
+        ],
+        "recent_nonzero_fraction": [
+            float(value)
+            for value
+            in recent_nonzero_fraction.tolist()
+        ],
+        "forecast_std": [
+            float(value)
+            for value in forecast_std.tolist()
+        ],
+        "flat_threshold": [
+            float(value)
+            for value in flat_threshold.tolist()
+        ],
+    }
+
+
 def calculate_smape(
     actual: np.ndarray,
     predicted: np.ndarray,
@@ -796,10 +911,24 @@ class Covid19Evaluator:
             )
 
             primary_value = metrics[self.config.primary_metric]
-            reward = metric_to_reward(
+
+            base_reward = metric_to_reward(
                 primary_value,
                 self.config.primary_metric_direction,
             )
+
+            flatness = analyze_flat_forecast(
+                train_values=self.train_values,
+                predictions=predictions,
+            )
+
+            flat_penalty_per_series = 5.0
+            flat_penalty = (
+                flat_penalty_per_series
+                * flatness["flat_series_count"]
+            )
+
+            reward = base_reward - flat_penalty
 
             signature = prediction_behavior_signature(predictions)
 
@@ -834,6 +963,36 @@ class Covid19Evaluator:
                 "primary_metric_direction": (
                     self.config.primary_metric_direction
                 ),
+                "base_reward": float(base_reward),
+                "flat_forecast_penalty": float(
+                    flat_penalty
+                ),
+                "flat_penalty_per_series": float(
+                    flat_penalty_per_series
+                ),
+                "flat_series_count": int(
+                    flatness["flat_series_count"]
+                ),
+                "flat_series_indices": list(
+                    flatness["flat_series_indices"]
+                ),
+                "flat_series_names": [
+                    self.data_metadata.get(
+                        "locations",
+                        [],
+                    )[index]
+                    if index < len(
+                        self.data_metadata.get(
+                            "locations",
+                            [],
+                        )
+                    )
+                    else f"series_{index}"
+                    for index in flatness[
+                        "flat_series_indices"
+                    ]
+                ],
+                "flat_forecast_analysis": flatness,
             },
         )
 

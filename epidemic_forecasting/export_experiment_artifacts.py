@@ -69,10 +69,58 @@ def collect_records(summary: dict[str, Any]) -> list[dict[str, Any]]:
     runner = summary.get("runner")
     records: list[dict[str, Any]] = []
 
+    def reward_fields(
+        evaluation: dict[str, Any],
+        selection_reward: Any = None,
+        adjusted_reward: Any = None,
+    ) -> dict[str, Any]:
+        metadata = evaluation.get("metadata", {}) or {}
+
+        evaluator_reward = evaluation.get("reward")
+
+        if selection_reward is None:
+            selection_reward = evaluator_reward
+
+        if adjusted_reward is None:
+            adjusted_reward = selection_reward
+
+        return {
+            # Reward before the flat-forecast penalty.
+            "base_reward": metadata.get("base_reward"),
+
+            # Penalty introduced by the flat-forecast detector.
+            "flat_forecast_penalty": metadata.get(
+                "flat_forecast_penalty"
+            ),
+            "flat_series_count": metadata.get(
+                "flat_series_count"
+            ),
+            "flat_series_indices": metadata.get(
+                "flat_series_indices"
+            ),
+            "flat_series_names": metadata.get(
+                "flat_series_names"
+            ),
+
+            # evaluator_reward =
+            # base_reward - flat_forecast_penalty
+            "evaluator_reward": evaluator_reward,
+
+            # Reward used when selecting the generated candidate.
+            "selection_reward": selection_reward,
+
+            # TTT may additionally apply duplicate penalties.
+            "adjusted_reward": adjusted_reward,
+
+            # Keep the old field for backwards compatibility.
+            "reward": selection_reward,
+        }
+
     if runner == "qwen_only_baseline":
         for item in summary.get("generated_attempts", []):
             evaluation = item.get("evaluation", {}) or {}
             metrics = evaluation.get("metrics", {}) or {}
+
             records.append(
                 {
                     "source": f"Attempt {item.get('attempt')}",
@@ -82,9 +130,11 @@ def collect_records(summary: dict[str, Any]) -> list[dict[str, Any]]:
                     "rollout_number": None,
                     "ok": bool(evaluation.get("ok")),
                     "duplicate": bool(
-                        item.get("duplicate_valid_behavior", False)
+                        item.get(
+                            "duplicate_valid_behavior",
+                            False,
+                        )
                     ),
-                    "reward": evaluation.get("reward"),
                     "smape": metrics.get("smape"),
                     "mae": metrics.get("mae"),
                     "rmse": metrics.get("rmse"),
@@ -92,6 +142,7 @@ def collect_records(summary: dict[str, Any]) -> list[dict[str, Any]]:
                     "behavior_signature": evaluation.get(
                         "behavior_signature"
                     ),
+                    **reward_fields(evaluation),
                 }
             )
 
@@ -100,9 +151,11 @@ def collect_records(summary: dict[str, Any]) -> list[dict[str, Any]]:
             for item in step_payload.get("rollouts", []):
                 evaluation = item.get("evaluation", {}) or {}
                 metrics = evaluation.get("metrics", {}) or {}
+
                 step = item.get("step")
                 rollout = item.get("rollout_number")
                 parent = item.get("parent_number")
+
                 records.append(
                     {
                         "source": (
@@ -119,11 +172,10 @@ def collect_records(summary: dict[str, Any]) -> list[dict[str, Any]]:
                         "rollout_number": rollout,
                         "ok": bool(evaluation.get("ok")),
                         "duplicate": bool(
-                            item.get("duplicate_valid_behavior", False)
-                        ),
-                        "reward": item.get(
-                            "raw_reward",
-                            evaluation.get("reward"),
+                            item.get(
+                                "duplicate_valid_behavior",
+                                False,
+                            )
                         ),
                         "smape": metrics.get("smape"),
                         "mae": metrics.get("mae"),
@@ -132,12 +184,25 @@ def collect_records(summary: dict[str, Any]) -> list[dict[str, Any]]:
                         "behavior_signature": evaluation.get(
                             "behavior_signature"
                         ),
+                        **reward_fields(
+                            evaluation,
+                            selection_reward=item.get(
+                                "raw_reward"
+                            ),
+                            adjusted_reward=item.get(
+                                "adjusted_reward"
+                            ),
+                        ),
                     }
                 )
+
     else:
-        raise ValueError(f"Unsupported runner: {runner!r}")
+        raise ValueError(
+            f"Unsupported runner: {runner!r}"
+        )
 
     return records
+
 
 
 def save_top10_and_aggregate(
@@ -150,12 +215,30 @@ def save_top10_and_aggregate(
         for record in records
         if record["ok"] and record["smape"] is not None
     ]
-    distinct_valid = [
-        record for record in valid if not record["duplicate"]
-    ]
-    distinct_valid.sort(key=lambda record: float(record["smape"]))
 
-    top10_path = run_dir / "top10_distinct_results.csv"
+    distinct_valid = [
+        record
+        for record in valid
+        if not record["duplicate"]
+    ]
+
+    by_smape = sorted(
+        distinct_valid,
+        key=lambda record: float(record["smape"]),
+    )
+
+    by_reward = sorted(
+        [
+            record
+            for record in distinct_valid
+            if record.get("selection_reward") is not None
+        ],
+        key=lambda record: float(
+            record["selection_reward"]
+        ),
+        reverse=True,
+    )
+
     fieldnames = [
         "rank",
         "source",
@@ -167,60 +250,217 @@ def save_top10_and_aggregate(
         "mae",
         "rmse",
         "mase",
-        "reward",
+        "base_reward",
+        "flat_series_count",
+        "flat_forecast_penalty",
+        "selection_reward",
+        "adjusted_reward",
     ]
-    with top10_path.open(
-        "w",
-        encoding="utf-8",
-        newline="",
-    ) as handle:
-        writer = csv.DictWriter(handle, fieldnames=fieldnames)
-        writer.writeheader()
-        for rank, record in enumerate(distinct_valid[:10], start=1):
-            writer.writerow(
-                {
-                    "rank": rank,
-                    **{
-                        name: record.get(name)
-                        for name in fieldnames
-                        if name != "rank"
-                    },
-                }
+
+    def write_ranking(
+        output_path: Path,
+        ranked_records: list[dict[str, Any]],
+    ) -> None:
+        with output_path.open(
+            "w",
+            encoding="utf-8",
+            newline="",
+        ) as handle:
+            writer = csv.DictWriter(
+                handle,
+                fieldnames=fieldnames,
             )
+            writer.writeheader()
+
+            for rank, record in enumerate(
+                ranked_records[:10],
+                start=1,
+            ):
+                writer.writerow(
+                    {
+                        "rank": rank,
+                        **{
+                            name: record.get(name)
+                            for name in fieldnames
+                            if name != "rank"
+                        },
+                    }
+                )
+
+    top10_smape_path = (
+        run_dir / "top10_by_smape.csv"
+    )
+    top10_reward_path = (
+        run_dir / "top10_by_reward.csv"
+    )
+
+    write_ranking(
+        top10_smape_path,
+        by_smape,
+    )
+    write_ranking(
+        top10_reward_path,
+        by_reward,
+    )
+
+    # Keep the old filename so existing README/scripts
+    # continue to work. It remains the raw-SMAPE ranking.
+    legacy_path = (
+        run_dir / "top10_distinct_results.csv"
+    )
+    shutil.copyfile(
+        top10_smape_path,
+        legacy_path,
+    )
 
     all_smapes = np.asarray(
-        [float(record["smape"]) for record in valid],
+        [
+            float(record["smape"])
+            for record in valid
+        ],
         dtype=np.float64,
     )
+
     distinct_smapes = np.asarray(
-        [float(record["smape"]) for record in distinct_valid],
+        [
+            float(record["smape"])
+            for record in distinct_valid
+        ],
         dtype=np.float64,
+    )
+
+    best_smape_record = (
+        by_smape[0]
+        if by_smape
+        else None
+    )
+
+    best_reward_record = (
+        by_reward[0]
+        if by_reward
+        else None
     )
 
     aggregate = {
         "runner": summary.get("runner"),
         "task": summary.get("task"),
+
         "total_generated_count": len(records),
         "valid_generated_count": len(valid),
-        "invalid_generated_count": len(records) - len(valid),
-        "duplicate_behavior_count": sum(
-            1 for record in valid if record["duplicate"]
+        "invalid_generated_count": (
+            len(records) - len(valid)
         ),
-        "distinct_valid_count": len(distinct_valid),
+        "duplicate_behavior_count": sum(
+            1
+            for record in valid
+            if record["duplicate"]
+        ),
+        "distinct_valid_count": len(
+            distinct_valid
+        ),
+
+        # Raw benchmark statistics.
         "best_smape": (
-            float(np.min(all_smapes)) if all_smapes.size else None
+            float(np.min(all_smapes))
+            if all_smapes.size
+            else None
+        ),
+        "best_smape_source": (
+            best_smape_record.get("source")
+            if best_smape_record
+            else None
         ),
         "median_smape_all_valid": (
-            float(np.median(all_smapes)) if all_smapes.size else None
+            float(np.median(all_smapes))
+            if all_smapes.size
+            else None
         ),
         "median_smape_distinct_valid": (
             float(np.median(distinct_smapes))
             if distinct_smapes.size
             else None
         ),
-        "top10_distinct_results_file": top10_path.name,
+
+        # Flat-forecast statistics.
+        "flat_flagged_valid_count": sum(
+            1
+            for record in valid
+            if (
+                record.get("flat_series_count")
+                is not None
+                and int(
+                    record["flat_series_count"]
+                ) > 0
+            )
+        ),
+        "flat_flagged_distinct_valid_count": sum(
+            1
+            for record in distinct_valid
+            if (
+                record.get("flat_series_count")
+                is not None
+                and int(
+                    record["flat_series_count"]
+                ) > 0
+            )
+        ),
+
+        # Candidate preferred by the new reward.
+        "best_selection_reward": (
+            float(
+                best_reward_record[
+                    "selection_reward"
+                ]
+            )
+            if best_reward_record
+            else None
+        ),
+        "best_reward_source": (
+            best_reward_record.get("source")
+            if best_reward_record
+            else None
+        ),
+        "best_reward_smape": (
+            float(
+                best_reward_record["smape"]
+            )
+            if best_reward_record
+            else None
+        ),
+        "best_reward_base_reward": (
+            best_reward_record.get(
+                "base_reward"
+            )
+            if best_reward_record
+            else None
+        ),
+        "best_reward_flat_series_count": (
+            best_reward_record.get(
+                "flat_series_count"
+            )
+            if best_reward_record
+            else None
+        ),
+        "best_reward_flat_forecast_penalty": (
+            best_reward_record.get(
+                "flat_forecast_penalty"
+            )
+            if best_reward_record
+            else None
+        ),
+
+        "ranking_files": {
+            "by_smape": top10_smape_path.name,
+            "by_reward": top10_reward_path.name,
+            "legacy_by_smape": legacy_path.name,
+        },
     }
-    write_json(run_dir / "aggregate_results.json", aggregate)
+
+    write_json(
+        run_dir / "aggregate_results.json",
+        aggregate,
+    )
+
 
 
 def save_best_forecast(
@@ -389,14 +629,89 @@ def save_best_forecast(
             "rollout_number": best.get("rollout_number"),
         }
 
+    result_payload_path = candidate_path.with_name(
+        "result.json"
+    )
+
+    result_payload = (
+        load_json(result_payload_path)
+        if result_payload_path.is_file()
+        else {}
+    )
+
+    evaluation_payload = (
+        result_payload.get("evaluation", {})
+        or {}
+    )
+    evaluation_metadata = (
+        evaluation_payload.get("metadata", {})
+        or {}
+    )
+
+    selection_reward = best.get(
+        "raw_reward",
+        best.get(
+            "reward",
+            evaluation_payload.get("reward"),
+        ),
+    )
+
+    adjusted_reward = result_payload.get(
+        "adjusted_reward",
+        best.get("adjusted_reward"),
+    )
+
     best_result = {
         "runner": summary.get("runner"),
         "dataset": dataset,
         "forecast_horizon": forecast_horizon,
         "source": source,
-        "reward": best.get("raw_reward", best.get("reward")),
-        "adjusted_reward": best.get("adjusted_reward"),
-        "metrics": best.get("metrics", {}),
+
+        "reward": selection_reward,
+        "selection_reward": selection_reward,
+        "adjusted_reward": adjusted_reward,
+
+        "base_reward": evaluation_metadata.get(
+            "base_reward"
+        ),
+        "flat_forecast_penalty": (
+            evaluation_metadata.get(
+                "flat_forecast_penalty"
+            )
+        ),
+        "flat_penalty_per_series": (
+            evaluation_metadata.get(
+                "flat_penalty_per_series"
+            )
+        ),
+        "flat_series_count": (
+            evaluation_metadata.get(
+                "flat_series_count"
+            )
+        ),
+        "flat_series_indices": (
+            evaluation_metadata.get(
+                "flat_series_indices"
+            )
+        ),
+        "flat_series_names": (
+            evaluation_metadata.get(
+                "flat_series_names"
+            )
+        ),
+        "flat_forecast_analysis": (
+            evaluation_metadata.get(
+                "flat_forecast_analysis"
+            )
+        ),
+
+        "metrics": best.get(
+            "metrics",
+            evaluation_payload.get(
+                "metrics",
+                {},
+            ),
+        ),
         "files": {
             "candidate": copied_candidate.name,
             "forecast_vs_actual": comparison_path.name,
