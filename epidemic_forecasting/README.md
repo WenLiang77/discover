@@ -15,14 +15,18 @@ Generated forecasting code is evaluated primarily using **SMAPE**, where lower v
 
 ## COVID-19 Results
 
-| Dataset | Method | Best SMAPE ↓ | Valid Candidates | Distinct Valid |
+| Dataset | Method | Best SMAPE (lower is better) | Valid Candidates | Distinct Valid |
 |---|---|---:|---:|---:|
 | UK | No-TTT | **39.48** | 51 / 100 | 22 |
 | UK | TTT | 46.95 | **63 / 100** | **29** |
+| UK | TimesFM | 95.42 | N/A | N/A |
 | US | No-TTT | **54.91** | 49 / 100 | **23** |
 | US | TTT | 55.84 | **70 / 100** | 14 |
+| US | TimesFM | 151.86 | N/A | N/A |
 
-TTT generated more valid candidates on both datasets. However, the best SMAPE was still achieved by No-TTT for both the UK and US experiments.
+TTT produced more valid candidates on both datasets, although the best SMAPE was achieved by No-TTT for both the UK and US experiments.
+
+TimesFM was reproduced locally using the EpiCastBench implementation. The reproduced SMAPE values were **95.420 for the UK** and **151.861 for the US**, matching the published EpiCastBench results.
 
 ---
 
@@ -93,18 +97,29 @@ Important files include:
 
 ---
 
-## EpiCastBench Baseline Comparison
+## EpiCastBench TimesFM Baseline
 
-The next stage of the COVID-19 experiments will compare the LLM-generated forecasting methods with established forecasting baselines from **EpiCastBench**.
+TimesFM was reproduced locally using the same COVID-19 datasets and 14-day forecasting horizon used by EpiCastBench.
 
-Planned baseline methods include:
+| Dataset | Reproduced TimesFM SMAPE (lower is better) |
+|---|---:|
+| UK | 95.420 |
+| US | 151.861 |
 
-- TimesFM
-- DLinear
-- Random Forest
-- XGBoost
+The reproduced values match the EpiCastBench benchmark results.
 
-These methods will be evaluated using the same local COVID-19 data and forecasting pipeline to provide a more direct comparison with the generated models.
+To verify that the comparison uses the same primary metric, the saved TimesFM predictions were also evaluated using the COVID-19 evaluator in this repository.
+
+The SMAPE results were numerically identical:
+
+- UK: `95.420262968339`
+- US: `151.860921300020`
+
+This confirms that the TimesFM and LLM-generated forecasting results use an equivalent SMAPE calculation.
+
+The reproduction scripts and saved results are available in:
+
+`epidemic_forecasting/baselines/timesfm/`
 
 ---
 
