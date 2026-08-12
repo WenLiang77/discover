@@ -1,0 +1,40 @@
+{
+  "runner": "qwen_only_baseline",
+  "task": {
+    "task_id": "covid19_uk_14days",
+    "disease_name": "COVID-19",
+    "dataset_id": "covid_uk",
+    "function_name": "covid_forecast",
+    "prompt_path": "/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/prompt.txt",
+    "forecast_horizon": 14,
+    "frequency": "daily",
+    "number_of_locations": 4,
+    "training_observations": 167,
+    "test_observations": 14,
+    "primary_metric": "smape",
+    "primary_metric_direction": "minimize",
+    "runtime_budget_seconds": 400.0
+  },
+  "total_generated_count": 100,
+  "valid_generated_count": 51,
+  "invalid_generated_count": 49,
+  "duplicate_behavior_count": 29,
+  "distinct_valid_count": 22,
+  "best_smape": 39.479947011061824,
+  "best_smape_source": "Attempt 60",
+  "median_smape_all_valid": 96.1637674193501,
+  "median_smape_distinct_valid": 96.97818096209141,
+  "flat_flagged_valid_count": 28,
+  "flat_flagged_distinct_valid_count": 10,
+  "best_selection_reward": -39.479947011061824,
+  "best_reward_source": "Attempt 60",
+  "best_reward_smape": 39.479947011061824,
+  "best_reward_base_reward": -39.479947011061824,
+  "best_reward_flat_series_count": 0,
+  "best_reward_flat_forecast_penalty": 0.0,
+  "ranking_files": {
+    "by_smape": "top10_by_smape.csv",
+    "by_reward": "top10_by_reward.csv",
+    "legacy_by_smape": "top10_distinct_results.csv"
+  }
+}

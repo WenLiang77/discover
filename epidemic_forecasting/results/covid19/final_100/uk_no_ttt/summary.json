@@ -1,0 +1,5135 @@
+{
+  "schema_version": 2,
+  "status": "complete",
+  "runner": "qwen_only_baseline",
+  "task": {
+    "task_id": "covid19_uk_14days",
+    "disease_name": "COVID-19",
+    "dataset_id": "covid_uk",
+    "function_name": "covid_forecast",
+    "prompt_path": "/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/prompt.txt",
+    "forecast_horizon": 14,
+    "frequency": "daily",
+    "number_of_locations": 4,
+    "training_observations": 167,
+    "test_observations": 14,
+    "primary_metric": "smape",
+    "primary_metric_direction": "minimize",
+    "runtime_budget_seconds": 400.0
+  },
+  "generated_attempts": [
+    {
+      "attempt": 1,
+      "seed": 42,
+      "elapsed_seconds": 9.394715985981748,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "ValueError: X has 1 features, but MinMaxScaler is expecting 4 features as input.",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 1.5284123300225474,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 13, in covid_forecast\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/utils/_set_output.py\", line 319, in wrapped\n    data_to_wrap = f(self, X, *args, **kwargs)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/preprocessing/_data.py\", line 564, in transform\n    X = validate_data(\n        ^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/utils/validation.py\", line 3059, in validate_data\n    _check_n_features(_estimator, X, reset=reset)\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/utils/validation.py\", line 2923, in _check_n_features\n    raise ValueError(\nValueError: X has 1 features, but MinMaxScaler is expecting 4 features as input.\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 2,
+      "seed": 43,
+      "elapsed_seconds": 10.972445163992234,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "ValueError: SARIMAX models require univariate `endog`. Got shape (167, 4).",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 1.5795920659729745,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 16, in covid_forecast\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py\", line 328, in __init__\n    self._spec = SARIMAXSpecification(\n                 ^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/arima/specification.py\", line 454, in __init__\n    raise ValueError('SARIMAX models require univariate `endog`. Got'\nValueError: SARIMAX models require univariate `endog`. Got shape (167, 4).\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 3,
+      "seed": 44,
+      "elapsed_seconds": 5.818149690981954,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": true,
+        "reward": -107.79259450483272,
+        "metrics": {
+          "smape": 97.79259450483272,
+          "mae": 60.05477303972454,
+          "rmse": 127.09836519587475,
+          "mase": 0.533589791746933
+        },
+        "error": null,
+        "behavior_signature": "7a91161390a3cf086fba664638422455b2f72ad4fc037ad27dd5efa1f28a5430",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.039517463999800384,
+          "total_runtime_seconds": 1.165838019020157,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -97.79259450483272,
+          "flat_forecast_penalty": 10.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 2,
+          "flat_series_indices": [
+            2,
+            3
+          ],
+          "flat_series_names": [
+            "Scotland",
+            "Wales"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 2,
+            "flat_series_indices": [
+              2,
+              3
+            ],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              11.140723665263224,
+              0.07237175880462299,
+              0.35242250460581626,
+              0.33847350966361034
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 4,
+      "seed": 45,
+      "elapsed_seconds": 7.967681462003384,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "ImportError: cannot import name 'ARIMA' from 'sklearn.linear_model' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/linear_model/__init__.py)",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 1.249770783004351,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 380, in _candidate_worker\n    exec(compiled, namespace, namespace)\n  File \"<generated_forecaster>\", line 2, in <module>\nImportError: cannot import name 'ARIMA' from 'sklearn.linear_model' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/linear_model/__init__.py)\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 5,
+      "seed": 46,
+      "elapsed_seconds": 6.275599348009564,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "ValueError: index can't contain negative values",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 0.8435054380097426,
+          "traceback": "Traceback (most recent call last):\n  File \"<generated_forecaster>\", line 8, in covid_forecast\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/pandas/util/_decorators.py\", line 220, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/pandas/util/_decorators.py\", line 220, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/pandas/util/_decorators.py\", line 220, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\nTypeError: ExponentialSmoothing.fit() got an unexpected keyword argument 'disp'\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 12, in covid_forecast\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/numpy/lib/_arraypad_impl.py\", line 792, in pad\n    pad_width = _as_pairs(pad_width, array.ndim, as_index=True)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/numpy/lib/_arraypad_impl.py\", line 527, in _as_pairs\n    raise ValueError(\"index can't contain negative values\")\nValueError: index can't contain negative values\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 6,
+      "seed": 47,
+      "elapsed_seconds": 6.7955146100139245,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": true,
+        "reward": -91.8048357298361,
+        "metrics": {
+          "smape": 91.8048357298361,
+          "mae": 51.83371745544783,
+          "rmse": 136.46113809672514,
+          "mase": 0.535683455485427
+        },
+        "error": null,
+        "behavior_signature": "a6c95fdb0d798b27bfed10691af3b9a24494b7c2bef1595239f8ca933ef6c235",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.7297664360085037,
+          "total_runtime_seconds": 1.5711187849810813,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -91.8048357298361,
+          "flat_forecast_penalty": 0.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 0,
+          "flat_series_indices": [],
+          "flat_series_names": [],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 0,
+            "flat_series_indices": [],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              158.2742048910646,
+              11.6026380111932,
+              21.81756518138011,
+              8.912711663915728
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 7,
+      "seed": 48,
+      "elapsed_seconds": 8.62779518199386,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": true,
+        "reward": -80.03510500425253,
+        "metrics": {
+          "smape": 65.03510500425253,
+          "mae": 99.36142857142856,
+          "rmse": 200.1560977266065,
+          "mase": 0.7212828960398527
+        },
+        "error": null,
+        "behavior_signature": "b673380db7f4c2cd9491725d9322f43f3660a758337edbcad1490a4397636a51",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.0009567710221745074,
+          "total_runtime_seconds": 0.8241412529896479,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -65.03510500425253,
+          "flat_forecast_penalty": 15.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 3,
+          "flat_series_indices": [
+            0,
+            2,
+            3
+          ],
+          "flat_series_names": [
+            "England",
+            "Scotland",
+            "Wales"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 3,
+            "flat_series_indices": [
+              0,
+              2,
+              3
+            ],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              2.842170943040401e-14,
+              0.0,
+              1.7763568394002505e-15,
+              3.552713678800501e-15
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 8,
+      "seed": 49,
+      "elapsed_seconds": 11.34983936601202,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "TypeError: covid_forecast() got an unexpected keyword argument 'budget_s'",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 0.8324937430152204,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\nTypeError: covid_forecast() got an unexpected keyword argument 'budget_s'\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 9,
+      "seed": 50,
+      "elapsed_seconds": 12.38335815400933,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": true,
+        "reward": -160.40408700296524,
+        "metrics": {
+          "smape": 145.40408700296524,
+          "mae": 284.92621899059026,
+          "rmse": 489.7236462919467,
+          "mase": 2.827540653311546
+        },
+        "error": null,
+        "behavior_signature": "82e1c3fe7b4c6029e1a085c63d73f598dfb19245f6dfcc163c9f740760874e5c",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.14109858198207803,
+          "total_runtime_seconds": 1.377897797996411,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -145.40408700296524,
+          "flat_forecast_penalty": 15.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 3,
+          "flat_series_indices": [
+            0,
+            2,
+            3
+          ],
+          "flat_series_names": [
+            "England",
+            "Scotland",
+            "Wales"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 3,
+            "flat_series_indices": [
+              0,
+              2,
+              3
+            ],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              0.0,
+              0.0,
+              0.0,
+              2.842170943040401e-14
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 10,
+      "seed": 51,
+      "elapsed_seconds": 11.987613286008127,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "Evaluation failed: Forecast contains negative values. Minimum prediction: -16.118242103735486.",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "prediction_validation_or_metrics",
+          "runtime_seconds": 1.5545261850056704
+        }
+      }
+    },
+    {
+      "attempt": 11,
+      "seed": 52,
+      "elapsed_seconds": 10.24297812799341,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "ImportError: cannot import name 'ARIMA' from 'sklearn.linear_model' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/linear_model/__init__.py)",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 1.0618365370028187,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 380, in _candidate_worker\n    exec(compiled, namespace, namespace)\n  File \"<generated_forecaster>\", line 2, in <module>\nImportError: cannot import name 'ARIMA' from 'sklearn.linear_model' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/linear_model/__init__.py)\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 12,
+      "seed": 53,
+      "elapsed_seconds": 7.681495570985135,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": true,
+        "reward": -87.69933179816243,
+        "metrics": {
+          "smape": 87.69933179816243,
+          "mae": 40.16743650547307,
+          "rmse": 122.1117602952239,
+          "mase": 0.37116335980724163
+        },
+        "error": null,
+        "behavior_signature": "2b2625762d99b8d0a3a0826a8edde2a5649b016cb0205147b4d4b4477d769591",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.12568087197723798,
+          "total_runtime_seconds": 0.9494324469997082,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -87.69933179816243,
+          "flat_forecast_penalty": 0.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 0,
+          "flat_series_indices": [],
+          "flat_series_names": [],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 0,
+            "flat_series_indices": [],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              106.32858885194922,
+              5.1982642104950817e-17,
+              6.071024080713646,
+              6.3148757694794835
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 13,
+      "seed": 54,
+      "elapsed_seconds": 10.645826941006817,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": true,
+        "reward": -101.1637674193501,
+        "metrics": {
+          "smape": 96.1637674193501,
+          "mae": 50.533597982770964,
+          "rmse": 118.27951243242413,
+          "mase": 0.44752674971020445
+        },
+        "error": null,
+        "behavior_signature": "5804c6ed7e35d2ed9ceb18653f008feafbc0e119ae0fccab7f152684bab58b43",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.10491916400496848,
+          "total_runtime_seconds": 1.0192035860090982,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -96.1637674193501,
+          "flat_forecast_penalty": 5.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 1,
+          "flat_series_indices": [
+            3
+          ],
+          "flat_series_names": [
+            "Wales"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 1,
+            "flat_series_indices": [
+              3
+            ],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              27.165579327761986,
+              7.34217888673919e-52,
+              0.9149890636221522,
+              0.6390728612336343
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 14,
+      "seed": 55,
+      "elapsed_seconds": 9.328481092990842,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": true,
+        "reward": -154.28571428571428,
+        "metrics": {
+          "smape": 139.28571428571428,
+          "mae": 142.92857142857142,
+          "rmse": 293.1388018377252,
+          "mase": 1.0586307040752856
+        },
+        "error": null,
+        "behavior_signature": "b9688a03298da6f9dc64aa9b5385145bd0c8bb79c0b974f5f09ea17954cc0028",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.01051302597625181,
+          "total_runtime_seconds": 1.0475115199806169,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -139.28571428571428,
+          "flat_forecast_penalty": 15.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 3,
+          "flat_series_indices": [
+            0,
+            2,
+            3
+          ],
+          "flat_series_names": [
+            "England",
+            "Scotland",
+            "Wales"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 3,
+            "flat_series_indices": [
+              0,
+              2,
+              3
+            ],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 15,
+      "seed": 56,
+      "elapsed_seconds": 11.256325532012852,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "attempt_0006",
+      "evaluation": {
+        "ok": true,
+        "reward": -91.8048357298361,
+        "metrics": {
+          "smape": 91.8048357298361,
+          "mae": 51.83371745544783,
+          "rmse": 136.46113809672514,
+          "mase": 0.535683455485427
+        },
+        "error": null,
+        "behavior_signature": "a6c95fdb0d798b27bfed10691af3b9a24494b7c2bef1595239f8ca933ef6c235",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.7257387879944872,
+          "total_runtime_seconds": 1.5635001719929278,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -91.8048357298361,
+          "flat_forecast_penalty": 0.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 0,
+          "flat_series_indices": [],
+          "flat_series_names": [],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 0,
+            "flat_series_indices": [],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              158.2742048910646,
+              11.6026380111932,
+              21.81756518138011,
+              8.912711663915728
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 16,
+      "seed": 57,
+      "elapsed_seconds": 12.944126520014834,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "TypeError: covid_forecast() got an unexpected keyword argument 'budget_s'",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 0.8303039140009787,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\nTypeError: covid_forecast() got an unexpected keyword argument 'budget_s'\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 17,
+      "seed": 58,
+      "elapsed_seconds": 9.964071205002256,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "attempt_0013",
+      "evaluation": {
+        "ok": true,
+        "reward": -101.1637674193501,
+        "metrics": {
+          "smape": 96.1637674193501,
+          "mae": 50.533597982770964,
+          "rmse": 118.27951243242413,
+          "mase": 0.44752674971020445
+        },
+        "error": null,
+        "behavior_signature": "5804c6ed7e35d2ed9ceb18653f008feafbc0e119ae0fccab7f152684bab58b43",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.10450631097774021,
+          "total_runtime_seconds": 1.0437124670133926,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -96.1637674193501,
+          "flat_forecast_penalty": 5.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 1,
+          "flat_series_indices": [
+            3
+          ],
+          "flat_series_names": [
+            "Wales"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 1,
+            "flat_series_indices": [
+              3
+            ],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              27.165579327761986,
+              7.34217888673919e-52,
+              0.9149890636221522,
+              0.6390728612336343
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 18,
+      "seed": 59,
+      "elapsed_seconds": 9.967466238013003,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "ImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 1.0821684880065732,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 380, in _candidate_worker\n    exec(compiled, namespace, namespace)\n  File \"<generated_forecaster>\", line 3, in <module>\nImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 19,
+      "seed": 60,
+      "elapsed_seconds": 9.849954880017322,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "Static validation failed: Importing from 'statsmodels.graphics.tsaplots' is not allowed.",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "static_validation"
+        }
+      }
+    },
+    {
+      "attempt": 20,
+      "seed": 61,
+      "elapsed_seconds": 9.955918897001538,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": true,
+        "reward": -164.68581124063894,
+        "metrics": {
+          "smape": 149.68581124063894,
+          "mae": 344.1464750146866,
+          "rmse": 597.1435457739274,
+          "mase": 3.253159826216042
+        },
+        "error": null,
+        "behavior_signature": "0f6bf4126ddc2870bcafc0b3788a111e7061c24f3db7e712d8ca4a41021fb73b",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.009655227011535317,
+          "total_runtime_seconds": 1.0615669249964412,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -149.68581124063894,
+          "flat_forecast_penalty": 15.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 3,
+          "flat_series_indices": [
+            0,
+            2,
+            3
+          ],
+          "flat_series_names": [
+            "England",
+            "Scotland",
+            "Wales"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 3,
+            "flat_series_indices": [
+              0,
+              2,
+              3
+            ],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              9.768664551572623,
+              0.07804503478505398,
+              0.5447987975173877,
+              0.3159400942363279
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 21,
+      "seed": 62,
+      "elapsed_seconds": 11.020736990001751,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "ImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 0.996425776014803,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 380, in _candidate_worker\n    exec(compiled, namespace, namespace)\n  File \"<generated_forecaster>\", line 3, in <module>\nImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 22,
+      "seed": 63,
+      "elapsed_seconds": 14.097494387009647,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "Evaluation failed: Forecast contains negative values. Minimum prediction: -16.118242103735486.",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "prediction_validation_or_metrics",
+          "runtime_seconds": 1.5489680259779561
+        }
+      }
+    },
+    {
+      "attempt": 23,
+      "seed": 64,
+      "elapsed_seconds": 11.744247652008198,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "ImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 1.0072435300098732,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 380, in _candidate_worker\n    exec(compiled, namespace, namespace)\n  File \"<generated_forecaster>\", line 3, in <module>\nImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 24,
+      "seed": 65,
+      "elapsed_seconds": 16.550294967019,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "NameError: name 'data' is not defined",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 1.115595667011803,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 46, in covid_forecast\n  File \"<generated_forecaster>\", line 36, in predict_linear_regression_region\nNameError: name 'data' is not defined\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 25,
+      "seed": 66,
+      "elapsed_seconds": 9.276213550998364,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "ImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 0.9962038319790736,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 380, in _candidate_worker\n    exec(compiled, namespace, namespace)\n  File \"<generated_forecaster>\", line 3, in <module>\nImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 26,
+      "seed": 67,
+      "elapsed_seconds": 11.162516084004892,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "Evaluation failed: Forecast contains negative values. Minimum prediction: -16.118242103735486.",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "prediction_validation_or_metrics",
+          "runtime_seconds": 1.5508474930247758
+        }
+      }
+    },
+    {
+      "attempt": 27,
+      "seed": 68,
+      "elapsed_seconds": 10.375562846980756,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "AttributeError: 'numpy.ndarray' object has no attribute 'values'",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 1.6503032300097402,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 39, in covid_forecast\n  File \"<generated_forecaster>\", line 32, in forecast\nAttributeError: 'numpy.ndarray' object has no attribute 'values'\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 28,
+      "seed": 69,
+      "elapsed_seconds": 11.877547308016801,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "attempt_0014",
+      "evaluation": {
+        "ok": true,
+        "reward": -154.28571428571428,
+        "metrics": {
+          "smape": 139.28571428571428,
+          "mae": 142.92857142857142,
+          "rmse": 293.1388018377252,
+          "mase": 1.0586307040752856
+        },
+        "error": null,
+        "behavior_signature": "b9688a03298da6f9dc64aa9b5385145bd0c8bb79c0b974f5f09ea17954cc0028",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.010759705997770652,
+          "total_runtime_seconds": 1.1186872780090198,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -139.28571428571428,
+          "flat_forecast_penalty": 15.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 3,
+          "flat_series_indices": [
+            0,
+            2,
+            3
+          ],
+          "flat_series_names": [
+            "England",
+            "Scotland",
+            "Wales"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 3,
+            "flat_series_indices": [
+              0,
+              2,
+              3
+            ],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 29,
+      "seed": 70,
+      "elapsed_seconds": 9.674077836010838,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": true,
+        "reward": -39.483519149018456,
+        "metrics": {
+          "smape": 39.483519149018456,
+          "mae": 39.482058965388525,
+          "rmse": 120.38000505327564,
+          "mase": 0.3623707597991931
+        },
+        "error": null,
+        "behavior_signature": "6463b488952b99789355d1ded223b944f1e04c0040570b0c16d01d6a420868ef",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.28830678199301474,
+          "total_runtime_seconds": 1.119299548008712,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -39.483519149018456,
+          "flat_forecast_penalty": 0.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 0,
+          "flat_series_indices": [],
+          "flat_series_names": [],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 0,
+            "flat_series_indices": [],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              102.85673608763263,
+              0.0,
+              5.905043172459453,
+              6.197847165036929
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 30,
+      "seed": 71,
+      "elapsed_seconds": 10.605024307995336,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": true,
+        "reward": -113.06903280969276,
+        "metrics": {
+          "smape": 113.06903280969276,
+          "mae": 45.34582587924511,
+          "rmse": 98.79601649061459,
+          "mase": 0.5879695948054665
+        },
+        "error": null,
+        "behavior_signature": "83e24e57e0f2c3c357a787c8b3395d80acbde216e0ab29e582cbe7d252b5b8b4",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.4818971060158219,
+          "total_runtime_seconds": 1.3112664660147857,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -113.06903280969276,
+          "flat_forecast_penalty": 0.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 0,
+          "flat_series_indices": [],
+          "flat_series_names": [],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 0,
+            "flat_series_indices": [],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              108.95539865417554,
+              11.7872746876508,
+              29.075565888270987,
+              4.21360552226293
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 31,
+      "seed": 72,
+      "elapsed_seconds": 8.285749320988543,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "attempt_0012",
+      "evaluation": {
+        "ok": true,
+        "reward": -87.69933179816243,
+        "metrics": {
+          "smape": 87.69933179816243,
+          "mae": 40.16743650547307,
+          "rmse": 122.1117602952239,
+          "mase": 0.37116335980724163
+        },
+        "error": null,
+        "behavior_signature": "2b2625762d99b8d0a3a0826a8edde2a5649b016cb0205147b4d4b4477d769591",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.1275902130000759,
+          "total_runtime_seconds": 0.9497301270021126,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -87.69933179816243,
+          "flat_forecast_penalty": 0.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 0,
+          "flat_series_indices": [],
+          "flat_series_names": [],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 0,
+            "flat_series_indices": [],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              106.32858885194922,
+              5.1982642104950817e-17,
+              6.071024080713646,
+              6.3148757694794835
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 32,
+      "seed": 73,
+      "elapsed_seconds": 11.421979548002128,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "Evaluation failed: Forecast contains negative values. Minimum prediction: -16.118242103735486.",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "prediction_validation_or_metrics",
+          "runtime_seconds": 1.561736806994304
+        }
+      }
+    },
+    {
+      "attempt": 33,
+      "seed": 74,
+      "elapsed_seconds": 8.58203084100387,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "ImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 1.0013614429917652,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 380, in _candidate_worker\n    exec(compiled, namespace, namespace)\n  File \"<generated_forecaster>\", line 4, in <module>\nImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 34,
+      "seed": 75,
+      "elapsed_seconds": 9.114886237017345,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "attempt_0006",
+      "evaluation": {
+        "ok": true,
+        "reward": -91.8048357298361,
+        "metrics": {
+          "smape": 91.8048357298361,
+          "mae": 51.83371745544783,
+          "rmse": 136.46113809672514,
+          "mase": 0.535683455485427
+        },
+        "error": null,
+        "behavior_signature": "a6c95fdb0d798b27bfed10691af3b9a24494b7c2bef1595239f8ca933ef6c235",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.7314036920142826,
+          "total_runtime_seconds": 1.5584567459882237,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -91.8048357298361,
+          "flat_forecast_penalty": 0.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 0,
+          "flat_series_indices": [],
+          "flat_series_names": [],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 0,
+            "flat_series_indices": [],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              158.2742048910646,
+              11.6026380111932,
+              21.81756518138011,
+              8.912711663915728
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 35,
+      "seed": 76,
+      "elapsed_seconds": 13.114695894008037,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "ValueError: setting an array element with a sequence. The requested array has an inhomogeneous shape after 1 dimensions. The detected shape was (167,) + inhomogeneous part.",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 0.9927333199884742,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 15, in covid_forecast\nValueError: setting an array element with a sequence. The requested array has an inhomogeneous shape after 1 dimensions. The detected shape was (167,) + inhomogeneous part.\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 36,
+      "seed": 77,
+      "elapsed_seconds": 11.375123317004181,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "attempt_0014",
+      "evaluation": {
+        "ok": true,
+        "reward": -154.28571428571428,
+        "metrics": {
+          "smape": 139.28571428571428,
+          "mae": 142.92857142857142,
+          "rmse": 293.1388018377252,
+          "mase": 1.0586307040752856
+        },
+        "error": null,
+        "behavior_signature": "b9688a03298da6f9dc64aa9b5385145bd0c8bb79c0b974f5f09ea17954cc0028",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.010475747025338933,
+          "total_runtime_seconds": 1.050930150988279,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -139.28571428571428,
+          "flat_forecast_penalty": 15.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 3,
+          "flat_series_indices": [
+            0,
+            2,
+            3
+          ],
+          "flat_series_names": [
+            "England",
+            "Scotland",
+            "Wales"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 3,
+            "flat_series_indices": [
+              0,
+              2,
+              3
+            ],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 37,
+      "seed": 78,
+      "elapsed_seconds": 11.04391577100614,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": true,
+        "reward": -146.52501599493883,
+        "metrics": {
+          "smape": 146.52501599493883,
+          "mae": 218.9589981852857,
+          "rmse": 373.62044862907436,
+          "mase": 4.547195611136559
+        },
+        "error": null,
+        "behavior_signature": "8c973353ab8b1e09ffcfeac5730a4aad8a6a528ca5f511705d882af1ab8f888d",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.7304061219911091,
+          "total_runtime_seconds": 1.787050053011626,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -146.52501599493883,
+          "flat_forecast_penalty": 0.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 0,
+          "flat_series_indices": [],
+          "flat_series_names": [],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 0,
+            "flat_series_indices": [],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              305.07270203850106,
+              302.6615034083632,
+              298.28181431165575,
+              297.38768640033874
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 38,
+      "seed": 79,
+      "elapsed_seconds": 11.493502981000347,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": true,
+        "reward": -39.48834385735657,
+        "metrics": {
+          "smape": 39.48834385735657,
+          "mae": 39.46304731013938,
+          "rmse": 120.34682259416496,
+          "mase": 0.36222404770640965
+        },
+        "error": null,
+        "behavior_signature": "a2ed8059a295e664ed4ada4855d3169bc98401b1f3ddac32959a072dbd811de2",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.33235298498766497,
+          "total_runtime_seconds": 1.1585257180267945,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -39.48834385735657,
+          "flat_forecast_penalty": 0.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 0,
+          "flat_series_indices": [],
+          "flat_series_names": [],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 0,
+            "flat_series_indices": [],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              103.32414768674123,
+              0.0,
+              5.9297786295810715,
+              6.171788722586872
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 39,
+      "seed": 80,
+      "elapsed_seconds": 18.65970212899265,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "ImportError: cannot import name 'inv_boxcox' from 'scipy.stats' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/scipy/stats/__init__.py)",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 0.8300911110127345,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 380, in _candidate_worker\n    exec(compiled, namespace, namespace)\n  File \"<generated_forecaster>\", line 4, in <module>\nImportError: cannot import name 'inv_boxcox' from 'scipy.stats' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/scipy/stats/__init__.py)\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 40,
+      "seed": 81,
+      "elapsed_seconds": 13.729913193994435,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "attempt_0003",
+      "evaluation": {
+        "ok": true,
+        "reward": -107.79259450483272,
+        "metrics": {
+          "smape": 97.79259450483272,
+          "mae": 60.05477303972454,
+          "rmse": 127.09836519587475,
+          "mase": 0.533589791746933
+        },
+        "error": null,
+        "behavior_signature": "7a91161390a3cf086fba664638422455b2f72ad4fc037ad27dd5efa1f28a5430",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.032204626011662185,
+          "total_runtime_seconds": 1.0626458670012653,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -97.79259450483272,
+          "flat_forecast_penalty": 10.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 2,
+          "flat_series_indices": [
+            2,
+            3
+          ],
+          "flat_series_names": [
+            "Scotland",
+            "Wales"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 2,
+            "flat_series_indices": [
+              2,
+              3
+            ],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              11.140723665263224,
+              0.07237175880462299,
+              0.35242250460581626,
+              0.33847350966361034
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 41,
+      "seed": 82,
+      "elapsed_seconds": 9.634255503013264,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "AssertionError: ",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 0.9637980730039999,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 19, in covid_forecast\nAssertionError\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 42,
+      "seed": 83,
+      "elapsed_seconds": 11.271674124989659,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": true,
+        "reward": -140.514921645381,
+        "metrics": {
+          "smape": 140.514921645381,
+          "mae": 50.67761338003478,
+          "rmse": 109.66548707849962,
+          "mase": 0.7232475168201892
+        },
+        "error": null,
+        "behavior_signature": "46ac32b03b842c41639bcb6444cd0b6d11caa07b3bdaa49fcdd730abd935bfd2",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.48092682601418346,
+          "total_runtime_seconds": 1.3075952879735269,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -140.514921645381,
+          "flat_forecast_penalty": 0.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 0,
+          "flat_series_indices": [],
+          "flat_series_names": [],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 0,
+            "flat_series_indices": [],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              100.27831736218742,
+              15.912706178219734,
+              31.705338103126387,
+              4.274234532657307
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 43,
+      "seed": 84,
+      "elapsed_seconds": 6.998908983019646,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "attempt_0013",
+      "evaluation": {
+        "ok": true,
+        "reward": -101.1637674193501,
+        "metrics": {
+          "smape": 96.1637674193501,
+          "mae": 50.533597982770964,
+          "rmse": 118.27951243242413,
+          "mase": 0.44752674971020445
+        },
+        "error": null,
+        "behavior_signature": "5804c6ed7e35d2ed9ceb18653f008feafbc0e119ae0fccab7f152684bab58b43",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.1031476320058573,
+          "total_runtime_seconds": 1.0110148009844124,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -96.1637674193501,
+          "flat_forecast_penalty": 5.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 1,
+          "flat_series_indices": [
+            3
+          ],
+          "flat_series_names": [
+            "Wales"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 1,
+            "flat_series_indices": [
+              3
+            ],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              27.165579327761986,
+              7.34217888673919e-52,
+              0.9149890636221522,
+              0.6390728612336343
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 44,
+      "seed": 85,
+      "elapsed_seconds": 13.79716255501262,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "attempt_0012",
+      "evaluation": {
+        "ok": true,
+        "reward": -87.69933179816243,
+        "metrics": {
+          "smape": 87.69933179816243,
+          "mae": 40.16743650547307,
+          "rmse": 122.1117602952239,
+          "mase": 0.37116335980724163
+        },
+        "error": null,
+        "behavior_signature": "2b2625762d99b8d0a3a0826a8edde2a5649b016cb0205147b4d4b4477d769591",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.12840626100660302,
+          "total_runtime_seconds": 0.9505796690064017,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -87.69933179816243,
+          "flat_forecast_penalty": 0.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 0,
+          "flat_series_indices": [],
+          "flat_series_names": [],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 0,
+            "flat_series_indices": [],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              106.32858885194922,
+              5.1982642104950817e-17,
+              6.071024080713646,
+              6.3148757694794835
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 45,
+      "seed": 86,
+      "elapsed_seconds": 9.634848976013018,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "attempt_0013",
+      "evaluation": {
+        "ok": true,
+        "reward": -101.1637674193501,
+        "metrics": {
+          "smape": 96.1637674193501,
+          "mae": 50.533597982770964,
+          "rmse": 118.27951243242413,
+          "mase": 0.44752674971020445
+        },
+        "error": null,
+        "behavior_signature": "5804c6ed7e35d2ed9ceb18653f008feafbc0e119ae0fccab7f152684bab58b43",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.10498584999004379,
+          "total_runtime_seconds": 1.030683006014442,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -96.1637674193501,
+          "flat_forecast_penalty": 5.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 1,
+          "flat_series_indices": [
+            3
+          ],
+          "flat_series_names": [
+            "Wales"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 1,
+            "flat_series_indices": [
+              3
+            ],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              27.165579327761986,
+              7.34217888673919e-52,
+              0.9149890636221522,
+              0.6390728612336343
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 46,
+      "seed": 87,
+      "elapsed_seconds": 12.385579866997432,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "ImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 1.0559931519965176,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 380, in _candidate_worker\n    exec(compiled, namespace, namespace)\n  File \"<generated_forecaster>\", line 5, in <module>\nImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 47,
+      "seed": 88,
+      "elapsed_seconds": 10.939299573976314,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "Evaluation failed: Forecast contains negative values. Minimum prediction: -1974.8782161132972.",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "prediction_validation_or_metrics",
+          "runtime_seconds": 1.0519235800020397
+        }
+      }
+    },
+    {
+      "attempt": 48,
+      "seed": 89,
+      "elapsed_seconds": 11.060596322000492,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "TypeError: covid_forecast() got an unexpected keyword argument 'budget_s'",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 0.8180247330165002,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\nTypeError: covid_forecast() got an unexpected keyword argument 'budget_s'\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 49,
+      "seed": 90,
+      "elapsed_seconds": 9.805756677000318,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": true,
+        "reward": -164.9731233882636,
+        "metrics": {
+          "smape": 159.9731233882636,
+          "mae": 222.14285714285703,
+          "rmse": 258.482522205495,
+          "mase": 4.326949091975114
+        },
+        "error": null,
+        "behavior_signature": "733ed0892957edb95218e981bbd1adce5157832192468d38dcaf5789a89a467c",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.010297576984157786,
+          "total_runtime_seconds": 1.0326951399911195,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -159.9731233882636,
+          "flat_forecast_penalty": 5.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 1,
+          "flat_series_indices": [
+            0
+          ],
+          "flat_series_names": [
+            "England"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 1,
+            "flat_series_indices": [
+              0
+            ],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              4.031128874149275,
+              4.03112887414927,
+              4.031128874149275,
+              4.031128874149276
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 50,
+      "seed": 91,
+      "elapsed_seconds": 14.928349745983724,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "Static validation failed: Importing from 'statsmodels.graphics.tsaplots' is not allowed.",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "static_validation"
+        }
+      }
+    },
+    {
+      "attempt": 51,
+      "seed": 92,
+      "elapsed_seconds": 9.605857121001463,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "attempt_0013",
+      "evaluation": {
+        "ok": true,
+        "reward": -101.1637674193501,
+        "metrics": {
+          "smape": 96.1637674193501,
+          "mae": 50.533597982770964,
+          "rmse": 118.27951243242413,
+          "mase": 0.44752674971020445
+        },
+        "error": null,
+        "behavior_signature": "5804c6ed7e35d2ed9ceb18653f008feafbc0e119ae0fccab7f152684bab58b43",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.10459316099877469,
+          "total_runtime_seconds": 1.0426623910025228,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -96.1637674193501,
+          "flat_forecast_penalty": 5.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 1,
+          "flat_series_indices": [
+            3
+          ],
+          "flat_series_names": [
+            "Wales"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 1,
+            "flat_series_indices": [
+              3
+            ],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              27.165579327761986,
+              7.34217888673919e-52,
+              0.9149890636221522,
+              0.6390728612336343
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 52,
+      "seed": 93,
+      "elapsed_seconds": 11.308170656993752,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "attempt_0006",
+      "evaluation": {
+        "ok": true,
+        "reward": -91.8048357298361,
+        "metrics": {
+          "smape": 91.8048357298361,
+          "mae": 51.83371745544783,
+          "rmse": 136.46113809672514,
+          "mase": 0.535683455485427
+        },
+        "error": null,
+        "behavior_signature": "a6c95fdb0d798b27bfed10691af3b9a24494b7c2bef1595239f8ca933ef6c235",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.7360484529926907,
+          "total_runtime_seconds": 1.5615076779795345,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -91.8048357298361,
+          "flat_forecast_penalty": 0.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 0,
+          "flat_series_indices": [],
+          "flat_series_names": [],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 0,
+            "flat_series_indices": [],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              158.2742048910646,
+              11.6026380111932,
+              21.81756518138011,
+              8.912711663915728
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 53,
+      "seed": 94,
+      "elapsed_seconds": 16.890541127999313,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": true,
+        "reward": -87.69853698436143,
+        "metrics": {
+          "smape": 87.69853698436143,
+          "mae": 45.90249446063781,
+          "rmse": 96.72901841945927,
+          "mase": 0.4654122188900495
+        },
+        "error": null,
+        "behavior_signature": "980825ca2eb7c1b47fc015df5aa578a4ef4ba1ffb66021084a320614f01c7143",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.3838042780116666,
+          "total_runtime_seconds": 1.223048143001506,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -87.69853698436143,
+          "flat_forecast_penalty": 0.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 0,
+          "flat_series_indices": [],
+          "flat_series_names": [],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 0,
+            "flat_series_indices": [],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              76.05853646920475,
+              3.6408802915103053,
+              7.581175698497544,
+              3.471109073816628
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 54,
+      "seed": 95,
+      "elapsed_seconds": 7.611591077002231,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "Static validation failed: Importing from 'statsmodels.graphics.tsaplots' is not allowed.",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "static_validation"
+        }
+      }
+    },
+    {
+      "attempt": 55,
+      "seed": 96,
+      "elapsed_seconds": 11.144610182993347,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "attempt_0013",
+      "evaluation": {
+        "ok": true,
+        "reward": -101.1637674193501,
+        "metrics": {
+          "smape": 96.1637674193501,
+          "mae": 50.533597982770964,
+          "rmse": 118.27951243242413,
+          "mase": 0.44752674971020445
+        },
+        "error": null,
+        "behavior_signature": "5804c6ed7e35d2ed9ceb18653f008feafbc0e119ae0fccab7f152684bab58b43",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.11013776098843664,
+          "total_runtime_seconds": 1.0389858990092762,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -96.1637674193501,
+          "flat_forecast_penalty": 5.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 1,
+          "flat_series_indices": [
+            3
+          ],
+          "flat_series_names": [
+            "Wales"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 1,
+            "flat_series_indices": [
+              3
+            ],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              27.165579327761986,
+              7.34217888673919e-52,
+              0.9149890636221522,
+              0.6390728612336343
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 56,
+      "seed": 97,
+      "elapsed_seconds": 10.557008219009731,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "ImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 1.0722687339875847,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 380, in _candidate_worker\n    exec(compiled, namespace, namespace)\n  File \"<generated_forecaster>\", line 4, in <module>\nImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 57,
+      "seed": 98,
+      "elapsed_seconds": 7.872224219026975,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": true,
+        "reward": -213.14747771702983,
+        "metrics": {
+          "smape": 198.14747771702983,
+          "mae": 142.80818892443804,
+          "rmse": 292.98903978987227,
+          "mase": 1.0560308972099257
+        },
+        "error": null,
+        "behavior_signature": "9a6dea9821d46b14d68fba4df37ced625db836a76d8c46677383cecdd0037960",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.00689576001605019,
+          "total_runtime_seconds": 0.9889444990258198,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -198.14747771702983,
+          "flat_forecast_penalty": 15.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 3,
+          "flat_series_indices": [
+            0,
+            2,
+            3
+          ],
+          "flat_series_names": [
+            "England",
+            "Scotland",
+            "Wales"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 3,
+            "flat_series_indices": [
+              0,
+              2,
+              3
+            ],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              5.551115123125783e-17,
+              3.469446951953614e-18,
+              1.3877787807814457e-17,
+              5.551115123125783e-17
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 58,
+      "seed": 99,
+      "elapsed_seconds": 8.005323046992999,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "Static validation failed: Importing from 'statsmodels.tools.eval_measures' is not allowed.",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "static_validation"
+        }
+      }
+    },
+    {
+      "attempt": 59,
+      "seed": 100,
+      "elapsed_seconds": 8.720057651982643,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "attempt_0014",
+      "evaluation": {
+        "ok": true,
+        "reward": -154.28571428571428,
+        "metrics": {
+          "smape": 139.28571428571428,
+          "mae": 142.92857142857142,
+          "rmse": 293.1388018377252,
+          "mase": 1.0586307040752856
+        },
+        "error": null,
+        "behavior_signature": "b9688a03298da6f9dc64aa9b5385145bd0c8bb79c0b974f5f09ea17954cc0028",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.006509050988825038,
+          "total_runtime_seconds": 0.9607896700035781,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -139.28571428571428,
+          "flat_forecast_penalty": 15.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 3,
+          "flat_series_indices": [
+            0,
+            2,
+            3
+          ],
+          "flat_series_names": [
+            "England",
+            "Scotland",
+            "Wales"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 3,
+            "flat_series_indices": [
+              0,
+              2,
+              3
+            ],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 60,
+      "seed": 101,
+      "elapsed_seconds": 9.18826943001477,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": true,
+        "reward": -39.479947011061824,
+        "metrics": {
+          "smape": 39.479947011061824,
+          "mae": 39.46085437890656,
+          "rmse": 120.34380059145032,
+          "mase": 0.3621935106498478
+        },
+        "error": null,
+        "behavior_signature": "37c0d9e4cb676b0b82dc8552bd1817dc73eb2861d57623a5ac772e661d91e867",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.2762713989941403,
+          "total_runtime_seconds": 1.3072563250025269,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -39.479947011061824,
+          "flat_forecast_penalty": 0.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 0,
+          "flat_series_indices": [],
+          "flat_series_names": [],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 0,
+            "flat_series_indices": [],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              103.35988322016192,
+              0.0,
+              5.932149923282518,
+              6.171714948870005
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 61,
+      "seed": 102,
+      "elapsed_seconds": 11.039615796005819,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "TypeError: covid_forecast() got an unexpected keyword argument 'budget_s'",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 0.8159599750069901,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\nTypeError: covid_forecast() got an unexpected keyword argument 'budget_s'\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 62,
+      "seed": 103,
+      "elapsed_seconds": 13.205336966988398,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "Static validation failed: Importing from 'statsmodels.tools.eval_measures' is not allowed.",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "static_validation"
+        }
+      }
+    },
+    {
+      "attempt": 63,
+      "seed": 104,
+      "elapsed_seconds": 14.252862935012672,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "ValueError: SARIMAX models require univariate `endog`. Got shape (167, 4).",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 1.063169111002935,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 12, in covid_forecast\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py\", line 328, in __init__\n    self._spec = SARIMAXSpecification(\n                 ^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/arima/specification.py\", line 454, in __init__\n    raise ValueError('SARIMAX models require univariate `endog`. Got'\nValueError: SARIMAX models require univariate `endog`. Got shape (167, 4).\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 64,
+      "seed": 105,
+      "elapsed_seconds": 12.777367792004952,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "Evaluation failed: Forecast contains negative values. Minimum prediction: -19.026107305158813.",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "prediction_validation_or_metrics",
+          "runtime_seconds": 3.4330374129931442
+        }
+      }
+    },
+    {
+      "attempt": 65,
+      "seed": 106,
+      "elapsed_seconds": 15.257962121017044,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "Static validation failed: Importing from 'statsmodels.graphics.tsaplots' is not allowed.",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "static_validation"
+        }
+      }
+    },
+    {
+      "attempt": 66,
+      "seed": 107,
+      "elapsed_seconds": 10.006010384007823,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "attempt_0006",
+      "evaluation": {
+        "ok": true,
+        "reward": -91.8048357298361,
+        "metrics": {
+          "smape": 91.8048357298361,
+          "mae": 51.83371745544783,
+          "rmse": 136.46113809672514,
+          "mase": 0.535683455485427
+        },
+        "error": null,
+        "behavior_signature": "a6c95fdb0d798b27bfed10691af3b9a24494b7c2bef1595239f8ca933ef6c235",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.7343000200053211,
+          "total_runtime_seconds": 1.5593710910179652,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -91.8048357298361,
+          "flat_forecast_penalty": 0.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 0,
+          "flat_series_indices": [],
+          "flat_series_names": [],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 0,
+            "flat_series_indices": [],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              158.2742048910646,
+              11.6026380111932,
+              21.81756518138011,
+              8.912711663915728
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 67,
+      "seed": 108,
+      "elapsed_seconds": 10.249443269014591,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "ValueError: could not broadcast input array from shape (138,) into shape (14,)",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 1.024692270992091,
+          "traceback": "Traceback (most recent call last):\n  File \"<generated_forecaster>\", line 23, in covid_forecast\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/numpy/_core/fromnumeric.py\", line 2290, in clip\n    raise TypeError(\"clip() missing 1 required positional \"\nTypeError: clip() missing 1 required positional argument: 'a_max'\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 27, in covid_forecast\nValueError: could not broadcast input array from shape (138,) into shape (14,)\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 68,
+      "seed": 109,
+      "elapsed_seconds": 12.404776799987303,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "attempt_0003",
+      "evaluation": {
+        "ok": true,
+        "reward": -107.79259450483272,
+        "metrics": {
+          "smape": 97.79259450483272,
+          "mae": 60.05477303972454,
+          "rmse": 127.09836519587475,
+          "mase": 0.533589791746933
+        },
+        "error": null,
+        "behavior_signature": "7a91161390a3cf086fba664638422455b2f72ad4fc037ad27dd5efa1f28a5430",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.03492560001905076,
+          "total_runtime_seconds": 0.8539238630037289,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -97.79259450483272,
+          "flat_forecast_penalty": 10.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 2,
+          "flat_series_indices": [
+            2,
+            3
+          ],
+          "flat_series_names": [
+            "Scotland",
+            "Wales"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 2,
+            "flat_series_indices": [
+              2,
+              3
+            ],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              11.140723665263224,
+              0.07237175880462299,
+              0.35242250460581626,
+              0.33847350966361034
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 69,
+      "seed": 110,
+      "elapsed_seconds": 13.278857206023531,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "Static validation failed: Importing from 'statsmodels.graphics.tsaplots' is not allowed.",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "static_validation"
+        }
+      }
+    },
+    {
+      "attempt": 70,
+      "seed": 111,
+      "elapsed_seconds": 10.104781784000807,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "attempt_0014",
+      "evaluation": {
+        "ok": true,
+        "reward": -154.28571428571428,
+        "metrics": {
+          "smape": 139.28571428571428,
+          "mae": 142.92857142857142,
+          "rmse": 293.1388018377252,
+          "mase": 1.0586307040752856
+        },
+        "error": null,
+        "behavior_signature": "b9688a03298da6f9dc64aa9b5385145bd0c8bb79c0b974f5f09ea17954cc0028",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.009578365978086367,
+          "total_runtime_seconds": 1.063754130009329,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -139.28571428571428,
+          "flat_forecast_penalty": 15.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 3,
+          "flat_series_indices": [
+            0,
+            2,
+            3
+          ],
+          "flat_series_names": [
+            "England",
+            "Scotland",
+            "Wales"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 3,
+            "flat_series_indices": [
+              0,
+              2,
+              3
+            ],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 71,
+      "seed": 112,
+      "elapsed_seconds": 10.450510441994993,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "TypeError: unsupported operand type(s) for *: 'NoneType' and 'float'",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 0.8833567010005936,
+          "traceback": "Traceback (most recent call last):\n  File \"<generated_forecaster>\", line 16, in covid_forecast\nValueError: could not broadcast input array from shape (14,) into shape (4,)\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 20, in covid_forecast\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/pandas/util/_decorators.py\", line 220, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/pandas/util/_decorators.py\", line 220, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/pandas/util/_decorators.py\", line 220, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py\", line 1144, in fit\n    hwfit = self._predict(\n            ^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/pandas/util/_decorators.py\", line 220, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/pandas/util/_decorators.py\", line 220, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py\", line 1362, in _predict\n    b[i] = (beta * detrend(lvls[i], lvls[i - 1])) + (\n            ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nTypeError: unsupported operand type(s) for *: 'NoneType' and 'float'\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 72,
+      "seed": 113,
+      "elapsed_seconds": 7.348874529008754,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "ImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 0.9860380919999443,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 380, in _candidate_worker\n    exec(compiled, namespace, namespace)\n  File \"<generated_forecaster>\", line 3, in <module>\nImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 73,
+      "seed": 114,
+      "elapsed_seconds": 12.442321969982004,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": true,
+        "reward": -95.94542905591614,
+        "metrics": {
+          "smape": 95.94542905591614,
+          "mae": 68.29689093377053,
+          "rmse": 129.7119237817397,
+          "mase": 0.6598309748517137
+        },
+        "error": null,
+        "behavior_signature": "2b9220465fc92e7a74301e3fcd6bdce285d98d59976b2635dd67b808ca998a05",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 1.7510633310012054,
+          "total_runtime_seconds": 2.583706531993812,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -95.94542905591614,
+          "flat_forecast_penalty": 0.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 0,
+          "flat_series_indices": [],
+          "flat_series_names": [],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 0,
+            "flat_series_indices": [],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              54.24021780962515,
+              22.400448638448985,
+              58.646463337549186,
+              3.9672176387165314
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 74,
+      "seed": 115,
+      "elapsed_seconds": 11.743666343012592,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "TypeError: covid_forecast() got an unexpected keyword argument 'budget_s'",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 1.0602987640013453,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\nTypeError: covid_forecast() got an unexpected keyword argument 'budget_s'\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 75,
+      "seed": 116,
+      "elapsed_seconds": 8.721237814985216,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "attempt_0003",
+      "evaluation": {
+        "ok": true,
+        "reward": -107.79259450483272,
+        "metrics": {
+          "smape": 97.79259450483272,
+          "mae": 60.05477303972454,
+          "rmse": 127.09836519587475,
+          "mase": 0.533589791746933
+        },
+        "error": null,
+        "behavior_signature": "7a91161390a3cf086fba664638422455b2f72ad4fc037ad27dd5efa1f28a5430",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.036732715991092846,
+          "total_runtime_seconds": 0.8598408749967348,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -97.79259450483272,
+          "flat_forecast_penalty": 10.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 2,
+          "flat_series_indices": [
+            2,
+            3
+          ],
+          "flat_series_names": [
+            "Scotland",
+            "Wales"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 2,
+            "flat_series_indices": [
+              2,
+              3
+            ],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              11.140723665263224,
+              0.07237175880462299,
+              0.35242250460581626,
+              0.33847350966361034
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 76,
+      "seed": 117,
+      "elapsed_seconds": 15.428203279006993,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "attempt_0014",
+      "evaluation": {
+        "ok": true,
+        "reward": -154.28571428571428,
+        "metrics": {
+          "smape": 139.28571428571428,
+          "mae": 142.92857142857142,
+          "rmse": 293.1388018377252,
+          "mase": 1.0586307040752856
+        },
+        "error": null,
+        "behavior_signature": "b9688a03298da6f9dc64aa9b5385145bd0c8bb79c0b974f5f09ea17954cc0028",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.5038781100010965,
+          "total_runtime_seconds": 1.4922424360120203,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -139.28571428571428,
+          "flat_forecast_penalty": 15.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 3,
+          "flat_series_indices": [
+            0,
+            2,
+            3
+          ],
+          "flat_series_names": [
+            "England",
+            "Scotland",
+            "Wales"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 3,
+            "flat_series_indices": [
+              0,
+              2,
+              3
+            ],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 77,
+      "seed": 118,
+      "elapsed_seconds": 14.615124392003054,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "Static validation failed: Importing from 'statsmodels.graphics.tsaplots' is not allowed.",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "static_validation"
+        }
+      }
+    },
+    {
+      "attempt": 78,
+      "seed": 119,
+      "elapsed_seconds": 15.717967295990093,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": true,
+        "reward": -102.26106714076629,
+        "metrics": {
+          "smape": 102.26106714076629,
+          "mae": 63.24985476941278,
+          "rmse": 159.02364125343487,
+          "mase": 0.6276560014651947
+        },
+        "error": null,
+        "behavior_signature": "b049288716efe7cc4eb0e69534e35580dc8e3e0966eb65130092e9353611f6da",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 3.405680374999065,
+          "total_runtime_seconds": 4.24287011299748,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -102.26106714076629,
+          "flat_forecast_penalty": 0.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 0,
+          "flat_series_indices": [],
+          "flat_series_names": [],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 0,
+            "flat_series_indices": [],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              123.62330660141266,
+              19.3761406811762,
+              6.8266094718374495,
+              8.195946294448987
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 79,
+      "seed": 120,
+      "elapsed_seconds": 8.957778732990846,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "attempt_0012",
+      "evaluation": {
+        "ok": true,
+        "reward": -87.69933179816243,
+        "metrics": {
+          "smape": 87.69933179816243,
+          "mae": 40.16743650547307,
+          "rmse": 122.1117602952239,
+          "mase": 0.37116335980724163
+        },
+        "error": null,
+        "behavior_signature": "2b2625762d99b8d0a3a0826a8edde2a5649b016cb0205147b4d4b4477d769591",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.1297284089960158,
+          "total_runtime_seconds": 0.9628782699874137,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -87.69933179816243,
+          "flat_forecast_penalty": 0.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 0,
+          "flat_series_indices": [],
+          "flat_series_names": [],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 0,
+            "flat_series_indices": [],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              106.32858885194922,
+              5.1982642104950817e-17,
+              6.071024080713646,
+              6.3148757694794835
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 80,
+      "seed": 121,
+      "elapsed_seconds": 10.337321881990647,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": true,
+        "reward": -64.98268746970305,
+        "metrics": {
+          "smape": 49.982687469703045,
+          "mae": 60.17857142857143,
+          "rmse": 126.48898879236202,
+          "mase": 0.5140426814697912
+        },
+        "error": null,
+        "behavior_signature": "58208bd832d0cb3dbef8a45c02ae5901c2aabbedf74ffc6073eafb0a4805ff1d",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 1.5396584190020803,
+          "total_runtime_seconds": 2.523956234974321,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -49.982687469703045,
+          "flat_forecast_penalty": 15.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 3,
+          "flat_series_indices": [
+            0,
+            2,
+            3
+          ],
+          "flat_series_names": [
+            "England",
+            "Scotland",
+            "Wales"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 3,
+            "flat_series_indices": [
+              0,
+              2,
+              3
+            ],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 81,
+      "seed": 122,
+      "elapsed_seconds": 14.18928611499723,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "Static validation failed: Importing from 'statsmodels.graphics.tsaplots' is not allowed.",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "static_validation"
+        }
+      }
+    },
+    {
+      "attempt": 82,
+      "seed": 123,
+      "elapsed_seconds": 16.645563832018524,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "Static validation failed: Importing from 'statsmodels.graphics.tsaplots' is not allowed.",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "static_validation"
+        }
+      }
+    },
+    {
+      "attempt": 83,
+      "seed": 124,
+      "elapsed_seconds": 15.271839410008397,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": true,
+        "reward": -144.2901677027406,
+        "metrics": {
+          "smape": 144.2901677027406,
+          "mae": 188.57142857142858,
+          "rmse": 304.553244230674,
+          "mase": 3.2459794221424367
+        },
+        "error": null,
+        "behavior_signature": "25ab932e846958dbe5e4bdf0ceb19a8ba7f9b7db59782473042ddccb95e755b4",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 1.4754384300031234,
+          "total_runtime_seconds": 2.458204491995275,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -144.2901677027406,
+          "flat_forecast_penalty": 0.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 0,
+          "flat_series_indices": [],
+          "flat_series_names": [],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 0,
+            "flat_series_indices": [],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              203.55785669044604,
+              203.55785669044604,
+              185.72660673414458,
+              185.72660673414458
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 84,
+      "seed": 125,
+      "elapsed_seconds": 8.249589598010061,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "attempt_0006",
+      "evaluation": {
+        "ok": true,
+        "reward": -91.8048357298361,
+        "metrics": {
+          "smape": 91.8048357298361,
+          "mae": 51.83371745544783,
+          "rmse": 136.46113809672514,
+          "mase": 0.535683455485427
+        },
+        "error": null,
+        "behavior_signature": "a6c95fdb0d798b27bfed10691af3b9a24494b7c2bef1595239f8ca933ef6c235",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.7278753349964973,
+          "total_runtime_seconds": 1.5583667489991058,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -91.8048357298361,
+          "flat_forecast_penalty": 0.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 0,
+          "flat_series_indices": [],
+          "flat_series_names": [],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 0,
+            "flat_series_indices": [],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              158.2742048910646,
+              11.6026380111932,
+              21.81756518138011,
+              8.912711663915728
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 85,
+      "seed": 126,
+      "elapsed_seconds": 11.17850030300906,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "attempt_0014",
+      "evaluation": {
+        "ok": true,
+        "reward": -154.28571428571428,
+        "metrics": {
+          "smape": 139.28571428571428,
+          "mae": 142.92857142857142,
+          "rmse": 293.1388018377252,
+          "mase": 1.0586307040752856
+        },
+        "error": null,
+        "behavior_signature": "b9688a03298da6f9dc64aa9b5385145bd0c8bb79c0b974f5f09ea17954cc0028",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.005973356019239873,
+          "total_runtime_seconds": 0.9882755599974189,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -139.28571428571428,
+          "flat_forecast_penalty": 15.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 3,
+          "flat_series_indices": [
+            0,
+            2,
+            3
+          ],
+          "flat_series_names": [
+            "England",
+            "Scotland",
+            "Wales"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 3,
+            "flat_series_indices": [
+              0,
+              2,
+              3
+            ],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 86,
+      "seed": 127,
+      "elapsed_seconds": 13.21787810800015,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "TypeError: covid_forecast() got an unexpected keyword argument 'budget_s'",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 0.8231569470081013,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\nTypeError: covid_forecast() got an unexpected keyword argument 'budget_s'\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 87,
+      "seed": 128,
+      "elapsed_seconds": 12.505586554005276,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "attempt_0020",
+      "evaluation": {
+        "ok": true,
+        "reward": -164.68581124063897,
+        "metrics": {
+          "smape": 149.68581124063897,
+          "mae": 344.1464750146867,
+          "rmse": 597.1435457739275,
+          "mase": 3.2531598262160433
+        },
+        "error": null,
+        "behavior_signature": "0f6bf4126ddc2870bcafc0b3788a111e7061c24f3db7e712d8ca4a41021fb73b",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.010016626009019092,
+          "total_runtime_seconds": 1.0472878269793,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -149.68581124063897,
+          "flat_forecast_penalty": 15.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 3,
+          "flat_series_indices": [
+            0,
+            2,
+            3
+          ],
+          "flat_series_names": [
+            "England",
+            "Scotland",
+            "Wales"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 3,
+            "flat_series_indices": [
+              0,
+              2,
+              3
+            ],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              9.768664551572693,
+              0.07804503478505358,
+              0.5447987975173856,
+              0.3159400942363295
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 88,
+      "seed": 129,
+      "elapsed_seconds": 18.22053763200529,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "ValueError: could not broadcast input array from shape (138,) into shape (14,)",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 1.4803028410242405,
+          "traceback": "Traceback (most recent call last):\n  File \"<generated_forecaster>\", line 25, in covid_forecast\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/preprocessing/_data.py\", line 1157, in inverse_transform\n    X = check_array(\n        ^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/utils/validation.py\", line 1073, in check_array\n    raise ValueError(msg)\nValueError: Expected 2D array, got 1D array instead:\narray=[-0.75963212 -0.52301801 -0.52980843 -0.46267548 -0.51706829 -0.58793352\n -0.71807178 -0.75098493 -0.50247671 -0.48361893 -0.40908394 -0.4598994\n -0.53600734 -0.70253536].\nReshape your data either using array.reshape(-1, 1) if your data has a single feature or array.reshape(1, -1) if it contains a single sample.\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 29, in covid_forecast\nValueError: could not broadcast input array from shape (138,) into shape (14,)\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 89,
+      "seed": 130,
+      "elapsed_seconds": 11.210881473001791,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "attempt_0006",
+      "evaluation": {
+        "ok": true,
+        "reward": -91.8048357298361,
+        "metrics": {
+          "smape": 91.8048357298361,
+          "mae": 51.83371745544783,
+          "rmse": 136.46113809672514,
+          "mase": 0.535683455485427
+        },
+        "error": null,
+        "behavior_signature": "a6c95fdb0d798b27bfed10691af3b9a24494b7c2bef1595239f8ca933ef6c235",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.7339062319952063,
+          "total_runtime_seconds": 1.5587338210025337,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -91.8048357298361,
+          "flat_forecast_penalty": 0.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 0,
+          "flat_series_indices": [],
+          "flat_series_names": [],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 0,
+            "flat_series_indices": [],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              158.2742048910646,
+              11.6026380111932,
+              21.81756518138011,
+              8.912711663915728
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 90,
+      "seed": 131,
+      "elapsed_seconds": 14.866118956007995,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "TypeError: covid_forecast() got an unexpected keyword argument 'budget_s'",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 0.9159639779827558,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\nTypeError: covid_forecast() got an unexpected keyword argument 'budget_s'\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 91,
+      "seed": 132,
+      "elapsed_seconds": 13.187491051998222,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "TypeError: covid_forecast() got an unexpected keyword argument 'budget_s'",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 0.9858407830179203,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\nTypeError: covid_forecast() got an unexpected keyword argument 'budget_s'\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 92,
+      "seed": 133,
+      "elapsed_seconds": 12.692740664002486,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "attempt_0014",
+      "evaluation": {
+        "ok": true,
+        "reward": -154.28571428571428,
+        "metrics": {
+          "smape": 139.28571428571428,
+          "mae": 142.92857142857142,
+          "rmse": 293.1388018377252,
+          "mase": 1.0586307040752856
+        },
+        "error": null,
+        "behavior_signature": "b9688a03298da6f9dc64aa9b5385145bd0c8bb79c0b974f5f09ea17954cc0028",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.009340743999928236,
+          "total_runtime_seconds": 1.0628812509821728,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -139.28571428571428,
+          "flat_forecast_penalty": 15.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 3,
+          "flat_series_indices": [
+            0,
+            2,
+            3
+          ],
+          "flat_series_names": [
+            "England",
+            "Scotland",
+            "Wales"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 3,
+            "flat_series_indices": [
+              0,
+              2,
+              3
+            ],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 93,
+      "seed": 134,
+      "elapsed_seconds": 12.040976172982482,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "attempt_0006",
+      "evaluation": {
+        "ok": true,
+        "reward": -91.8048357298361,
+        "metrics": {
+          "smape": 91.8048357298361,
+          "mae": 51.83371745544783,
+          "rmse": 136.46113809672514,
+          "mase": 0.535683455485427
+        },
+        "error": null,
+        "behavior_signature": "a6c95fdb0d798b27bfed10691af3b9a24494b7c2bef1595239f8ca933ef6c235",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.7382277309952769,
+          "total_runtime_seconds": 1.61887310698512,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -91.8048357298361,
+          "flat_forecast_penalty": 0.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 0,
+          "flat_series_indices": [],
+          "flat_series_names": [],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 0,
+            "flat_series_indices": [],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              158.2742048910646,
+              11.6026380111932,
+              21.81756518138011,
+              8.912711663915728
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 94,
+      "seed": 135,
+      "elapsed_seconds": 21.56656745800865,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": true,
+        "reward": -51.162762067376164,
+        "metrics": {
+          "smape": 46.162762067376164,
+          "mae": 50.53299222471784,
+          "rmse": 118.27993364301986,
+          "mase": 0.4475219166847402
+        },
+        "error": null,
+        "behavior_signature": "8b002006bbd859c7e107c186fe6ba94d0a5317ad267f80bab16283a6dcd0b9d2",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.09040509499027394,
+          "total_runtime_seconds": 1.2103188740147743,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -46.162762067376164,
+          "flat_forecast_penalty": 5.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 1,
+          "flat_series_indices": [
+            3
+          ],
+          "flat_series_names": [
+            "Wales"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 1,
+            "flat_series_indices": [
+              3
+            ],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              27.172326240112056,
+              0.0,
+              0.9145091339770333,
+              0.6390195243325022
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 95,
+      "seed": 136,
+      "elapsed_seconds": 8.134895169001538,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "attempt_0030",
+      "evaluation": {
+        "ok": true,
+        "reward": -113.06903280969276,
+        "metrics": {
+          "smape": 113.06903280969276,
+          "mae": 45.34582587924511,
+          "rmse": 98.79601649061459,
+          "mase": 0.5879695948054665
+        },
+        "error": null,
+        "behavior_signature": "83e24e57e0f2c3c357a787c8b3395d80acbde216e0ab29e582cbe7d252b5b8b4",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.4872960310021881,
+          "total_runtime_seconds": 1.313497600989649,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -113.06903280969276,
+          "flat_forecast_penalty": 0.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 0,
+          "flat_series_indices": [],
+          "flat_series_names": [],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 0,
+            "flat_series_indices": [],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              108.95539865417554,
+              11.7872746876508,
+              29.075565888270987,
+              4.21360552226293
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 96,
+      "seed": 137,
+      "elapsed_seconds": 12.124510754016228,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "attempt_0003",
+      "evaluation": {
+        "ok": true,
+        "reward": -107.79259450483272,
+        "metrics": {
+          "smape": 97.79259450483272,
+          "mae": 60.05477303972454,
+          "rmse": 127.09836519587475,
+          "mase": 0.533589791746933
+        },
+        "error": null,
+        "behavior_signature": "7a91161390a3cf086fba664638422455b2f72ad4fc037ad27dd5efa1f28a5430",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.03230162299587391,
+          "total_runtime_seconds": 1.0544154249946587,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -97.79259450483272,
+          "flat_forecast_penalty": 10.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 2,
+          "flat_series_indices": [
+            2,
+            3
+          ],
+          "flat_series_names": [
+            "Scotland",
+            "Wales"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 2,
+            "flat_series_indices": [
+              2,
+              3
+            ],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              11.140723665263224,
+              0.07237175880462299,
+              0.35242250460581626,
+              0.33847350966361034
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 97,
+      "seed": 138,
+      "elapsed_seconds": 17.328563025017502,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "ImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 1.0027617480081972,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 380, in _candidate_worker\n    exec(compiled, namespace, namespace)\n  File \"<generated_forecaster>\", line 4, in <module>\nImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 98,
+      "seed": 139,
+      "elapsed_seconds": 13.529687605012441,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "attempt_0014",
+      "evaluation": {
+        "ok": true,
+        "reward": -154.28571428571428,
+        "metrics": {
+          "smape": 139.28571428571428,
+          "mae": 142.92857142857142,
+          "rmse": 293.1388018377252,
+          "mase": 1.0586307040752856
+        },
+        "error": null,
+        "behavior_signature": "b9688a03298da6f9dc64aa9b5385145bd0c8bb79c0b974f5f09ea17954cc0028",
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "forecast_horizon": 14,
+          "number_of_locations": 4,
+          "candidate_runtime_seconds": 0.10610320599516854,
+          "total_runtime_seconds": 1.0281029639882036,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -139.28571428571428,
+          "flat_forecast_penalty": 15.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 3,
+          "flat_series_indices": [
+            0,
+            2,
+            3
+          ],
+          "flat_series_names": [
+            "England",
+            "Scotland",
+            "Wales"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 3,
+            "flat_series_indices": [
+              0,
+              2,
+              3
+            ],
+            "historically_variable": [
+              true,
+              false,
+              true,
+              true
+            ],
+            "recent_mean_abs": [
+              576.75,
+              0.5357142857142857,
+              10.642857142857142,
+              34.07142857142857
+            ],
+            "recent_std": [
+              110.16339325876683,
+              1.0850326807830935,
+              5.850606108492922,
+              29.80882967395084
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              0.2857142857142857,
+              1.0,
+              1.0
+            ],
+            "forecast_std": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "flat_threshold": [
+              11.016339325876684,
+              0.10850326807830935,
+              0.5850606108492923,
+              2.9808829673950843
+            ]
+          }
+        }
+      }
+    },
+    {
+      "attempt": 99,
+      "seed": 140,
+      "elapsed_seconds": 8.894342612999026,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "ValueError: index can't contain negative values",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 0.9110389189736452,
+          "traceback": "Traceback (most recent call last):\n  File \"<generated_forecaster>\", line 11, in covid_forecast\nTypeError: ARIMA.fit() got an unexpected keyword argument 'disp'\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 16, in covid_forecast\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/numpy/lib/_arraypad_impl.py\", line 792, in pad\n    pad_width = _as_pairs(pad_width, array.ndim, as_index=True)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/numpy/lib/_arraypad_impl.py\", line 527, in _as_pairs\n    raise ValueError(\"index can't contain negative values\")\nValueError: index can't contain negative values\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "attempt": 100,
+      "seed": 141,
+      "elapsed_seconds": 14.24271182200755,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "ValueError: could not broadcast input array from shape (167,) into shape (14,)",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "covid_uk",
+          "stage": "execution",
+          "runtime_seconds": 1.2287403990048915,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/covid19/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 30, in covid_forecast\nValueError: could not broadcast input array from shape (167,) into shape (14,)\n",
+          "timed_out": false
+        }
+      }
+    }
+  ],
+  "valid_generated_count": 51,
+  "invalid_generated_count": 49,
+  "duplicate_behavior_count": 29,
+  "best_generated_attempt": {
+    "attempt": 60,
+    "reward": -39.479947011061824,
+    "metrics": {
+      "smape": 39.479947011061824,
+      "mae": 39.46085437890656,
+      "rmse": 120.34380059145032,
+      "mase": 0.3621935106498478
+    },
+    "duplicate_valid_behavior": false,
+    "candidate_path": "/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/results/covid19/uk_14days/uk_no_ttt_7b_100/job_5989921/attempt_0060/candidate.py"
+  },
+  "best_model_result": {
+    "attempt": 60,
+    "reward": -39.479947011061824,
+    "metrics": {
+      "smape": 39.479947011061824,
+      "mae": 39.46085437890656,
+      "rmse": 120.34380059145032,
+      "mase": 0.3621935106498478
+    },
+    "duplicate_valid_behavior": false,
+    "candidate_path": "/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/results/covid19/uk_14days/uk_no_ttt_7b_100/job_5989921/attempt_0060/candidate.py"
+  },
+  "finished_at_utc": "2026-08-12T05:20:27.611304+00:00"
+}

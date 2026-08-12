@@ -1,0 +1,71 @@
+{
+  "runner": "qwen_only_baseline",
+  "dataset": "uk",
+  "forecast_horizon": 14,
+  "source": {
+    "attempt": 60
+  },
+  "reward": -39.479947011061824,
+  "selection_reward": -39.479947011061824,
+  "adjusted_reward": null,
+  "base_reward": -39.479947011061824,
+  "flat_forecast_penalty": 0.0,
+  "flat_penalty_per_series": 5.0,
+  "flat_series_count": 0,
+  "flat_series_indices": [],
+  "flat_series_names": [],
+  "flat_forecast_analysis": {
+    "recent_window": 28,
+    "flat_series_count": 0,
+    "flat_series_indices": [],
+    "historically_variable": [
+      true,
+      false,
+      true,
+      true
+    ],
+    "recent_mean_abs": [
+      576.75,
+      0.5357142857142857,
+      10.642857142857142,
+      34.07142857142857
+    ],
+    "recent_std": [
+      110.16339325876683,
+      1.0850326807830935,
+      5.850606108492922,
+      29.80882967395084
+    ],
+    "recent_nonzero_fraction": [
+      1.0,
+      0.2857142857142857,
+      1.0,
+      1.0
+    ],
+    "forecast_std": [
+      103.35988322016192,
+      0.0,
+      5.932149923282518,
+      6.171714948870005
+    ],
+    "flat_threshold": [
+      11.016339325876684,
+      0.10850326807830935,
+      0.5850606108492923,
+      2.9808829673950843
+    ]
+  },
+  "metrics": {
+    "smape": 39.479947011061824,
+    "mae": 39.46085437890656,
+    "rmse": 120.34380059145032,
+    "mase": 0.3621935106498478
+  },
+  "files": {
+    "candidate": "best_generated_candidate.py",
+    "forecast_vs_actual": "best_forecast_vs_actual.csv",
+    "series_metrics": "best_series_metrics.csv",
+    "predictions_npy": "best_predictions.npy",
+    "actual_npy": "actual_test_values.npy"
+  }
+}

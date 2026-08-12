@@ -1,0 +1,85 @@
+{
+  "runner": "local_ttt",
+  "dataset": "uk",
+  "forecast_horizon": 14,
+  "source": {
+    "step": 9,
+    "parent_number": 1,
+    "rollout_number": 9
+  },
+  "reward": -61.95121468122598,
+  "selection_reward": -61.95121468122598,
+  "adjusted_reward": -61.95121468122598,
+  "base_reward": -46.95121468122598,
+  "flat_forecast_penalty": 15.0,
+  "flat_penalty_per_series": 5.0,
+  "flat_series_count": 3,
+  "flat_series_indices": [
+    0,
+    2,
+    3
+  ],
+  "flat_series_names": [
+    "England",
+    "Scotland",
+    "Wales"
+  ],
+  "flat_forecast_analysis": {
+    "recent_window": 28,
+    "flat_series_count": 3,
+    "flat_series_indices": [
+      0,
+      2,
+      3
+    ],
+    "historically_variable": [
+      true,
+      false,
+      true,
+      true
+    ],
+    "recent_mean_abs": [
+      576.75,
+      0.5357142857142857,
+      10.642857142857142,
+      34.07142857142857
+    ],
+    "recent_std": [
+      110.16339325876683,
+      1.0850326807830935,
+      5.850606108492922,
+      29.80882967395084
+    ],
+    "recent_nonzero_fraction": [
+      1.0,
+      0.2857142857142857,
+      1.0,
+      1.0
+    ],
+    "forecast_std": [
+      0.0,
+      0.0,
+      1.7763568394002505e-15,
+      3.552713678800501e-15
+    ],
+    "flat_threshold": [
+      11.016339325876684,
+      0.10850326807830935,
+      0.5850606108492923,
+      2.9808829673950843
+    ]
+  },
+  "metrics": {
+    "smape": 46.95121468122598,
+    "mae": 53.85969387755102,
+    "rmse": 122.35664248083826,
+    "mase": 0.458385714801602
+  },
+  "files": {
+    "candidate": "best_generated_candidate.py",
+    "forecast_vs_actual": "best_forecast_vs_actual.csv",
+    "series_metrics": "best_series_metrics.csv",
+    "predictions_npy": "best_predictions.npy",
+    "actual_npy": "actual_test_values.npy"
+  }
+}
