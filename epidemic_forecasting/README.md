@@ -139,10 +139,7 @@ Forecast visualisations will be added here after the dengue experiments are comp
 
 ## Dengue Results
 
-Two Dengue datasets were tested with an 8-week forecasting horizon:
-
-- **Colombia** (larger multivariate weekly dataset)
-- **Panama** (smaller multivariate weekly dataset)
+Two Dengue datasets were evaluated using an 8-week forecasting horizon: Colombia and Panama.
 
 ### Summary Table
 
@@ -150,11 +147,29 @@ Two Dengue datasets were tested with an 8-week forecasting horizon:
 |---|---|---:|---:|---:|
 | Colombia | No-TTT | 35.30 | 36 / 100 | 23 |
 | Colombia | TTT | 30.31 | 62 / 100 | 14 |
+| Colombia | TimesFM | **30.03** | N/A | N/A |
 | Panama | No-TTT | 60.63 | 56 / 100 | 30 |
-| Panama | TTT | 49.98 | 72 / 100 | 13 |
+| Panama | TTT | **49.98** | 72 / 100 | 13 |
+| Panama | TimesFM | 70.82 | N/A | N/A |
 
-For both Dengue datasets, **TTT achieved a better best SMAPE than No-TTT**.  
-TTT also produced **more valid candidates**, although it showed **more duplicate behaviour** and fewer distinct valid solutions.
+TTT achieved a lower best SMAPE than No-TTT on both Dengue datasets and also produced more valid candidates.
+
+For Colombia, the reproduced TimesFM baseline achieved the lowest SMAPE overall (30.03), closely followed by TTT (30.31). For Panama, TTT achieved the lowest SMAPE (49.98), outperforming both No-TTT (60.63) and TimesFM (70.82).
+
+### EpiCastBench TimesFM Baseline
+
+TimesFM was reproduced locally using the EpiCastBench implementation with the same 8-week forecasting horizon.
+
+| Dataset | Reproduced TimesFM SMAPE |
+|---|---:|
+| Colombia | 30.031 |
+| Panama | 70.822 |
+
+The reproduced values match the published EpiCastBench results.
+
+Reproduction scripts and saved predictions are stored in:
+
+`epidemic_forecasting/baselines/timesfm/`
 
 ### Forecast Comparison Figures
 
