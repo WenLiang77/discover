@@ -1,0 +1,25 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    for i in range(train_values.shape[1]):
+        try:
+            # Fit a SARIMAX model to each region's time series
+            model = SARIMAX(train_values[:, i], order=(1, 1, 0), seasonal_order=(1, 1, 0, 4))
+            results = model.fit(disp=False)
+            
+            # Forecast the next 'horizon' steps
+            forecast[:, i] = results.get_forecast(steps=horizon).predicted_mean
+            
+            # Ensure forecasts are non-negative
+            forecast[:, i] = np.maximum(forecast[:, i], 0)
+        except Exception as e:
+            # If fitting fails, fill the forecast with the most recent observed value
+            forecast[:, i] = np.full(horizon, train_values[-1, i])
+    
+    return forecast
+```
+
+This implementation uses a SARIMAX (Seasonal AutoRegressive Integrated Moving Average with eXogenous factors) model to forecast the dengue case counts for each region. The model accounts for both temporal trends and seasonal variations, which are common characteristics in dengue incidence data. If the model fitting fails for any reason, the forecast for that region is filled with the most recent observed value, ensuring that the output remains non-negative and has the required shape.

@@ -1,0 +1,21 @@
+{
+  "attempt": 84,
+  "seed": 125,
+  "elapsed_seconds": 9.237967651046347,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "ValueError: could not broadcast input array from shape (808,) into shape (8,)",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_colombia",
+      "stage": "execution",
+      "runtime_seconds": 0.8650013660080731,
+      "traceback": "Traceback (most recent call last):\n  File \"<generated_forecaster>\", line 8, in dengue_forecast\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py\", line 328, in __init__\n    self._spec = SARIMAXSpecification(\n                 ^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/arima/specification.py\", line 363, in __init__\n    raise ValueError('Invalid model: autoregressive lag(s) %s are'\nValueError: Invalid model: autoregressive lag(s) {np.int64(4)} are in both the seasonal and non-seasonal autoregressive components.\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/dengue/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 14, in dengue_forecast\nValueError: could not broadcast input array from shape (808,) into shape (8,)\n",
+      "timed_out": false
+    }
+  }
+}

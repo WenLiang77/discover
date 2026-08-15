@@ -1,0 +1,47 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+from statsmodels.tsa.arima.model import ARIMA
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    num_regions = train_values.shape[1]
+    forecasted_values = np.zeros((horizon, num_regions))
+    
+    for region in range(num_regions):
+        try:
+            # Try fitting a SARIMAX model
+            model = SARIMAX(train_values[:, region], order=(2, 1, 0), seasonal_order=(1, 1, 1, 52))
+            model_fit = model.fit(disp=False)
+            forecast = model_fit.forecast(steps=horizon)
+            
+            # Ensure the forecast is non-negative
+            forecasted_values[:, region] = np.maximum(forecast, 0)
+        except Exception as _:
+            try:
+                # If SARIMAX fails, try fitting an Exponential Smoothing model
+                model = ExponentialSmoothing(train_values[:, region], trend=None, seasonal='additive', seasonal_periods=52)
+                model_fit = model.fit(disp=False)
+                forecast = model_fit.forecast(steps=horizon)
+                
+                # Ensure the forecast is non-negative
+                forecasted_values[:, region] = np.maximum(forecast, 0)
+            except Exception as _:
+                try:
+                    # If Exponential Smoothing fails, try fitting an ARIMA model
+                    model = ARIMA(train_values[:, region], order=(2, 1, 0))
+                    model_fit = model.fit(disp=False)
+                    forecast = model_fit.forecast(steps=horizon)
+                    
+                    # Ensure the forecast is non-negative
+                    forecasted_values[:, region] = np.maximum(forecast, 0)
+                except Exception as _:
+                    # If all models fail, use a simple rolling average
+                    rolling_mean = np.convolve(train_values[:, region], np.ones(horizon) / horizon, mode='valid')
+                    padded_rolling_mean = np.pad(rolling_mean, (0, horizon - len(rolling_mean)), mode='constant', constant_values=np.nan)
+                    forecasted_values[:, region] = np.maximum(padded_rolling_mean, 0)
+    
+    return forecasted_values
+```
+
+This code attempts to fit a SARIMAX model to each region's data, followed by Exponential Smoothing, and then ARIMA if the previous models fail. If all these models fail, it falls back to a simple rolling average. This approach ensures that the forecast is non-negative and attempts to capture temporal variations in the data.

@@ -1,0 +1,21 @@
+{
+  "attempt": 36,
+  "seed": 77,
+  "elapsed_seconds": 8.645456507976633,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "TypeError: dengue_forecast() got an unexpected keyword argument 'budget_s'",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_colombia",
+      "stage": "execution",
+      "runtime_seconds": 1.2654071419965476,
+      "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/dengue/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\nTypeError: dengue_forecast() got an unexpected keyword argument 'budget_s'\n",
+      "timed_out": false
+    }
+  }
+}

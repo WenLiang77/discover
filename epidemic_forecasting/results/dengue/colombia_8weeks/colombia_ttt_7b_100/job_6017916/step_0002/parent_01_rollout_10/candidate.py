@@ -1,0 +1,40 @@
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+from statsmodels.tsa.stattools import adfuller
+from statsmodels.tsa.seasonal import seasonal_decompose
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.linear_model import LinearRegression
+from sklearn.multioutput import MultiOutputRegressor
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    n_regions = train_values.shape[1]
+    forecast = np.zeros((horizon, n_regions))
+    for i in range(n_regions):
+        region_data = train_values[:, i]
+        result = adfuller(region_data)
+        if result[1] > 0.05:
+            region_data = np.diff(region_data, prepend=region_data[0])
+        decomposition = seasonal_decompose(region_data, period=4)
+        trend = decomposition.trend
+        seasonal = decomposition.seasonal
+        scaler = MinMaxScaler()
+        scaled_data = scaler.fit_transform(region_data.reshape(-1, 1))
+        X = []
+        y = []
+        for j in range(1, len(scaled_data)):
+            X.append(scaled_data[j - 1])
+            y.append(scaled_data[j])
+        X = np.array(X).reshape(-1, 1)
+        y = np.array(y)
+        model = LinearRegression()
+        model.fit(X, y)
+        forecast_steps = []
+        last_value = region_data[-1]
+        for _ in range(horizon):
+            forecast_step = model.predict([[last_value]])
+            forecast_steps.append(forecast_step[0])
+            last_value = forecast_step[0]
+        forecast[i] = scaler.inverse_transform(np.array(forecast_steps).reshape(-1, 1)).flatten()
+        forecast[i] = np.maximum(forecast[i], 0)
+    return forecast

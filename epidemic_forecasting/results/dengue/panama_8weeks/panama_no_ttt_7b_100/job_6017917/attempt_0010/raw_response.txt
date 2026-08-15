@@ -1,0 +1,27 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    n_regions = train_values.shape[1]
+    forecast = np.zeros((horizon, n_regions))
+    
+    for i in range(n_regions):
+        try:
+            # Fit a SARIMAX model to the historical data for each region
+            model = SARIMAX(train_values[:, i], order=(1, 1, 1), seasonal_order=(1, 1, 1, 52))
+            results = model.fit(disp=False)
+            
+            # Generate forecasts for the specified horizon
+            forecast[:, i] = results.get_forecast(steps=horizon).predicted_mean
+        except Exception as e:
+            # If fitting fails, use a simple exponential smoothing as a fallback
+            alpha = 0.1
+            smoothed_series = np.convolve(train_values[:, i], [alpha] * 52, mode='valid')
+            smoothed_series = np.pad(smoothed_series, (0, horizon - len(smoothed_series)), 'edge')
+            forecast[:, i] = smoothed_series
+    
+    return np.clip(forecast, 0, None)
+```
+
+This implementation fits a SARIMAX model to each region's historical data to capture temporal evolution, including trends, seasonality, and other patterns. If fitting fails due to issues like insufficient data or model instability, it falls back to simple exponential smoothing. This ensures that the forecast remains non-negative and has the correct shape.

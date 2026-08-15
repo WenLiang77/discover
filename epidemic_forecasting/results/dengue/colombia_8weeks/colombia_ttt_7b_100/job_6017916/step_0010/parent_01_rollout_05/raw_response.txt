@@ -1,0 +1,42 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from sklearn.preprocessing import MinMaxScaler
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    scaler = MinMaxScaler(feature_range=(0, 1))
+    
+    for i in range(train_values.shape[1]):
+        try:
+            # Scale the training data
+            scaled_train = scaler.fit_transform(train_values[:, i].reshape(-1, 1))
+            
+            # Fit the SARIMAX model
+            model = SARIMAX(scaled_train, order=(1, 1, 0), seasonal_order=(1, 1, 0, 4))
+            results = model.fit(disp=False)
+            
+            # Generate the forecast
+            scaled_forecast = results.get_forecast(steps=horizon).predicted_mean
+            
+            # Inverse transform the forecast
+            forecast[:, i] = scaler.inverse_transform(scaled_forecast.reshape(-1, 1)).flatten()
+            
+            # Ensure the forecast is non-negative
+            forecast[:, i] = np.maximum(forecast[:, i], 0)
+        except Exception as e:
+            # If fitting fails, use a simple linear interpolation
+            forecast[:, i] = np.interp(np.linspace(0, 1, horizon), np.linspace(0, 1, len(train_values)), train_values[:, i])
+    
+    return forecast
+```
+
+### Explanation:
+1. **Scaling**: The data is scaled using `MinMaxScaler` to bring the values between 0 and 1. This helps in stabilizing the variance and making the optimization process easier.
+2. **Model Fitting**: A `SARIMAX` model is fit to each region's data. The model parameters are set to `(1, 1, 0)` for ARIMA part and `(1, 1, 0, 4)` for the seasonal part, which is suitable for weekly data with potential seasonal patterns.
+3. **Forecasting**: The model generates forecasts for the specified horizon.
+4. **Inverse Transformation**: The forecasted values are inverse transformed back to their original scale.
+5. **Non-Negativity Constraint**: The forecast values are clipped to ensure they are non-negative.
+6. **Fallback Mechanism**: If the model fitting fails due to exceptions (e.g., singular matrix issues), a simple linear interpolation is used to provide a basic forecast.
+
+This approach ensures that the forecast respects temporal dynamics and handles cases where model fitting might fail gracefully.

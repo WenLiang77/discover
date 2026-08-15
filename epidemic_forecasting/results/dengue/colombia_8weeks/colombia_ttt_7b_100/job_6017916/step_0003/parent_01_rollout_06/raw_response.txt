@@ -1,0 +1,49 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.tsa.arima.model import ARIMA
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    num_regions = train_values.shape[1]
+    forecasted_values = np.zeros((horizon, num_regions), dtype=float)
+
+    for region in range(num_regions):
+        region_data = train_values[:, region]
+
+        # Check if the series is stationary and determine the order of differencing
+        diff_order = 0
+        if np.diff(region_data).var() > 0.01 * region_data.var():
+            diff_order = 1
+
+        try:
+            # Fit an ARIMA model with seasonal components
+            model = SARIMAX(region_data, order=(1, diff_order, 1), seasonal_order=(1, 0, 1, 52)).fit(disp=False)
+        except Exception as e:
+            # If fitting fails, use a simple exponential smoothing model
+            model = ExponentialSmoothing(region_data, trend='add', seasonal='add', seasonal_periods=52).fit(disp=False)
+
+        forecasted_region_data = model.get_forecast(steps=horizon).predicted_mean
+        forecasted_values[:, region] = forecasted_region_data.clip(0)  # Ensure non-negative forecasts
+
+    return forecasted_values
+```
+
+### Explanation:
+1. **Initialization**: 
+   - The function initializes an array `forecasted_values` to store the forecasted values for each region.
+
+2. **Loop through each region**:
+   - For each region, it extracts the historical data.
+
+3. **Determine differencing order**:
+   - Checks if the series is stationary by comparing the variance of the differences with the variance of the original series. If the difference is significant, it sets the differencing order to 1.
+
+4. **Model fitting**:
+   - Attempts to fit a `SARIMAX` model with specified orders (ARIMA part: (1, diff_order, 1), seasonal part: (1, 0, 1, 52)).
+   - If fitting fails, it falls back to using an `ExponentialSmoothing` model.
+
+5. **Forecasting**:
+   - Uses the fitted model to forecast the next `horizon` steps.
+   - Clips the forecasted values to ensure they are non-negative.
+
+This approach ensures that the forecast respects temporal dynamics and handles potential issues with fitting complex models by providing a fallback option.

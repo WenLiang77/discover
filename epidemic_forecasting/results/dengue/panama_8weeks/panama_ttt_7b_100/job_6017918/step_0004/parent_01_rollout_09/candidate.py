@@ -1,0 +1,28 @@
+import numpy as np
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.pipeline import make_pipeline
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    for i in range(train_values.shape[1]):
+        try:
+            arima_model = SARIMAX(train_values[:, i], order=(1, 1, 1), seasonal_order=(1, 1, 1, 4))
+            arima_results = arima_model.fit(disp=False)
+            arima_forecast = arima_results.get_forecast(steps=horizon).predicted_mean
+            es_model = ExponentialSmoothing(train_values[:, i], trend='add', seasonal='add', seasonal_periods=4)
+            es_results = es_model.fit()
+            es_forecast = es_results.forecast(horizon)
+            combined_data = np.column_stack((arima_forecast, es_forecast))
+            combined_model = LinearRegression()
+            combined_model.fit(arima_forecast.reshape(-1, 1), es_forecast)
+            combined_forecast = combined_model.predict(arima_forecast.reshape(-1, 1))
+            forecast[:, i] = combined_forecast
+        except Exception as e:
+            moving_avg = np.convolve(train_values[:, i], np.ones(horizon) / horizon, mode='valid')
+            padded_avg = np.pad(moving_avg, (0, horizon - len(moving_avg)), mode='edge')
+            forecast[:, i] = padded_avg
+    forecast = np.maximum(forecast, 0)
+    return forecast

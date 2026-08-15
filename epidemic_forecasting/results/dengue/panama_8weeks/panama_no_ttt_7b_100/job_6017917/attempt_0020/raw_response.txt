@@ -1,0 +1,43 @@
+```python
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    # Initialize the scaler and the forecasts array
+    n_regions = train_values.shape[1]
+    forecasts = np.zeros((horizon, n_regions))
+    
+    # Fit and predict for each region
+    for i in range(n_regions):
+        region_data = train_values[:, i]
+        
+        # Check if the region has meaningful temporal variation
+        if len(region_data) > 0:
+            try:
+                # Scale the data
+                scaler = StandardScaler()
+                scaled_data = scaler.fit_transform(region_data.reshape(-1, 1))
+                
+                # Fit a SARIMA model
+                model = SARIMAX(scaled_data.flatten(), order=(1, 1, 1), seasonal_order=(1, 1, 1, 52))
+                results = model.fit(disp=False)
+                
+                # Generate forecasts for the horizon
+                forecast_scaled = results.forecast(steps=horizon).reshape(1, -1)
+                forecast_unscaled = scaler.inverse_transform(forecast_scaled)
+                
+                # Ensure non-negative forecasts
+                forecasts[:, i] = np.maximum(forecast_unscaled, 0)
+            except Exception as e:
+                # Fallback to a simple moving average if fitting fails
+                ma_value = np.mean(region_data[-10:])
+                forecasts[:, i] = np.full(horizon, max(ma_value, 0))
+        else:
+            # If there's no data, return zeros
+            forecasts[:, i] = np.zeros(horizon)
+    
+    return forecasts
+```
+
+This forecasting algorithm uses the Seasonal AutoRegressive Integrated Moving Average with eXogenous factors (SARIMAX) model to fit each region's dengue incidence data. It scales the data before fitting the model to handle potential issues with different scales between regions. After fitting, it generates forecasts for the specified horizon and ensures that the forecasts are non-negative. If fitting the SARIMAX model fails for any reason (e.g., insufficient data), it falls back to a simple moving average to provide at least some predictions. This approach aims to capture temporal variations while handling potential issues gracefully.

@@ -1,0 +1,22 @@
+```python
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.preprocessing import MinMaxScaler
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    scaler = MinMaxScaler(feature_range=(0, 1))
+    for i in range(train_values.shape[1]):
+        try:
+            scaled_train = scaler.fit_transform(train_values[:, i].reshape(-1, 1))
+            model = ARIMA(scaled_train.flatten(), order=(1, 1, 0))
+            results = model.fit()
+            scaled_forecast = results.forecast(steps=horizon)
+            forecast[:, i] = scaler.inverse_transform(scaled_forecast.reshape(-1, 1)).flatten()
+            forecast[:, i] = np.maximum(forecast[:, i], 0)
+        except Exception as e:
+            forecast[:, i] = np.full(horizon, train_values[-1, i])
+    return forecast
+```
+
+This updated implementation uses an ARIMA model instead of SARIMAX, which simplifies the model while still capturing temporal dynamics. The MinMaxScaler is used to normalize the data before fitting the model and inverse transform the forecasts back to the original scale. This ensures that the forecast remains non-negative and within the expected range. The implementation also handles exceptions gracefully by falling back to a constant forecast based on the most recent observation.

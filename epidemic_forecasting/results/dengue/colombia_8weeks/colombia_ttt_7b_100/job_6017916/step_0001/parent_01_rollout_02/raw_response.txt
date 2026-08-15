@@ -1,0 +1,25 @@
+```python
+import numpy as np
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    num_regions = train_values.shape[1]
+    forecasted_values = np.zeros((horizon, num_regions))
+    
+    for region in range(num_regions):
+        region_data = train_values[:, region]
+        
+        # Fit an Exponential Smoothing model to the region's data
+        try:
+            model = ExponentialSmoothing(region_data, trend='add', seasonal='add', seasonal_periods=52).fit()
+        except Exception as e:
+            # If fitting fails, use a simple average as a fallback
+            forecasted_values[:, region] = np.mean(region_data)
+            continue
+        
+        # Generate forecasts for the specified horizon
+        forecasted_region_data = model.forecast(steps=horizon)
+        forecasted_values[:, region] = forecasted_region_data
+    
+    return forecasted_values
+```

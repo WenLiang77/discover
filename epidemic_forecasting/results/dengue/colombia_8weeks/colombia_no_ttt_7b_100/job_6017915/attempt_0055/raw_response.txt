@@ -1,0 +1,27 @@
+```python
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    n_regions = train_values.shape[1]
+    forecast = np.zeros((horizon, n_regions))
+    
+    for i in range(n_regions):
+        # Fit an ARIMA model to each region's time series
+        try:
+            model = ARIMA(train_values[:, i], order=(5,1,0))  # Example parameters; adjust as needed
+            model_fit = model.fit(disp=False)
+            
+            # Generate forecasts for the given horizon
+            forecast[:, i] = model_fit.forecast(steps=horizon)
+        except Exception as e:
+            # If fitting fails, return zeros for that region
+            print(f"Error fitting ARIMA model for region {i}: {e}")
+    
+    # Ensure all forecasts are non-negative
+    forecast = np.maximum(forecast, 0)
+    
+    return forecast
+```
+
+This implementation fits an ARIMA model to each region's dengue case-count time series and generates forecasts for the specified horizon. It handles potential fitting failures by returning zeros for those regions. The forecasts are ensured to be non-negative before being returned. Adjust the ARIMA parameters as needed based on the characteristics of your specific data.

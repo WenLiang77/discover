@@ -1,0 +1,55 @@
+```python
+import numpy as np
+from statsmodels.tsa.seasonal import seasonal_decompose
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    
+    for i in range(train_values.shape[1]):
+        try:
+            # Decompose the time series into trend, seasonal, and residual components
+            decomposition = seasonal_decompose(train_values[:, i], model='additive', period=4)
+            
+            # Fit SARIMAX model to the decomposed trend component
+            sarimax_model_trend = SARIMAX(decomposition.trend, order=(1, 1, 0), seasonal_order=(1, 1, 0, 4))
+            sarimax_results_trend = sarimax_model_trend.fit(disp=False)
+            forecast_trend = sarimax_results_trend.forecast(steps=horizon)
+            
+            # Fit SARIMAX model to the decomposed seasonal component
+            sarimax_model_seasonal = SARIMAX(decomposition.seasonal, order=(1, 1, 0), seasonal_order=(1, 1, 0, 4))
+            sarimax_results_seasonal = sarimax_model_seasonal.fit(disp=False)
+            forecast_seasonal = sarimax_results_seasonal.forecast(steps=horizon)
+            
+            # Combine the forecasts
+            forecast[i] = forecast_trend + forecast_seasonal
+            
+            # Apply exponential smoothing to stabilize the forecast
+            smoothing_level = 0.2
+            es_model = ExponentialSmoothing(forecast[i], trend=None, seasonal=None, initialization_method="estimated")
+            es_fit = es_model.fit(smoothing_level=smoothing_level)
+            forecast[i] = es_fit.forecast(steps=horizon)
+        
+        except Exception as e:
+            # Fallback to simple exponential smoothing if model fitting fails
+            smoothing_level = 0.2
+            es_model = ExponentialSmoothing(train_values[:, i], trend=None, seasonal=None, initialization_method="estimated")
+            es_fit = es_model.fit(smoothing_level=smoothing_level)
+            forecast[i] = es_fit.forecast(steps=horizon)
+    
+    forecast = np.maximum(forecast, 0)
+    return forecast
+```
+
+### Explanation:
+
+1. **Seasonal Decomposition**: The time series is decomposed into trend, seasonal, and residual components using `seasonal_decompose`.
+2. **SARIMAX Models**:
+   - A SARIMAX model is fit to the trend component to capture temporal dynamics.
+   - Another SARIMAX model is fit to the seasonal component to account for periodic patterns.
+3. **Combining Forecasts**: The forecasts from the trend and seasonal models are combined.
+4. **Exponential Smoothing**: A simple exponential smoothing model is applied to stabilize the combined forecast and reduce noise.
+5. **Fallback Mechanism**: If model fitting fails, a simple exponential smoothing model is used as a fallback.
+
+This approach ensures that the forecast incorporates both temporal and seasonal variations while being robust to potential fitting issues.

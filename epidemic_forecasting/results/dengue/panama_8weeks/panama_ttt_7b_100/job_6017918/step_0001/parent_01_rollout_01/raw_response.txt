@@ -1,0 +1,54 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from sklearn.preprocessing import StandardScaler
+from sklearn.impute import SimpleImputer
+from sklearn.pipeline import make_pipeline
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    # Ensure train_values is a NumPy array
+    train_values = np.array(train_values)
+    
+    # Get the number of regions
+    N = train_values.shape[1]
+    
+    # Initialize an empty list to store forecasts
+    forecasts = []
+    
+    # Loop through each region
+    for i in range(N):
+        # Extract the time series for the current region
+        region_series = train_values[:, i]
+        
+        # Handle missing values by imputing them
+        imputer = SimpleImputer(strategy='mean')
+        region_series_imputed = imputer.fit_transform(region_series.reshape(-1, 1)).flatten()
+        
+        # Create a pipeline for scaling and modeling
+        pipeline = make_pipeline(StandardScaler(), SARIMAX(order=(1, 1, 1), seasonal_order=(1, 1, 1, 52)))
+        
+        try:
+            # Fit the model
+            model = pipeline.fit(region_series_imputed)
+            
+            # Make predictions
+            forecast = model.get_forecast(steps=horizon).predicted_mean
+            
+            # Ensure the forecast is non-negative
+            forecast = np.maximum(forecast, 0)
+        except Exception as e:
+            # If fitting fails, use a simple moving average as a fallback
+            forecast = np.convolve(region_series_imputed, np.ones(horizon)/horizon, mode='valid')
+            forecast = np.concatenate([np.zeros(horizon - len(forecast)), forecast])
+            forecast = np.maximum(forecast, 0)
+        
+        # Append the forecast to the list
+        forecasts.append(forecast)
+    
+    # Convert the list of forecasts to a NumPy array
+    forecasts_array = np.array(forecasts).reshape(horizon, N)
+    
+    return forecasts_array
+```
+
+This implementation uses the SARIMAX model from `statsmodels` to fit a time-series model to each region's dengue case count data. It handles missing values using a simple imputation strategy and ensures that the forecasts are non-negative. If the model fitting fails, it falls back to a simple moving average. This approach should provide a reasonable forecast while adhering to the requirements specified in the problem statement.

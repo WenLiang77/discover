@@ -1,0 +1,21 @@
+{
+  "attempt": 9,
+  "seed": 50,
+  "elapsed_seconds": 13.145391443977132,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "TypeError: ARIMA.fit() got an unexpected keyword argument 'disp'",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_panama",
+      "stage": "execution",
+      "runtime_seconds": 1.3979759750072844,
+      "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/dengue/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 13, in dengue_forecast\nTypeError: ARIMA.fit() got an unexpected keyword argument 'disp'\n",
+      "timed_out": false
+    }
+  }
+}

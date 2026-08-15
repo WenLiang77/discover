@@ -1,0 +1,47 @@
+```python
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.preprocessing import MinMaxScaler
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    scaler = MinMaxScaler(feature_range=(-1, 1))
+    
+    for i in range(train_values.shape[1]):
+        try:
+            scaled_train = scaler.fit_transform(train_values[:, i].reshape(-1, 1))
+            model = ARIMA(scaled_train, order=(5,1,0))  # Adjust order based on ACF/PACF analysis
+            results = model.fit()
+            scaled_forecast = results.forecast(steps=horizon)
+            forecast[:, i] = scaler.inverse_transform(scaled_forecast.reshape(-1, 1)).flatten()
+            forecast[:, i] = np.maximum(forecast[:, i], 0)
+        except Exception as e:
+            forecast[:, i] = np.full(horizon, train_values[-1, i])
+    
+    return forecast
+```
+
+### Explanation of the Implementation:
+
+1. **Import Statements**:
+   - We import necessary libraries including `numpy` for array operations, `ARIMA` from `statsmodels.tsa.arima.model` for time-series modeling, and `MinMaxScaler` from `sklearn.preprocessing` for scaling the data.
+
+2. **Function Definition**:
+   - The function `dengue_forecast` takes three parameters: `train_values`, `horizon`, and `**kwargs`. `train_values` is the historical dengue incidence data, `horizon` is the number of future time steps to predict, and `**kwargs` can include additional arguments like `budget_s`, `random_state`, etc.
+
+3. **Initialization**:
+   - `forecast`: An array of zeros with shape `(horizon, N)` to store the predicted values.
+   - `scaler`: A `MinMaxScaler` object initialized to scale the data between -1 and 1.
+
+4. **Loop Through Regions**:
+   - For each region (column in `train_values`):
+     - **Scaling**: The data for the current region is scaled using `MinMaxScaler`.
+     - **Model Fitting**: An ARIMA model is fitted to the scaled training data. The order `(5,1,0)` is chosen arbitrarily; it can be adjusted based on the Autocorrelation Function (ACF) and Partial Autocorrelation Function (PACF) plots of the data.
+     - **Forecasting**: The model forecasts the next `horizon` steps.
+     - **Inverse Scaling**: The forecasted values are inverse-transformed back to their original scale.
+     - **Non-Negative Constraints**: Ensure the forecasted values are non-negative by clipping them with `np.maximum`.
+
+5. **Exception Handling**:
+   - If there is any exception during the model fitting or forecasting process, a constant forecast equal to the last observed value for that region is used as a fallback.
+
+This approach ensures that the forecast is non-negative and adheres to the specified shape, while attempting to model temporal variations in the data using an ARIMA model.

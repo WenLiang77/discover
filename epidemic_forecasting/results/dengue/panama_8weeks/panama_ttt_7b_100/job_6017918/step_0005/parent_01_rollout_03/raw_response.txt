@@ -1,0 +1,50 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    for i in range(train_values.shape[1]):
+        try:
+            # Check for non-positive values and replace them with NaN
+            if np.any(train_values[:, i] <= 0):
+                train_values[:, i] = np.where(train_values[:, i] <= 0, np.nan, train_values[:, i])
+            
+            # Fit a SARIMAX model to the historical data
+            model = SARIMAX(train_values[:, i], order=(1, 1, 0), seasonal_order=(1, 1, 0, 4), enforce_stationarity=False, enforce_invertibility=False)
+            results = model.fit(disp=False)
+            
+            # Get the forecasted values for the specified horizon
+            forecast[:, i] = results.get_forecast(steps=horizon).predicted_mean
+            
+            # Ensure the forecast values are non-negative
+            forecast[:, i] = np.maximum(forecast[:, i], 0)
+        except Exception as e:
+            # If fitting fails, attempt a simpler approach
+            if np.all(np.isnan(train_values[:, i])):
+                # Interpolate missing values using regional means
+                regional_means = np.nanmean(train_values[:, train_values[:, i] > 0], axis=1)
+                forecast[:, i] = np.interp(range(horizon), [0, len(regional_means) - 1], regional_means)
+            else:
+                # Use linear regression to extrapolate missing values
+                scaler = StandardScaler()
+                X_train = np.arange(len(train_values)).reshape(-1, 1)
+                y_train = train_values[:, i].reshape(-1, 1)
+                scaler.fit(X_train)
+                X_train_scaled = scaler.transform(X_train)
+                y_train_scaled = scaler.transform(y_train)
+                lin_reg = LinearRegression()
+                lin_reg.fit(X_train_scaled, y_train_scaled)
+                
+                X_forecast = np.arange(len(train_values), len(train_values) + horizon).reshape(-1, 1)
+                X_forecast_scaled = scaler.transform(X_forecast)
+                forecast_scaled = lin_reg.predict(X_forecast_scaled)
+                forecast[:, i] = scaler.inverse_transform(forecast_scaled)
+            
+            # Ensure the forecast values are non-negative
+            forecast[:, i] = np.maximum(forecast[:, i], 0)
+    
+    return forecast
+```
+
+This implementation uses a SARIMAX model to fit the historical data and make forecasts. If fitting fails due to issues like non-positive values, it attempts to interpolate missing values using regional means or linear regression. The forecast is ensured to be non-negative. This approach ensures that the model can handle various types of time series data, including those with missing values and non-stationarity.

@@ -1,0 +1,157 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<03:24,  1.65it/s]Loading weights:   1%|▏         | 5/339 [00:00<00:40,  8.26it/s]Loading weights:   4%|▎         | 12/339 [00:00<00:16, 20.19it/s]Loading weights:   5%|▌         | 17/339 [00:01<00:15, 20.49it/s]Loading weights:   8%|▊         | 28/339 [00:01<00:08, 36.69it/s]Loading weights:  10%|█         | 34/339 [00:01<00:09, 33.70it/s]Loading weights:  12%|█▏        | 41/339 [00:01<00:08, 37.07it/s]Loading weights:  14%|█▍        | 47/339 [00:01<00:07, 41.04it/s]Loading weights:  16%|█▌        | 53/339 [00:01<00:08, 33.88it/s]Loading weights:  19%|█▉        | 64/339 [00:02<00:08, 34.35it/s]Loading weights:  22%|██▏       | 76/339 [00:02<00:05, 46.71it/s]Loading weights:  24%|██▍       | 82/339 [00:02<00:05, 43.19it/s]Loading weights:  26%|██▌       | 88/339 [00:02<00:05, 45.92it/s]Loading weights:  28%|██▊       | 94/339 [00:02<00:05, 41.45it/s]Loading weights:  29%|██▉       | 100/339 [00:02<00:05, 42.47it/s]Loading weights:  31%|███       | 105/339 [00:03<00:06, 35.91it/s]Loading weights:  33%|███▎      | 113/339 [00:03<00:05, 40.69it/s]Loading weights:  36%|███▋      | 123/339 [00:03<00:04, 52.68it/s]Loading weights:  38%|███▊      | 130/339 [00:03<00:05, 40.57it/s]Loading weights:  40%|████      | 136/339 [00:03<00:04, 43.24it/s]Loading weights:  42%|████▏     | 142/339 [00:04<00:05, 39.34it/s]Loading weights:  44%|████▍     | 149/339 [00:04<00:04, 38.95it/s]Loading weights:  46%|████▌     | 156/339 [00:04<00:04, 44.08it/s]Loading weights:  47%|████▋     | 161/339 [00:04<00:04, 40.62it/s]Loading weights:  49%|████▉     | 167/339 [00:04<00:03, 43.20it/s]Loading weights:  51%|█████     | 173/339 [00:04<00:03, 42.21it/s]Loading weights:  53%|█████▎    | 180/339 [00:04<00:03, 48.23it/s]Loading weights:  55%|█████▍    | 186/339 [00:05<00:04, 35.95it/s]Loading weights:  58%|█████▊    | 196/339 [00:05<00:03, 47.54it/s]Loading weights:  60%|█████▉    | 202/339 [00:05<00:03, 40.97it/s]Loading weights:  61%|██████▏   | 208/339 [00:05<00:02, 44.44it/s]Loading weights:  63%|██████▎   | 214/339 [00:05<00:03, 37.92it/s]Loading weights:  65%|██████▍   | 220/339 [00:05<00:02, 39.92it/s]Loading weights:  66%|██████▋   | 225/339 [00:06<00:03, 35.66it/s]Loading weights:  68%|██████▊   | 232/339 [00:06<00:02, 39.45it/s]Loading weights:  70%|██████▉   | 237/339 [00:06<00:03, 33.97it/s]Loading weights:  72%|███████▏  | 244/339 [00:06<00:03, 30.75it/s]Loading weights:  73%|███████▎  | 248/339 [00:06<00:02, 32.34it/s]Loading weights:  76%|███████▌  | 256/339 [00:06<00:02, 38.98it/s]Loading weights:  77%|███████▋  | 261/339 [00:07<00:02, 32.13it/s]Loading weights:  79%|███████▉  | 268/339 [00:07<00:02, 34.07it/s]Loading weights:  80%|████████  | 272/339 [00:07<00:02, 27.93it/s]Loading weights:  83%|████████▎ | 280/339 [00:07<00:01, 34.53it/s]Loading weights:  84%|████████▍ | 284/339 [00:07<00:01, 29.32it/s]Loading weights:  86%|████████▌ | 292/339 [00:08<00:01, 35.96it/s]Loading weights:  87%|████████▋ | 296/339 [00:08<00:01, 31.15it/s]Loading weights:  90%|████████▉ | 304/339 [00:08<00:01, 30.65it/s]Loading weights:  91%|█████████ | 308/339 [00:08<00:00, 32.05it/s]Loading weights:  93%|█████████▎| 316/339 [00:08<00:00, 37.97it/s]Loading weights:  95%|█████████▍| 321/339 [00:09<00:00, 31.53it/s]Loading weights:  97%|█████████▋| 328/339 [00:09<00:00, 30.57it/s]Loading weights:  98%|█████████▊| 332/339 [00:09<00:00, 31.57it/s]Loading weights: 100%|██████████| 339/339 [00:09<00:00, 36.11it/s]
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:1009: UserWarning: Non-invertible starting seasonal moving average Using zeros as starting parameters.
+  warn('Non-invertible starting seasonal moving average'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:997: UserWarning: Non-stationary starting seasonal autoregressive Using zeros as starting parameters.
+  warn('Non-stationary starting seasonal autoregressive'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/base/model.py:607: ConvergenceWarning: Maximum Likelihood optimization failed to converge. Check mle_retvals
+  warnings.warn("Maximum Likelihood optimization failed to "
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:1009: UserWarning: Non-invertible starting seasonal moving average Using zeros as starting parameters.
+  warn('Non-invertible starting seasonal moving average'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:997: UserWarning: Non-stationary starting seasonal autoregressive Using zeros as starting parameters.
+  warn('Non-stationary starting seasonal autoregressive'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/base/model.py:607: ConvergenceWarning: Maximum Likelihood optimization failed to converge. Check mle_retvals
+  warnings.warn("Maximum Likelihood optimization failed to "
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:1009: UserWarning: Non-invertible starting seasonal moving average Using zeros as starting parameters.
+  warn('Non-invertible starting seasonal moving average'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:997: UserWarning: Non-stationary starting seasonal autoregressive Using zeros as starting parameters.
+  warn('Non-stationary starting seasonal autoregressive'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:1009: UserWarning: Non-invertible starting seasonal moving average Using zeros as starting parameters.
+  warn('Non-invertible starting seasonal moving average'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:997: UserWarning: Non-stationary starting seasonal autoregressive Using zeros as starting parameters.
+  warn('Non-stationary starting seasonal autoregressive'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/base/model.py:607: ConvergenceWarning: Maximum Likelihood optimization failed to converge. Check mle_retvals
+  warnings.warn("Maximum Likelihood optimization failed to "
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:1009: UserWarning: Non-invertible starting seasonal moving average Using zeros as starting parameters.
+  warn('Non-invertible starting seasonal moving average'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:997: UserWarning: Non-stationary starting seasonal autoregressive Using zeros as starting parameters.
+  warn('Non-stationary starting seasonal autoregressive'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:1009: UserWarning: Non-invertible starting seasonal moving average Using zeros as starting parameters.
+  warn('Non-invertible starting seasonal moving average'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:1009: UserWarning: Non-invertible starting seasonal moving average Using zeros as starting parameters.
+  warn('Non-invertible starting seasonal moving average'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:1009: UserWarning: Non-invertible starting seasonal moving average Using zeros as starting parameters.
+  warn('Non-invertible starting seasonal moving average'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:997: UserWarning: Non-stationary starting seasonal autoregressive Using zeros as starting parameters.
+  warn('Non-stationary starting seasonal autoregressive'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:1009: UserWarning: Non-invertible starting seasonal moving average Using zeros as starting parameters.
+  warn('Non-invertible starting seasonal moving average'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:997: UserWarning: Non-stationary starting seasonal autoregressive Using zeros as starting parameters.
+  warn('Non-stationary starting seasonal autoregressive'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for seasonal ARMA. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'

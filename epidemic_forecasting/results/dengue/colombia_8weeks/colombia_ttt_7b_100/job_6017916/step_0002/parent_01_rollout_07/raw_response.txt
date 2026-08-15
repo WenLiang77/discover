@@ -1,0 +1,49 @@
+```python
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import RandomForestRegressor
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    
+    for i in range(train_values.shape[1]):
+        try:
+            # Fit ARIMA model
+            arima_model = ARIMA(train_values[:, i], order=(1, 1, 0))
+            arima_results = arima_model.fit()
+            
+            # Fit SARIMAX model
+            sarimax_model = SARIMAX(train_values[:, i], order=(1, 1, 0), seasonal_order=(1, 1, 0, 4))
+            sarimax_results = sarimax_model.fit()
+            
+            # Fit linear regression model
+            linreg_model = LinearRegression()
+            X = np.arange(len(train_values)).reshape(-1, 1)
+            linreg_model.fit(X, train_values[:, i])
+            
+            # Fit random forest model
+            rf_model = RandomForestRegressor(n_estimators=10, random_state=kwargs.get('random_state'))
+            rf_model.fit(X, train_values[:, i])
+            
+            # Combine forecasts from different models
+            forecasts = [
+                arima_results.forecast(steps=horizon),
+                sarimax_results.forecast(steps=horizon),
+                linreg_model.predict(np.arange(len(train_values), len(train_values) + horizon).reshape(-1, 1)),
+                rf_model.predict(np.arange(len(train_values), len(train_values) + horizon).reshape(-1, 1))
+            ]
+            
+            # Average the forecasts
+            combined_forecast = np.mean(forecasts, axis=0)
+            
+            # Ensure non-negative values
+            forecast[:, i] = np.maximum(combined_forecast, 0)
+        except Exception as e:
+            forecast[:, i] = train_values[-1, i]
+    
+    return forecast
+```
+
+This implementation combines forecasts from an ARIMA model, a SARIMAX model, a linear regression model, and a random forest regressor. Each model is trained on the historical data for each region, and their predictions are averaged to produce the final forecast. This approach helps capture various aspects of the time series data, including trends, seasonality, and potential nonlinear relationships. The forecast is then clamped to ensure non-negativity.

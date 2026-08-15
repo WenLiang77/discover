@@ -1,0 +1,43 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    """
+    Forecast dengue incidence using SARIMA model for each region.
+
+    Args:
+        train_values (np.ndarray): Training data with shape (T, N).
+        horizon (int): Number of future time steps to predict.
+        kwargs: Additional keyword arguments.
+
+    Returns:
+        np.ndarray: Forecasted values with shape (horizon, N).
+    """
+    n_regions = train_values.shape[1]
+    forecasts = []
+
+    for region in range(n_regions):
+        # Fit SARIMA model to the region's data
+        try:
+            model = SARIMAX(train_values[:, region], order=(2, 1, 0), seasonal_order=(1, 1, 1, 52))
+            results = model.fit(disp=False)
+        except Exception as e:
+            # If fitting fails, use a simple moving average as a fallback
+            rolling_mean = np.convolve(train_values[:, region], np.ones(horizon)/horizon, mode='valid')
+            forecast = np.full((horizon,), rolling_mean[-1])
+            forecasts.append(forecast)
+            continue
+        
+        # Forecast the next 'horizon' steps
+        forecast = results.forecast(steps=horizon)
+        
+        # Ensure non-negative forecasts
+        forecast = np.maximum(forecast, 0)
+        
+        forecasts.append(forecast)
+
+    return np.array(forecasts).reshape((horizon, n_regions))
+```
+
+This implementation uses the SARIMA model from `statsmodels` to forecast dengue incidence for each region. The model is fitted to the historical data for each region, and then used to predict the next `horizon` steps. If fitting the model fails, a simple moving average is used as a fallback. The forecasts are ensured to be non-negative. This approach ensures that the forecast models temporal evolution and handles cases where the historical series might be short, sparse, or non-stationary.

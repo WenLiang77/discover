@@ -1,0 +1,63 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    
+    for i in range(train_values.shape[1]):
+        try:
+            # Check for non-positive values and replace them with NaN
+            if np.any(train_values[:, i] <= 0):
+                train_values[:, i] = np.where(train_values[:, i] <= 0, np.nan, train_values[:, i])
+            
+            # Fit SARIMAX model
+            model = SARIMAX(train_values[:, i], order=(1, 1, 0), seasonal_order=(1, 1, 0, 4), enforce_stationarity=False, enforce_invertibility=False)
+            results = model.fit(disp=False)
+            
+            # Get forecasted values
+            forecast[:, i] = results.get_forecast(steps=horizon).predicted_mean
+            
+            # Ensure forecast is non-negative
+            forecast[:, i] = np.maximum(forecast[:, i], 0)
+        
+        except Exception as e:
+            # If model fitting fails, use a simple linear regression model
+            if np.all(np.isnan(train_values[:, i])):
+                # Interpolate using regional means
+                regional_means = np.nanmean(train_values[:, train_values[:, i] > 0], axis=1)
+                forecast[:, i] = np.interp(range(horizon), [0, len(regional_means) - 1], regional_means)
+            else:
+                # Fit a linear regression model
+                X_train = np.arange(len(train_values)).reshape(-1, 1)
+                y_train = train_values[:, i].reshape(-1, 1)
+                lin_reg = LinearRegression()
+                lin_reg.fit(X_train, y_train)
+                
+                # Generate forecast
+                X_forecast = np.arange(len(train_values), len(train_values) + horizon).reshape(-1, 1)
+                forecast[:, i] = lin_reg.predict(X_forecast)
+                
+                # Ensure forecast is non-negative
+                forecast[:, i] = np.maximum(forecast[:, i], 0)
+    
+    return forecast
+```
+
+### Explanation of the Code:
+1. **Input Handling**: The function takes `train_values`, which is a NumPy array of shape `(T, N)` representing historical dengue case counts over `T` weeks for `N` locations. The `horizon` parameter specifies the number of future weeks to predict.
+
+2. **Initialization**: An empty array `forecast` of shape `(horizon, N)` is initialized to store the predicted values.
+
+3. **Loop Through Regions**: The function iterates through each region (`i`) in the dataset.
+
+4. **Model Fitting**:
+   - For each region, it checks if there are any non-positive values and replaces them with NaN.
+   - It then attempts to fit a SARIMAX model to the data. SARIMAX is suitable for time series with seasonal components.
+   - If the model fitting is successful, it generates forecasts for the specified horizon and ensures the forecast values are non-negative.
+   - If the model fitting fails due to exceptions (e.g., stationarity issues), it falls back to a simpler linear regression model.
+   - If the training data for a region consists entirely of NaNs, it interpolates the forecast using the regional means of other regions.
+
+5. **Non-Negative Constraint**: The forecast values are clipped to ensure they are non-negative.
+
+This approach ensures that the forecast respects temporal dynamics and handles edge cases gracefully, providing a robust solution for dengue incidence forecasting.

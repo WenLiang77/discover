@@ -1,0 +1,1159 @@
+{
+  "step": 1,
+  "parents": [
+    {
+      "type": "SearchState",
+      "id": "a1abdb30-9e67-468f-8167-b79593066c7b",
+      "timestep": 0,
+      "code": "",
+      "value": null,
+      "metrics": {},
+      "observation": "No model-generated candidate exists yet.",
+      "metadata": {
+        "source": "generation_root",
+        "task_id": "dengue_panama_8weeks"
+      },
+      "behavior_signature": null,
+      "parent_values": [],
+      "parents": []
+    }
+  ],
+  "rollouts": [
+    {
+      "step": 1,
+      "parent_number": 1,
+      "parent_state_id": "a1abdb30-9e67-468f-8167-b79593066c7b",
+      "parent_reward": null,
+      "rollout_number": 1,
+      "global_rollout_index": 1,
+      "seed": 43,
+      "elapsed_seconds": 33.7551709190011,
+      "raw_reward": null,
+      "adjusted_reward": -250.0,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "TypeError: SARIMAX.__init__() missing 1 required positional argument: 'endog'",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "dengue_panama",
+          "stage": "execution",
+          "runtime_seconds": 6.81434161902871,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/dengue/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 15, in dengue_forecast\nTypeError: SARIMAX.__init__() missing 1 required positional argument: 'endog'\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "step": 1,
+      "parent_number": 1,
+      "parent_state_id": "a1abdb30-9e67-468f-8167-b79593066c7b",
+      "parent_reward": null,
+      "rollout_number": 2,
+      "global_rollout_index": 2,
+      "seed": 44,
+      "elapsed_seconds": 18.119446147989947,
+      "raw_reward": null,
+      "adjusted_reward": -250.0,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "Evaluation failed: Forecast contains negative values. Minimum prediction: -0.26048768920932774.",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "dengue_panama",
+          "stage": "prediction_validation_or_metrics",
+          "runtime_seconds": 7.883493759029079
+        }
+      }
+    },
+    {
+      "step": 1,
+      "parent_number": 1,
+      "parent_state_id": "a1abdb30-9e67-468f-8167-b79593066c7b",
+      "parent_reward": null,
+      "rollout_number": 3,
+      "global_rollout_index": 3,
+      "seed": 45,
+      "elapsed_seconds": 23.586599229020067,
+      "raw_reward": null,
+      "adjusted_reward": -250.0,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "ImportError: cannot import name 'ARIMA' from 'sklearn.linear_model' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/linear_model/__init__.py)",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "dengue_panama",
+          "stage": "execution",
+          "runtime_seconds": 5.828810263017658,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/dengue/evaluator.py\", line 380, in _candidate_worker\n    exec(compiled, namespace, namespace)\n  File \"<generated_forecaster>\", line 2, in <module>\nImportError: cannot import name 'ARIMA' from 'sklearn.linear_model' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/linear_model/__init__.py)\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "step": 1,
+      "parent_number": 1,
+      "parent_state_id": "a1abdb30-9e67-468f-8167-b79593066c7b",
+      "parent_reward": null,
+      "rollout_number": 4,
+      "global_rollout_index": 4,
+      "seed": 46,
+      "elapsed_seconds": 22.33574954996584,
+      "raw_reward": -105.61874280840212,
+      "adjusted_reward": -105.61874280840212,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": true,
+        "reward": -105.61874280840212,
+        "metrics": {
+          "smape": 65.61874280840212,
+          "mae": 11.34806523837366,
+          "rmse": 29.01469897313243,
+          "mase": 2.592140551624507
+        },
+        "error": null,
+        "behavior_signature": "4348c26a2049a08c792ead09754130e90fb05a0a83e839bfaa62b03dc375fe24",
+        "metadata": {
+          "dataset_id": "dengue_panama",
+          "forecast_horizon": 8,
+          "number_of_locations": 11,
+          "candidate_runtime_seconds": 0.11075224803062156,
+          "total_runtime_seconds": 5.791620352014434,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -65.61874280840212,
+          "flat_forecast_penalty": 40.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 8,
+          "flat_series_indices": [
+            0,
+            1,
+            2,
+            3,
+            5,
+            6,
+            7,
+            9
+          ],
+          "flat_series_names": [
+            "BOCAS DEL TORO",
+            "CHIRIQUI",
+            "COCLE",
+            "COLON",
+            "HERRERA",
+            "KUNA YALA",
+            "LOS SANTOS",
+            "PANAMA"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 8,
+            "flat_series_indices": [
+              0,
+              1,
+              2,
+              3,
+              5,
+              6,
+              7,
+              9
+            ],
+            "historically_variable": [
+              true,
+              true,
+              true,
+              true,
+              false,
+              true,
+              true,
+              true,
+              false,
+              true,
+              false
+            ],
+            "recent_mean_abs": [
+              23.857142857142858,
+              6.75,
+              3.357142857142857,
+              2.7857142857142856,
+              1.1071428571428572,
+              14.75,
+              2.0357142857142856,
+              3.5714285714285716,
+              0.32142857142857145,
+              196.85714285714286,
+              1.7857142857142858
+            ],
+            "recent_std": [
+              11.516182048734375,
+              3.225179950682708,
+              4.03745221744645,
+              3.0514299090419756,
+              1.263195655987671,
+              14.39897069734004,
+              3.5302988831091393,
+              3.5297568858873816,
+              0.7098073897982781,
+              157.15090888463007,
+              1.6335138037184673
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              1.0,
+              0.7142857142857143,
+              0.7857142857142857,
+              0.5714285714285714,
+              0.8214285714285714,
+              0.6071428571428571,
+              0.8214285714285714,
+              0.21428571428571427,
+              1.0,
+              0.75
+            ],
+            "forecast_std": [
+              0.1397747707556995,
+              0.038141743567050974,
+              0.16377526708631185,
+              0.14476125261808853,
+              0.030005199330398448,
+              0.18548428199974948,
+              0.08886252622499459,
+              0.036905137720511766,
+              0.0024007285817222775,
+              15.044579994201573,
+              0.018683544181756478
+            ],
+            "flat_threshold": [
+              1.1516182048734376,
+              0.32251799506827084,
+              0.40374522174464506,
+              0.3051429909041976,
+              0.1263195655987671,
+              1.439897069734004,
+              0.353029888310914,
+              0.3529756885887382,
+              0.0709807389798278,
+              15.715090888463008,
+              0.16335138037184674
+            ]
+          }
+        }
+      }
+    },
+    {
+      "step": 1,
+      "parent_number": 1,
+      "parent_state_id": "a1abdb30-9e67-468f-8167-b79593066c7b",
+      "parent_reward": null,
+      "rollout_number": 5,
+      "global_rollout_index": 5,
+      "seed": 47,
+      "elapsed_seconds": 30.51953335601138,
+      "raw_reward": -65.54088781265483,
+      "adjusted_reward": -65.54088781265483,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": true,
+        "reward": -65.54088781265483,
+        "metrics": {
+          "smape": 65.54088781265483,
+          "mae": 12.70696995594734,
+          "rmse": 31.322287423215002,
+          "mase": 3.227826503931892
+        },
+        "error": null,
+        "behavior_signature": "e0bc7014f901b2becbff856094e743748d5fb16e7c38f5466590465c25fd2a90",
+        "metadata": {
+          "dataset_id": "dengue_panama",
+          "forecast_horizon": 8,
+          "number_of_locations": 11,
+          "candidate_runtime_seconds": 0.20727646397426724,
+          "total_runtime_seconds": 5.310706222022418,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -65.54088781265483,
+          "flat_forecast_penalty": 0.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 0,
+          "flat_series_indices": [],
+          "flat_series_names": [],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 0,
+            "flat_series_indices": [],
+            "historically_variable": [
+              true,
+              true,
+              true,
+              true,
+              false,
+              true,
+              true,
+              true,
+              false,
+              true,
+              false
+            ],
+            "recent_mean_abs": [
+              23.857142857142858,
+              6.75,
+              3.357142857142857,
+              2.7857142857142856,
+              1.1071428571428572,
+              14.75,
+              2.0357142857142856,
+              3.5714285714285716,
+              0.32142857142857145,
+              196.85714285714286,
+              1.7857142857142858
+            ],
+            "recent_std": [
+              11.516182048734375,
+              3.225179950682708,
+              4.03745221744645,
+              3.0514299090419756,
+              1.263195655987671,
+              14.39897069734004,
+              3.5302988831091393,
+              3.5297568858873816,
+              0.7098073897982781,
+              157.15090888463007,
+              1.6335138037184673
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              1.0,
+              0.7142857142857143,
+              0.7857142857142857,
+              0.5714285714285714,
+              0.8214285714285714,
+              0.6071428571428571,
+              0.8214285714285714,
+              0.21428571428571427,
+              1.0,
+              0.75
+            ],
+            "forecast_std": [
+              4.668676131985208,
+              1.1294240015745274,
+              2.78874617520062,
+              3.5179429688458344,
+              0.6115146569328567,
+              2.5009024688834214,
+              4.351802762473681,
+              3.410465853789855,
+              0.3480814550378349,
+              31.09996046944719,
+              0.8781696912754418
+            ],
+            "flat_threshold": [
+              1.1516182048734376,
+              0.32251799506827084,
+              0.40374522174464506,
+              0.3051429909041976,
+              0.1263195655987671,
+              1.439897069734004,
+              0.353029888310914,
+              0.3529756885887382,
+              0.0709807389798278,
+              15.715090888463008,
+              0.16335138037184674
+            ]
+          }
+        }
+      }
+    },
+    {
+      "step": 1,
+      "parent_number": 1,
+      "parent_state_id": "a1abdb30-9e67-468f-8167-b79593066c7b",
+      "parent_reward": null,
+      "rollout_number": 6,
+      "global_rollout_index": 6,
+      "seed": 48,
+      "elapsed_seconds": 17.12049401999684,
+      "raw_reward": null,
+      "adjusted_reward": -250.0,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "ValueError: could not broadcast input array from shape (243,) into shape (8,)",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "dengue_panama",
+          "stage": "execution",
+          "runtime_seconds": 4.482578134979121,
+          "traceback": "Traceback (most recent call last):\n  File \"<generated_forecaster>\", line 9, in dengue_forecast\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/pandas/util/_decorators.py\", line 220, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/pandas/util/_decorators.py\", line 220, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/pandas/util/_decorators.py\", line 220, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\nTypeError: ExponentialSmoothing.fit() got an unexpected keyword argument 'disp'\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/dengue/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 13, in dengue_forecast\nValueError: could not broadcast input array from shape (243,) into shape (8,)\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "step": 1,
+      "parent_number": 1,
+      "parent_state_id": "a1abdb30-9e67-468f-8167-b79593066c7b",
+      "parent_reward": null,
+      "rollout_number": 7,
+      "global_rollout_index": 7,
+      "seed": 49,
+      "elapsed_seconds": 105.03538908797782,
+      "raw_reward": -84.22389062951808,
+      "adjusted_reward": -84.22389062951808,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": true,
+        "reward": -84.22389062951808,
+        "metrics": {
+          "smape": 74.22389062951808,
+          "mae": 16.294825008862055,
+          "rmse": 47.943607795147805,
+          "mase": 2.8310228884185635
+        },
+        "error": null,
+        "behavior_signature": "3fa45c379a82027f8213b0b4f1d48d97178f273a94925adfaaf68257d740fd03",
+        "metadata": {
+          "dataset_id": "dengue_panama",
+          "forecast_horizon": 8,
+          "number_of_locations": 11,
+          "candidate_runtime_seconds": 83.51585323200561,
+          "total_runtime_seconds": 88.10597453598166,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -74.22389062951808,
+          "flat_forecast_penalty": 10.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 2,
+          "flat_series_indices": [
+            2,
+            5
+          ],
+          "flat_series_names": [
+            "COCLE",
+            "HERRERA"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 2,
+            "flat_series_indices": [
+              2,
+              5
+            ],
+            "historically_variable": [
+              true,
+              true,
+              true,
+              true,
+              false,
+              true,
+              true,
+              true,
+              false,
+              true,
+              false
+            ],
+            "recent_mean_abs": [
+              23.857142857142858,
+              6.75,
+              3.357142857142857,
+              2.7857142857142856,
+              1.1071428571428572,
+              14.75,
+              2.0357142857142856,
+              3.5714285714285716,
+              0.32142857142857145,
+              196.85714285714286,
+              1.7857142857142858
+            ],
+            "recent_std": [
+              11.516182048734375,
+              3.225179950682708,
+              4.03745221744645,
+              3.0514299090419756,
+              1.263195655987671,
+              14.39897069734004,
+              3.5302988831091393,
+              3.5297568858873816,
+              0.7098073897982781,
+              157.15090888463007,
+              1.6335138037184673
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              1.0,
+              0.7142857142857143,
+              0.7857142857142857,
+              0.5714285714285714,
+              0.8214285714285714,
+              0.6071428571428571,
+              0.8214285714285714,
+              0.21428571428571427,
+              1.0,
+              0.75
+            ],
+            "forecast_std": [
+              1.485977773231751,
+              1.4213732510924408,
+              0.2822006230079898,
+              2.5322740733962115,
+              0.7046512152085145,
+              0.8521266979569332,
+              2.405589996288562,
+              0.43355898010057553,
+              0.31553253149643823,
+              19.661617670258178,
+              0.5693788527546302
+            ],
+            "flat_threshold": [
+              1.1516182048734376,
+              0.32251799506827084,
+              0.40374522174464506,
+              0.3051429909041976,
+              0.1263195655987671,
+              1.439897069734004,
+              0.353029888310914,
+              0.3529756885887382,
+              0.0709807389798278,
+              15.715090888463008,
+              0.16335138037184674
+            ]
+          }
+        }
+      }
+    },
+    {
+      "step": 1,
+      "parent_number": 1,
+      "parent_state_id": "a1abdb30-9e67-468f-8167-b79593066c7b",
+      "parent_reward": null,
+      "rollout_number": 8,
+      "global_rollout_index": 8,
+      "seed": 50,
+      "elapsed_seconds": 22.62363359401934,
+      "raw_reward": null,
+      "adjusted_reward": -250.0,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": false,
+        "reward": null,
+        "metrics": {},
+        "error": "TypeError: ARIMA.fit() got an unexpected keyword argument 'disp'",
+        "behavior_signature": null,
+        "metadata": {
+          "dataset_id": "dengue_panama",
+          "stage": "execution",
+          "runtime_seconds": 4.650705367967021,
+          "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/dengue/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 13, in dengue_forecast\nTypeError: ARIMA.fit() got an unexpected keyword argument 'disp'\n",
+          "timed_out": false
+        }
+      }
+    },
+    {
+      "step": 1,
+      "parent_number": 1,
+      "parent_state_id": "a1abdb30-9e67-468f-8167-b79593066c7b",
+      "parent_reward": null,
+      "rollout_number": 9,
+      "global_rollout_index": 9,
+      "seed": 51,
+      "elapsed_seconds": 105.38414933497552,
+      "raw_reward": -84.22389062951808,
+      "adjusted_reward": -84.22389062951808,
+      "duplicate_valid_behavior": true,
+      "duplicate_of": "step_0001/parent_01_rollout_07",
+      "evaluation": {
+        "ok": true,
+        "reward": -84.22389062951808,
+        "metrics": {
+          "smape": 74.22389062951808,
+          "mae": 16.294825008862055,
+          "rmse": 47.943607795147805,
+          "mase": 2.8310228884185635
+        },
+        "error": null,
+        "behavior_signature": "3fa45c379a82027f8213b0b4f1d48d97178f273a94925adfaaf68257d740fd03",
+        "metadata": {
+          "dataset_id": "dengue_panama",
+          "forecast_horizon": 8,
+          "number_of_locations": 11,
+          "candidate_runtime_seconds": 83.6608137570438,
+          "total_runtime_seconds": 88.21200270397821,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -74.22389062951808,
+          "flat_forecast_penalty": 10.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 2,
+          "flat_series_indices": [
+            2,
+            5
+          ],
+          "flat_series_names": [
+            "COCLE",
+            "HERRERA"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 2,
+            "flat_series_indices": [
+              2,
+              5
+            ],
+            "historically_variable": [
+              true,
+              true,
+              true,
+              true,
+              false,
+              true,
+              true,
+              true,
+              false,
+              true,
+              false
+            ],
+            "recent_mean_abs": [
+              23.857142857142858,
+              6.75,
+              3.357142857142857,
+              2.7857142857142856,
+              1.1071428571428572,
+              14.75,
+              2.0357142857142856,
+              3.5714285714285716,
+              0.32142857142857145,
+              196.85714285714286,
+              1.7857142857142858
+            ],
+            "recent_std": [
+              11.516182048734375,
+              3.225179950682708,
+              4.03745221744645,
+              3.0514299090419756,
+              1.263195655987671,
+              14.39897069734004,
+              3.5302988831091393,
+              3.5297568858873816,
+              0.7098073897982781,
+              157.15090888463007,
+              1.6335138037184673
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              1.0,
+              0.7142857142857143,
+              0.7857142857142857,
+              0.5714285714285714,
+              0.8214285714285714,
+              0.6071428571428571,
+              0.8214285714285714,
+              0.21428571428571427,
+              1.0,
+              0.75
+            ],
+            "forecast_std": [
+              1.485977773231751,
+              1.4213732510924408,
+              0.2822006230079898,
+              2.5322740733962115,
+              0.7046512152085145,
+              0.8521266979569332,
+              2.405589996288562,
+              0.43355898010057553,
+              0.31553253149643823,
+              19.661617670258178,
+              0.5693788527546302
+            ],
+            "flat_threshold": [
+              1.1516182048734376,
+              0.32251799506827084,
+              0.40374522174464506,
+              0.3051429909041976,
+              0.1263195655987671,
+              1.439897069734004,
+              0.353029888310914,
+              0.3529756885887382,
+              0.0709807389798278,
+              15.715090888463008,
+              0.16335138037184674
+            ]
+          }
+        }
+      }
+    },
+    {
+      "step": 1,
+      "parent_number": 1,
+      "parent_state_id": "a1abdb30-9e67-468f-8167-b79593066c7b",
+      "parent_reward": null,
+      "rollout_number": 10,
+      "global_rollout_index": 10,
+      "seed": 52,
+      "elapsed_seconds": 92.7152345260256,
+      "raw_reward": -78.58353849271481,
+      "adjusted_reward": -78.58353849271481,
+      "duplicate_valid_behavior": false,
+      "duplicate_of": null,
+      "evaluation": {
+        "ok": true,
+        "reward": -78.58353849271481,
+        "metrics": {
+          "smape": 68.58353849271481,
+          "mae": 15.966845265676001,
+          "rmse": 46.52513138637153,
+          "mase": 2.982395847882795
+        },
+        "error": null,
+        "behavior_signature": "b652a2cf247379d1b7053233ee774c4a9ff73b711e8a604a99d573e980056f5a",
+        "metadata": {
+          "dataset_id": "dengue_panama",
+          "forecast_horizon": 8,
+          "number_of_locations": 11,
+          "candidate_runtime_seconds": 61.897064902004786,
+          "total_runtime_seconds": 66.45830447104527,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -68.58353849271481,
+          "flat_forecast_penalty": 10.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 2,
+          "flat_series_indices": [
+            2,
+            5
+          ],
+          "flat_series_names": [
+            "COCLE",
+            "HERRERA"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 2,
+            "flat_series_indices": [
+              2,
+              5
+            ],
+            "historically_variable": [
+              true,
+              true,
+              true,
+              true,
+              false,
+              true,
+              true,
+              true,
+              false,
+              true,
+              false
+            ],
+            "recent_mean_abs": [
+              23.857142857142858,
+              6.75,
+              3.357142857142857,
+              2.7857142857142856,
+              1.1071428571428572,
+              14.75,
+              2.0357142857142856,
+              3.5714285714285716,
+              0.32142857142857145,
+              196.85714285714286,
+              1.7857142857142858
+            ],
+            "recent_std": [
+              11.516182048734375,
+              3.225179950682708,
+              4.03745221744645,
+              3.0514299090419756,
+              1.263195655987671,
+              14.39897069734004,
+              3.5302988831091393,
+              3.5297568858873816,
+              0.7098073897982781,
+              157.15090888463007,
+              1.6335138037184673
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              1.0,
+              0.7142857142857143,
+              0.7857142857142857,
+              0.5714285714285714,
+              0.8214285714285714,
+              0.6071428571428571,
+              0.8214285714285714,
+              0.21428571428571427,
+              1.0,
+              0.75
+            ],
+            "forecast_std": [
+              1.367341665576505,
+              1.4240090463585344,
+              0.10270925791338484,
+              2.3737430266869226,
+              0.8217218897223211,
+              0.8105213615884612,
+              2.763688816048689,
+              0.615983497742717,
+              0.2836195716564688,
+              19.39167718846245,
+              0.6229763146324495
+            ],
+            "flat_threshold": [
+              1.1516182048734376,
+              0.32251799506827084,
+              0.40374522174464506,
+              0.3051429909041976,
+              0.1263195655987671,
+              1.439897069734004,
+              0.353029888310914,
+              0.3529756885887382,
+              0.0709807389798278,
+              15.715090888463008,
+              0.16335138037184674
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "training": {
+    "ok": true,
+    "loss": 0.05955824390985072,
+    "used_count": 10,
+    "rewards": [
+      -250.0,
+      -250.0,
+      -250.0,
+      -105.61874280840212,
+      -65.54088781265483,
+      -250.0,
+      -84.22389062951808,
+      -250.0,
+      -84.22389062951808,
+      -78.58353849271481
+    ],
+    "advantages": [
+      -0.9822735786437988,
+      -0.9822735786437988,
+      -0.9822735786437988,
+      0.02518749237060547,
+      2.973237991333008,
+      -0.9822735786437988,
+      1.024852991104126,
+      -0.9822735786437988,
+      1.024852991104126,
+      1.455059289932251
+    ],
+    "per_sample_ce_losses": [
+      0.19625908136367798,
+      0.17030635476112366,
+      0.2596189081668854,
+      0.19471698999404907,
+      0.24331238865852356,
+      0.1336023509502411,
+      0.20787988603115082,
+      0.2460005134344101,
+      0.24230217933654785,
+      0.27066949009895325
+    ]
+  },
+  "puct_stats": {
+    "puct/buffer_size": 3.0,
+    "puct/sampled_size": 1.0,
+    "puct/T": 10.0,
+    "puct/scale_last": 1.0,
+    "puct/buffer_value/mean": -72.06221315268482,
+    "puct/buffer_value/std": 6.521325340029989,
+    "puct/buffer_value/min": -78.58353849271481,
+    "puct/buffer_value/max": -65.54088781265483,
+    "puct/selected_score/mean": 1.0,
+    "puct/selected_score/std": 0.0,
+    "puct/selected_score/min": 1.0,
+    "puct/selected_score/max": 1.0
+  },
+  "best_states": [
+    {
+      "type": "SearchState",
+      "id": "a90b4a99-2d50-4b18-8955-f74faa944d19",
+      "timestep": 1,
+      "code": "import numpy as np\nfrom statsmodels.tsa.statespace.sarimax import SARIMAX\n\ndef dengue_forecast(train_values, horizon, **kwargs):\n    forecast = np.zeros((horizon, train_values.shape[1]))\n    for i in range(train_values.shape[1]):\n        try:\n            model = SARIMAX(train_values[:, i], order=(1, 1, 0), seasonal_order=(1, 1, 0, 4))\n            results = model.fit(disp=False)\n            forecast[:, i] = results.forecast(steps=horizon)\n        except Exception as e:\n            forecast[:, i] = train_values[-1, i]\n    forecast = np.maximum(forecast, 0)\n    return forecast",
+      "value": -65.54088781265483,
+      "metrics": {
+        "smape": 65.54088781265483,
+        "mae": 12.70696995594734,
+        "rmse": 31.322287423215002,
+        "mase": 3.227826503931892
+      },
+      "observation": "reward=-65.540888; mae=12.70697, mase=3.2278265, rmse=31.322287, smape=65.540888;",
+      "metadata": {
+        "step": 1,
+        "parent_number": 1,
+        "rollout_number": 5,
+        "raw_reward": -65.54088781265483,
+        "adjusted_reward": -65.54088781265483,
+        "duplicate_behavior": false,
+        "duplicate_of": null,
+        "evaluation_metadata": {
+          "dataset_id": "dengue_panama",
+          "forecast_horizon": 8,
+          "number_of_locations": 11,
+          "candidate_runtime_seconds": 0.20727646397426724,
+          "total_runtime_seconds": 5.310706222022418,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -65.54088781265483,
+          "flat_forecast_penalty": 0.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 0,
+          "flat_series_indices": [],
+          "flat_series_names": [],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 0,
+            "flat_series_indices": [],
+            "historically_variable": [
+              true,
+              true,
+              true,
+              true,
+              false,
+              true,
+              true,
+              true,
+              false,
+              true,
+              false
+            ],
+            "recent_mean_abs": [
+              23.857142857142858,
+              6.75,
+              3.357142857142857,
+              2.7857142857142856,
+              1.1071428571428572,
+              14.75,
+              2.0357142857142856,
+              3.5714285714285716,
+              0.32142857142857145,
+              196.85714285714286,
+              1.7857142857142858
+            ],
+            "recent_std": [
+              11.516182048734375,
+              3.225179950682708,
+              4.03745221744645,
+              3.0514299090419756,
+              1.263195655987671,
+              14.39897069734004,
+              3.5302988831091393,
+              3.5297568858873816,
+              0.7098073897982781,
+              157.15090888463007,
+              1.6335138037184673
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              1.0,
+              0.7142857142857143,
+              0.7857142857142857,
+              0.5714285714285714,
+              0.8214285714285714,
+              0.6071428571428571,
+              0.8214285714285714,
+              0.21428571428571427,
+              1.0,
+              0.75
+            ],
+            "forecast_std": [
+              4.668676131985208,
+              1.1294240015745274,
+              2.78874617520062,
+              3.5179429688458344,
+              0.6115146569328567,
+              2.5009024688834214,
+              4.351802762473681,
+              3.410465853789855,
+              0.3480814550378349,
+              31.09996046944719,
+              0.8781696912754418
+            ],
+            "flat_threshold": [
+              1.1516182048734376,
+              0.32251799506827084,
+              0.40374522174464506,
+              0.3051429909041976,
+              0.1263195655987671,
+              1.439897069734004,
+              0.353029888310914,
+              0.3529756885887382,
+              0.0709807389798278,
+              15.715090888463008,
+              0.16335138037184674
+            ]
+          }
+        }
+      },
+      "behavior_signature": "e0bc7014f901b2becbff856094e743748d5fb16e7c38f5466590465c25fd2a90",
+      "parent_values": [],
+      "parents": [
+        {
+          "id": "a1abdb30-9e67-468f-8167-b79593066c7b",
+          "timestep": 0
+        }
+      ]
+    },
+    {
+      "type": "SearchState",
+      "id": "a5394114-3fd8-434e-b644-238a995886ad",
+      "timestep": 1,
+      "code": "import numpy as np\nfrom statsmodels.tsa.statespace.sarimax import SARIMAX\n\ndef dengue_forecast(train_values, horizon, **kwargs):\n    \"\"\"\n    Forecast Dengue incidence using a SARIMA model for each region.\n    \n    Parameters:\n        train_values (np.ndarray): Historical dengue incidence data with shape (T, N).\n        horizon (int): Number of future time steps to predict.\n        kwargs: Additional keyword arguments (not used).\n        \n    Returns:\n        np.ndarray: Forecasted dengue incidence data with shape (horizon, N).\n    \"\"\"\n    num_regions = train_values.shape[1]\n    forecasted_values = np.zeros((horizon, num_regions))\n    for region in range(num_regions):\n        try:\n            model = SARIMAX(train_values[:, region], order=(2, 1, 0), seasonal_order=(1, 1, 1, 52))\n            model_fit = model.fit(disp=False)\n            forecast = model_fit.forecast(steps=horizon)\n            forecasted_values[:, region] = forecast.clip(min=0)\n        except Exception as e:\n            rolling_mean = np.convolve(train_values[:, region], np.ones(horizon) / horizon, mode='valid')\n            padded_rolling_mean = np.pad(rolling_mean, (0, horizon - len(rolling_mean)), mode='constant', constant_values=np.nan)\n            forecasted_values[:, region] = padded_rolling_mean.clip(min=0)\n    return forecasted_values",
+      "value": -78.58353849271481,
+      "metrics": {
+        "smape": 68.58353849271481,
+        "mae": 15.966845265676001,
+        "rmse": 46.52513138637153,
+        "mase": 2.982395847882795
+      },
+      "observation": "reward=-78.583538; mae=15.966845, mase=2.9823958, rmse=46.525131, smape=68.583538;",
+      "metadata": {
+        "step": 1,
+        "parent_number": 1,
+        "rollout_number": 10,
+        "raw_reward": -78.58353849271481,
+        "adjusted_reward": -78.58353849271481,
+        "duplicate_behavior": false,
+        "duplicate_of": null,
+        "evaluation_metadata": {
+          "dataset_id": "dengue_panama",
+          "forecast_horizon": 8,
+          "number_of_locations": 11,
+          "candidate_runtime_seconds": 61.897064902004786,
+          "total_runtime_seconds": 66.45830447104527,
+          "primary_metric": "smape",
+          "primary_metric_direction": "minimize",
+          "base_reward": -68.58353849271481,
+          "flat_forecast_penalty": 10.0,
+          "flat_penalty_per_series": 5.0,
+          "flat_series_count": 2,
+          "flat_series_indices": [
+            2,
+            5
+          ],
+          "flat_series_names": [
+            "COCLE",
+            "HERRERA"
+          ],
+          "flat_forecast_analysis": {
+            "recent_window": 28,
+            "flat_series_count": 2,
+            "flat_series_indices": [
+              2,
+              5
+            ],
+            "historically_variable": [
+              true,
+              true,
+              true,
+              true,
+              false,
+              true,
+              true,
+              true,
+              false,
+              true,
+              false
+            ],
+            "recent_mean_abs": [
+              23.857142857142858,
+              6.75,
+              3.357142857142857,
+              2.7857142857142856,
+              1.1071428571428572,
+              14.75,
+              2.0357142857142856,
+              3.5714285714285716,
+              0.32142857142857145,
+              196.85714285714286,
+              1.7857142857142858
+            ],
+            "recent_std": [
+              11.516182048734375,
+              3.225179950682708,
+              4.03745221744645,
+              3.0514299090419756,
+              1.263195655987671,
+              14.39897069734004,
+              3.5302988831091393,
+              3.5297568858873816,
+              0.7098073897982781,
+              157.15090888463007,
+              1.6335138037184673
+            ],
+            "recent_nonzero_fraction": [
+              1.0,
+              1.0,
+              0.7142857142857143,
+              0.7857142857142857,
+              0.5714285714285714,
+              0.8214285714285714,
+              0.6071428571428571,
+              0.8214285714285714,
+              0.21428571428571427,
+              1.0,
+              0.75
+            ],
+            "forecast_std": [
+              1.367341665576505,
+              1.4240090463585344,
+              0.10270925791338484,
+              2.3737430266869226,
+              0.8217218897223211,
+              0.8105213615884612,
+              2.763688816048689,
+              0.615983497742717,
+              0.2836195716564688,
+              19.39167718846245,
+              0.6229763146324495
+            ],
+            "flat_threshold": [
+              1.1516182048734376,
+              0.32251799506827084,
+              0.40374522174464506,
+              0.3051429909041976,
+              0.1263195655987671,
+              1.439897069734004,
+              0.353029888310914,
+              0.3529756885887382,
+              0.0709807389798278,
+              15.715090888463008,
+              0.16335138037184674
+            ]
+          }
+        }
+      },
+      "behavior_signature": "b652a2cf247379d1b7053233ee774c4a9ff73b711e8a604a99d573e980056f5a",
+      "parent_values": [],
+      "parents": [
+        {
+          "id": "a1abdb30-9e67-468f-8167-b79593066c7b",
+          "timestep": 0
+        }
+      ]
+    }
+  ]
+}

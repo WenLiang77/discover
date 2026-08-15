@@ -1,0 +1,29 @@
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.linear_model import LinearRegression
+from sklearn.multioutput import MultiOutputRegressor
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    for i in range(train_values.shape[1]):
+        try:
+            if np.allclose(train_values[:, i], train_values[-1, i]):
+                forecast[:, i] = train_values[-1, i]
+                continue
+            model_sarimax = SARIMAX(train_values[:, i], order=(1, 1, 0), seasonal_order=(1, 1, 0, 4))
+            results_sarimax = model_sarimax.fit(disp=False)
+            forecast_sarimax = results_sarimax.forecast(steps=horizon)
+            model_es = ExponentialSmoothing(train_values[:, i], seasonal_periods=4, trend='add', seasonal='add')
+            results_es = model_es.fit()
+            forecast_es = results_es.forecast(steps=horizon)
+            model_arima = ARIMA(train_values[:, i], order=(1, 1, 0))
+            results_arima = model_arima.fit(disp=False)
+            forecast_arima = results_arima.forecast(steps=horizon)
+            weights = [0.3, 0.3, 0.4]
+            forecast[i] = np.dot([forecast_sarimax, forecast_es, forecast_arima], weights)
+        except Exception as e:
+            forecast[:, i] = train_values[-1, i]
+    forecast = np.maximum(forecast, 0)
+    return forecast

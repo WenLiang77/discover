@@ -1,0 +1,23 @@
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+from statsmodels.tsa.stattools import adfuller
+from pmdarima.arima import auto_arima
+from sklearn.metrics import mean_absolute_error, mean_squared_error, symmetric_mean_absolute_percentage_error
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    for i in range(train_values.shape[1]):
+        try:
+            result = adfuller(train_values[:, i])
+            stationary = result[1] < 0.05
+            if stationary:
+                model = auto_arima(train_values[:, i], start_p=1, start_q=1, max_p=3, max_q=3, seasonal=False, trace=True, suppress_warnings=True, error_action='ignore')
+            else:
+                model = SARIMAX(train_values[:, i], order=(1, 1, 0), seasonal_order=(1, 1, 0, 4))
+            results = model.fit(disp=False)
+            forecast[:, i] = results.forecast(steps=horizon)
+        except Exception as e:
+            forecast[:, i] = train_values[-1, i]
+    forecast = np.maximum(forecast, 0)
+    return forecast

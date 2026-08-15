@@ -1,0 +1,28 @@
+```python
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    num_regions = train_values.shape[1]
+    forecast = np.zeros((horizon, num_regions))
+    
+    for region in range(num_regions):
+        # Extract the time series for the current region
+        time_series = train_values[:, region]
+        
+        # Fit an ARIMA model to the time series
+        try:
+            model = ARIMA(time_series, order=(5,1,0))  # You can adjust the order based on your data
+            model_fit = model.fit(disp=False)
+            
+            # Forecast the next 'horizon' steps
+            forecast[:, region] = model_fit.forecast(steps=horizon)
+        except Exception as e:
+            # If fitting fails, use a simple average forecast
+            forecast[:, region] = np.mean(time_series)
+    
+    # Ensure the forecast is non-negative
+    forecast = np.maximum(forecast, 0)
+    
+    return forecast
+```

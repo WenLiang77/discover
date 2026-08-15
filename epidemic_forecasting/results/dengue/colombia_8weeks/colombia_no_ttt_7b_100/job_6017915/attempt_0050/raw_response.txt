@@ -1,0 +1,45 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+from statsmodels.tsa.stattools import adfuller
+from statsmodels.tools.eval_measures import mae, rmse, smape
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    # Initialize the forecast array with zeros
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    
+    # Iterate over each region
+    for i in range(train_values.shape[1]):
+        # Extract the time series for the current region
+        ts = train_values[:, i]
+        
+        # Check if the time series is stationary
+        result = adfuller(ts)
+        if result[1] > 0.05:
+            # If not stationary, difference the series
+            ts_diff = np.diff(ts)
+        else:
+            ts_diff = ts
+        
+        # Fit a SARIMAX model
+        try:
+            model = SARIMAX(ts_diff, order=(1, 1, 1), seasonal_order=(1, 1, 1, 7))
+            model_fit = model.fit(disp=False)
+            
+            # Forecast the differenced series
+            forecast_diff = model_fit.forecast(steps=horizon + len(ts_diff))
+            
+            # Reverse the differencing to get the actual forecast
+            forecast[i, :] = np.cumsum(forecast_diff[len(ts_diff):]) + ts[-1]
+        except Exception as e:
+            # If fitting fails, return a simple average forecast
+            forecast[i, :] = np.mean(train_values, axis=0)[i]
+    
+    # Ensure the forecast is non-negative
+    forecast = np.maximum(forecast, 0)
+    
+    return forecast
+```
+
+This implementation uses the SARIMAX model from `statsmodels` to fit the time series data for each region and then forecasts the next `horizon` weeks. The model accounts for both non-seasonal and seasonal components, which helps in capturing the temporal evolution of the dengue incidence. The forecast is reversed to get the actual values from the differenced series. If fitting the model fails (e.g., due to insufficient data), a simple average forecast is returned. The forecast is also clipped to ensure it is non-negative.

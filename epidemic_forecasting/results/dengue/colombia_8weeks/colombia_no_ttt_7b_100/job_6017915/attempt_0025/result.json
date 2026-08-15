@@ -1,0 +1,21 @@
+{
+  "attempt": 25,
+  "seed": 66,
+  "elapsed_seconds": 11.168987634999212,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "ImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_colombia",
+      "stage": "execution",
+      "runtime_seconds": 1.089253200974781,
+      "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/dengue/evaluator.py\", line 380, in _candidate_worker\n    exec(compiled, namespace, namespace)\n  File \"<generated_forecaster>\", line 3, in <module>\nImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)\n",
+      "timed_out": false
+    }
+  }
+}

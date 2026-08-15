@@ -1,0 +1,35 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+from scipy.stats import boxcox, inv_boxcox
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    n_regions = train_values.shape[1]
+    forecasts = np.zeros((horizon, n_regions))
+    
+    for i in range(n_regions):
+        region_data = train_values[:, i]
+        
+        # Perform Box-Cox transformation if necessary
+        transformed_data, _ = boxcox(region_data + 1)
+        
+        # Fit SARIMAX model
+        try:
+            model = SARIMAX(transformed_data, order=(2, 1, 0), seasonal_order=(1, 1, 0, 52))
+            model_fit = model.fit(disp=False)
+            forecasted_transformed = model_fit.forecast(steps=horizon)
+        except Exception as e:
+            # Fallback to Exponential Smoothing if SARIMAX fails
+            model = ExponentialSmoothing(transformed_data, trend='add', seasonal_periods=52)
+            model_fit = model.fit(disp=False)
+            forecasted_transformed = model_fit.forecast(steps=horizon)
+        
+        # Apply inverse Box-Cox transformation
+        forecasted_original = inv_boxcox(forecasted_transformed, lmbda=1)
+        
+        # Ensure non-negative values
+        forecasts[:, i] = np.maximum(forecasted_original, 0)
+    
+    return forecasts
+```

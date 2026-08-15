@@ -1,0 +1,46 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from sklearn.preprocessing import StandardScaler
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    scaler = StandardScaler()
+    for i in range(train_values.shape[1]):
+        try:
+            # Ensure there are enough data points for fitting the model
+            if len(train_values[:, i]) < 5:
+                forecast[:, i] = np.full(horizon, train_values[-1, i])
+                continue
+            
+            scaled_train = scaler.fit_transform(train_values[:, i].reshape(-1, 1))
+            
+            # Try different SARIMA orders to find the best fit
+            best_aic = np.inf
+            best_order = None
+            for p in range(2):
+                for d in range(2):
+                    for q in range(2):
+                        order = (p, d, q)
+                        model = SARIMAX(scaled_train, order=order, seasonal_order=(1, 1, 0, 4))
+                        try:
+                            results = model.fit(disp=False)
+                            aic = results.aic
+                            if aic < best_aic:
+                                best_aic = aic
+                                best_order = order
+                        except Exception as e:
+                            pass
+            
+            if best_order is not None:
+                model = SARIMAX(scaled_train, order=best_order, seasonal_order=(1, 1, 0, 4))
+                results = model.fit(disp=False)
+                scaled_forecast = results.forecast(steps=horizon)
+                forecast[:, i] = scaler.inverse_transform(scaled_forecast.reshape(-1, 1)).flatten()
+                forecast[:, i] = np.maximum(forecast[:, i], 0)
+            else:
+                forecast[:, i] = np.full(horizon, train_values[-1, i])
+        except Exception as e:
+            forecast[:, i] = np.full(horizon, train_values[-1, i])
+    return forecast
+```

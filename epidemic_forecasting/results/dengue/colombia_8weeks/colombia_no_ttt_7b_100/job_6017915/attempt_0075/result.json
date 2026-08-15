@@ -1,0 +1,21 @@
+{
+  "attempt": 75,
+  "seed": 116,
+  "elapsed_seconds": 5.30579056503484,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "TypeError: ExponentialSmoothing.fit() got an unexpected keyword argument 'disp'",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_colombia",
+      "stage": "execution",
+      "runtime_seconds": 0.9655758980079554,
+      "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/dengue/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 11, in dengue_forecast\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/pandas/util/_decorators.py\", line 220, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/pandas/util/_decorators.py\", line 220, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/pandas/util/_decorators.py\", line 220, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\nTypeError: ExponentialSmoothing.fit() got an unexpected keyword argument 'disp'\n",
+      "timed_out": false
+    }
+  }
+}

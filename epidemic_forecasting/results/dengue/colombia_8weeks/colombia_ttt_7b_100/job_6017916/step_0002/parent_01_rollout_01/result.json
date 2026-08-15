@@ -1,0 +1,28 @@
+{
+  "step": 2,
+  "parent_number": 1,
+  "parent_state_id": "0b0d990e-29ae-4495-b47f-e4ccec50c97c",
+  "parent_reward": -56.389813631307256,
+  "rollout_number": 1,
+  "global_rollout_index": 11,
+  "seed": 53,
+  "elapsed_seconds": 25.341970491048414,
+  "raw_reward": null,
+  "adjusted_reward": -250.0,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "ValueError: endog must be strictly positive when usingmultiplicative trend or seasonal components.",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_colombia",
+      "stage": "execution",
+      "runtime_seconds": 5.705422325991094,
+      "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/dengue/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 12, in dengue_forecast\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/pandas/util/_decorators.py\", line 220, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py\", line 247, in __init__\n    raise ValueError(\nValueError: endog must be strictly positive when usingmultiplicative trend or seasonal components.\n",
+      "timed_out": false
+    }
+  }
+}

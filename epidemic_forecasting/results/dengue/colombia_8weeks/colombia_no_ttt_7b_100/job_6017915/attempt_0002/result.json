@@ -1,0 +1,21 @@
+{
+  "attempt": 2,
+  "seed": 43,
+  "elapsed_seconds": 15.116463632963132,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "TypeError: SARIMAX.__init__() missing 1 required positional argument: 'endog'",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_colombia",
+      "stage": "execution",
+      "runtime_seconds": 1.7717089590150863,
+      "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/dengue/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 15, in dengue_forecast\nTypeError: SARIMAX.__init__() missing 1 required positional argument: 'endog'\n",
+      "timed_out": false
+    }
+  }
+}

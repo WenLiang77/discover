@@ -1,0 +1,30 @@
+```python
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    num_regions = train_values.shape[1]
+    forecast = np.zeros((horizon, num_regions))
+    
+    for region in range(num_regions):
+        region_data = train_values[:, region]
+        
+        # Fit ARIMA model
+        try:
+            arima_model = ARIMA(region_data, order=(5,1,0), seasonal_order=(1,1,0,7)).fit(disp=False)
+            forecast[:, region] = arima_model.forecast(steps=horizon)
+        except Exception as e:
+            # If ARIMA fails, try SARIMAX
+            try:
+                sarimax_model = SARIMAX(region_data, order=(5,1,0), seasonal_order=(1,1,0,7)).fit(disp=False)
+                forecast[:, region] = sarimax_model.forecast(steps=horizon)
+            except Exception as e:
+                # Fallback: constant forecast
+                forecast[:, region] = np.full(horizon, np.mean(region_data))
+    
+    # Ensure non-negative forecasts
+    forecast = np.maximum(forecast, 0)
+    
+    return forecast
+```

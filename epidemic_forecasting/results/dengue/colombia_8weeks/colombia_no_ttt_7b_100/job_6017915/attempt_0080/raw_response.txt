@@ -1,0 +1,48 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from sklearn.preprocessing import StandardScaler
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    # Initialize the scaler
+    scaler = StandardScaler()
+    
+    # Fit the scaler on the training data
+    train_scaled = scaler.fit_transform(train_values)
+    
+    # Initialize the forecasts
+    forecasts = np.zeros((horizon, train_values.shape[1]))
+    
+    # Loop over each region
+    for i in range(train_values.shape[1]):
+        # Get the scaled time series for the current region
+        region_series = train_scaled[:, i]
+        
+        try:
+            # Fit a SARIMAX model
+            model = SARIMAX(region_series, order=(1, 1, 0), seasonal_order=(1, 1, 0, 52))
+            model_fit = model.fit(disp=False)
+            
+            # Make predictions
+            pred = model_fit.forecast(steps=horizon)
+            
+            # Scale back the predictions
+            pred_unscaled = scaler.inverse_transform(pred.reshape(-1, 1))[:, 0]
+            
+            # Ensure non-negativity and finiteness
+            pred_unscaled[pred_unscaled < 0] = 0
+            pred_unscaled[np.isnan(pred_unscaled)] = 0
+            
+            # Assign the predictions to the forecast array
+            forecasts[:, i] = pred_unscaled
+        except Exception as e:
+            # If fitting fails, use a simple moving average as a fallback
+            ma_forecast = np.convolve(region_series, np.ones(horizon)/horizon, mode='valid')
+            ma_forecast = np.pad(ma_forecast, (0, horizon - len(ma_forecast)), 'constant', constant_values=(ma_forecast[-1], 0))
+            ma_forecast[ma_forecast < 0] = 0
+            forecasts[:len(ma_forecast), i] = ma_forecast
+    
+    return forecasts
+```
+
+This implementation uses a Seasonal AutoRegressive Integrated Moving Average with eXogenous factors (SARIMAX) model to forecast dengue incidence for each region. It scales the data, fits the model, and makes predictions, ensuring the outputs are non-negative and finite. If the model fitting fails, it falls back to a simple moving average.

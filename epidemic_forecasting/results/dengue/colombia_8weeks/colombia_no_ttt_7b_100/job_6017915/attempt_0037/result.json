@@ -1,0 +1,21 @@
+{
+  "attempt": 37,
+  "seed": 78,
+  "elapsed_seconds": 18.127981615019962,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "NameError: name 'print' is not defined",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_colombia",
+      "stage": "execution",
+      "runtime_seconds": 3.2377790850005113,
+      "traceback": "Traceback (most recent call last):\n  File \"<generated_forecaster>\", line 19, in dengue_forecast\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/preprocessing/_data.py\", line 1176, in inverse_transform\n    X *= xp.astype(self.scale_, X.dtype)\nValueError: non-broadcastable output operand with shape (8,1) doesn't match the broadcast shape (8,33)\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/dengue/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 21, in dengue_forecast\nNameError: name 'print' is not defined\n",
+      "timed_out": false
+    }
+  }
+}

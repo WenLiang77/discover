@@ -1,0 +1,21 @@
+{
+  "attempt": 49,
+  "seed": 90,
+  "elapsed_seconds": 15.371162976021878,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "ValueError: X has 5 features, but StandardScaler is expecting 1 features as input.",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_colombia",
+      "stage": "execution",
+      "runtime_seconds": 1.1994348270236515,
+      "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/dengue/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 30, in dengue_forecast\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/utils/_set_output.py\", line 319, in wrapped\n    data_to_wrap = f(self, X, *args, **kwargs)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/preprocessing/_data.py\", line 1111, in transform\n    X = validate_data(\n        ^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/utils/validation.py\", line 3059, in validate_data\n    _check_n_features(_estimator, X, reset=reset)\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/utils/validation.py\", line 2923, in _check_n_features\n    raise ValueError(\nValueError: X has 5 features, but StandardScaler is expecting 1 features as input.\n",
+      "timed_out": false
+    }
+  }
+}

@@ -1,0 +1,43 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from sklearn.preprocessing import StandardScaler
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    scaler = StandardScaler()
+    
+    for i in range(train_values.shape[1]):
+        try:
+            # Scale the training data
+            scaled_train = scaler.fit_transform(train_values[:, i].reshape(-1, 1))
+            
+            # Fit the SARIMAX model
+            model = SARIMAX(scaled_train, order=(1, 1, 0), seasonal_order=(1, 1, 0, 4))
+            results = model.fit(disp=False)
+            
+            # Forecast the next `horizon` steps
+            scaled_forecast = results.forecast(steps=horizon)
+            
+            # Inverse transform the forecast
+            forecast[:, i] = scaler.inverse_transform(scaled_forecast.reshape(-1, 1)).flatten()
+            
+            # Ensure non-negative forecasts
+            forecast[:, i] = np.maximum(forecast[:, i], 0)
+        
+        except Exception as e:
+            # If fitting fails, use a simple moving average as a fallback
+            forecast[:, i] = np.full(horizon, np.mean(train_values[:, i]))
+    
+    return forecast
+```
+
+### Explanation:
+1. **Scaling**: The data is scaled using `StandardScaler` to ensure that the model performs well regardless of the scale of the input data.
+2. **Model Fitting**: A `SARIMAX` model is fit to each region's time series. The model parameters `(1, 1, 0)` for the ARIMA part and `(1, 1, 0, 4)` for the seasonal part are chosen based on typical parameters for time series forecasting.
+3. **Forecasting**: The model is used to forecast the next `horizon` steps.
+4. **Inverse Transformation**: The forecasted values are inverse-transformed back to their original scale.
+5. **Non-Negative Forecasts**: Ensures that the forecasted values are non-negative.
+6. **Fallback Mechanism**: If fitting the model fails, a simple moving average of the historical data is used as a fallback.
+
+This approach ensures that the forecast models temporal evolution and handles potential issues like missing or noisy data gracefully.

@@ -1,0 +1,32 @@
+import numpy as np
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+from sklearn.linear_model import Ridge
+from sklearn.metrics.pairwise import cosine_similarity
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+
+    def smooth_series(series):
+        if np.any(series <= 0):
+            series = np.where(series <= 0, np.nan, series)
+        model = ExponentialSmoothing(series, trend='add', seasonal=None, initialization_method='estimated')
+        results = model.fit(smoothing_level=0.2, optimized=True)
+        return results.fittedvalues
+
+    def linear_regression(series):
+        if np.any(series <= 0):
+            series = np.where(series <= 0, np.nan, series)
+        X = np.arange(len(series)).reshape(-1, 1)
+        y = series.reshape(-1, 1)
+        reg = Ridge(alpha=0.5)
+        reg.fit(X, y)
+        X_pred = np.arange(len(series), len(series) + horizon).reshape(-1, 1)
+        return reg.predict(X_pred)
+    smoothed_values = np.apply_along_axis(smooth_series, 0, train_values)
+    for i in range(train_values.shape[1]):
+        try:
+            forecast[:, i] = linear_regression(smoothed_values[:, i])
+        except Exception as e:
+            forecast[:, i] = np.mean(smoothed_values[:, i]) * np.ones(horizon)
+    forecast = np.maximum(forecast, 0)
+    return forecast

@@ -1,0 +1,53 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from sklearn.preprocessing import MinMaxScaler
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    # Initialize the scaler
+    scaler = MinMaxScaler(feature_range=(0, 1))
+    
+    # Fit the scaler on the training data
+    train_scaled = scaler.fit_transform(train_values)
+    
+    # Number of regions (N)
+    N = train_values.shape[1]
+    
+    # Create an empty list to store the forecasts
+    forecasts = []
+    
+    # Loop through each region
+    for i in range(N):
+        # Extract the time series for the current region
+        ts = train_scaled[:, i]
+        
+        # Fit a SARIMAX model to the time series
+        try:
+            model = SARIMAX(ts, order=(1, 1, 1), seasonal_order=(1, 1, 1, 52), enforce_stationarity=False, enforce_invertibility=False).fit(disp=False)
+        except Exception as e:
+            # If fitting fails, use a simple moving average as a fallback
+            moving_avg = np.convolve(ts, np.ones(horizon)/horizon, mode='valid')
+            forecasts.append(np.concatenate((moving_avg, [moving_avg[-1]] * (horizon - len(moving_avg)))))
+            continue
+        
+        # Generate the forecast for the specified horizon
+        forecast = model.forecast(steps=horizon)
+        
+        # Scale the forecast back to the original scale
+        forecast_original_scale = scaler.inverse_transform(forecast.reshape(-1, 1))[:, 0]
+        
+        # Ensure the forecast is non-negative
+        forecast_original_scale = np.maximum(forecast_original_scale, 0)
+        
+        # Append the forecast to the list
+        forecasts.append(forecast_original_scale)
+    
+    # Convert the list of forecasts to a NumPy array
+    forecasts_array = np.array(forecasts).reshape(horizon, N)
+    
+    return forecasts_array
+```
+
+This forecasting implementation uses a Seasonal AutoRegressive Integrated Moving Average with eXogenous factors (SARIMAX) model from the `statsmodels` library to fit each region's dengue case count time series. The model is trained on the scaled data to handle potential outliers and normalize the values. If fitting the SARIMAX model fails, a simple moving average is used as a fallback.
+
+The forecasts are then scaled back to the original scale and clipped to ensure they are non-negative. Finally, the forecasts are returned as a dense NumPy array with the required shape. This approach ensures that the forecast models temporal evolution and handles various characteristics of the time series data effectively.

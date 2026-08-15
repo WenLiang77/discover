@@ -1,0 +1,25 @@
+{
+  "step": 7,
+  "parent_number": 1,
+  "parent_state_id": "fce8db86-970a-4cb7-816e-a9a9a15898bd",
+  "parent_reward": -56.69353518744506,
+  "rollout_number": 4,
+  "global_rollout_index": 64,
+  "seed": 106,
+  "elapsed_seconds": 19.207156151009258,
+  "raw_reward": null,
+  "adjusted_reward": -250.0,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "Static validation failed: Importing from 'statsmodels.graphics.tsaplots' is not allowed.",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_colombia",
+      "stage": "static_validation"
+    }
+  }
+}

@@ -134,3 +134,56 @@ Results will be added here after the dengue experiments are completed.
 ### Forecast Visualisation
 
 Forecast visualisations will be added here after the dengue experiments are completed.
+
+---
+
+## Dengue Results
+
+Two Dengue datasets were tested with an 8-week forecasting horizon:
+
+- **Colombia** (larger multivariate weekly dataset)
+- **Panama** (smaller multivariate weekly dataset)
+
+### Summary Table
+
+| Dataset | Method | Best SMAPE | Valid Candidates | Distinct Valid |
+|---|---|---:|---:|---:|
+| Colombia | No-TTT | 35.30 | 36 / 100 | 23 |
+| Colombia | TTT | 30.31 | 62 / 100 | 14 |
+| Panama | No-TTT | 60.63 | 56 / 100 | 30 |
+| Panama | TTT | 49.98 | 72 / 100 | 13 |
+
+For both Dengue datasets, **TTT achieved a better best SMAPE than No-TTT**.  
+TTT also produced **more valid candidates**, although it showed **more duplicate behaviour** and fewer distinct valid solutions.
+
+### Forecast Comparison Figures
+
+#### Colombia — No-TTT Best Forecast
+![](results/dengue/final_100/figures/colombia_no_ttt_forecast.png)
+
+This figure shows the best 8-week forecast from the No-TTT baseline on the Colombia dataset.
+
+#### Colombia — TTT Best Forecast
+![](results/dengue/final_100/figures/colombia_ttt_forecast.png)
+
+This figure shows the best 8-week forecast found by TTT on the Colombia dataset.
+
+#### Panama — No-TTT Best Forecast
+![](results/dengue/final_100/figures/panama_no_ttt_forecast.png)
+
+This figure shows the best 8-week forecast from the No-TTT baseline on the Panama dataset.
+
+#### Panama — TTT Best Forecast
+![](results/dengue/final_100/figures/panama_ttt_forecast.png)
+
+This figure shows the best 8-week forecast found by TTT on the Panama dataset.
+
+### Saved Dengue Results
+
+The final results are stored in:
+
+- `epidemic_forecasting/results/dengue/colombia_8weeks/colombia_no_ttt_7b_100/job_6017915/`
+- `epidemic_forecasting/results/dengue/colombia_8weeks/colombia_ttt_7b_100/job_6017916/`
+- `epidemic_forecasting/results/dengue/panama_8weeks/panama_no_ttt_7b_100/job_6017917/`
+- `epidemic_forecasting/results/dengue/panama_8weeks/panama_ttt_7b_100/job_6017918/`
+

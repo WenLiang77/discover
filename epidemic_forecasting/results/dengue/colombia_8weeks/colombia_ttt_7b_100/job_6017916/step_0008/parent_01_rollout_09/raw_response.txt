@@ -1,0 +1,29 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from sklearn.preprocessing import StandardScaler
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    scaler = StandardScaler()
+    for i in range(train_values.shape[1]):
+        try:
+            scaled_train = scaler.fit_transform(train_values[:, i].reshape(-1, 1))
+            model = SARIMAX(scaled_train, order=(1, 1, 0), seasonal_order=(1, 1, 0, 4))
+            results = model.fit(disp=False)
+            scaled_forecast = results.get_forecast(steps=horizon).predicted_mean
+            forecast[:, i] = scaler.inverse_transform(scaled_forecast.reshape(-1, 1)).flatten()
+            forecast[:, i] = np.maximum(forecast[:, i], 0)
+        except Exception as e:
+            forecast[:, i] = np.full(horizon, train_values[-1, i])
+    return forecast
+```
+
+### Explanation:
+1. **Standardization**: The data is standardized using `StandardScaler` to ensure that the seasonal decomposition works effectively.
+2. **SARIMAX Model**: A Seasonal AutoRegressive Integrated Moving Average with eXogenous factors (SARIMAX) model is fit to each region's data. This model captures both trend, seasonality, and exogenous variables if needed.
+3. **Forecasting**: The model is used to forecast the next `horizon` steps. The predicted means are obtained using `get_forecast`.
+4. **Inverse Transformation**: The forecasted values are inverse-transformed back to the original scale.
+5. **Non-negativity**: The forecasted values are clipped to ensure they are non-negative.
+
+This approach ensures that the forecast models temporal evolution and handles potential issues gracefully, providing a robust solution for multi-step forecasting of dengue incidence data.

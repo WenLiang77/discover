@@ -1,0 +1,28 @@
+{
+  "step": 6,
+  "parent_number": 1,
+  "parent_state_id": "a1d78604-7480-40a3-95ba-8af881141e05",
+  "parent_reward": -56.38958514280766,
+  "rollout_number": 10,
+  "global_rollout_index": 60,
+  "seed": 102,
+  "elapsed_seconds": 35.08241731900489,
+  "raw_reward": null,
+  "adjusted_reward": -250.0,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "TypeError: mean() got an unexpected keyword argument 'initial'",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_colombia",
+      "stage": "execution",
+      "runtime_seconds": 4.599511491018347,
+      "traceback": "Traceback (most recent call last):\n  File \"<generated_forecaster>\", line 12, in dengue_forecast\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/pandas/util/_decorators.py\", line 220, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/pandas/util/_decorators.py\", line 220, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/pandas/util/_decorators.py\", line 220, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py\", line 1080, in fit\n    raise ValueError(\nValueError: use_boxcox was set at model initialization and cannot be changed\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/dengue/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 17, in dengue_forecast\nTypeError: mean() got an unexpected keyword argument 'initial'\n",
+      "timed_out": false
+    }
+  }
+}

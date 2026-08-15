@@ -1,0 +1,28 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    for i in range(train_values.shape[1]):
+        try:
+            # Try SARIMAX first
+            model = SARIMAX(train_values[:, i], order=(1, 1, 0), seasonal_order=(1, 1, 0, 4))
+            results = model.fit(disp=False)
+            forecast[:, i] = results.forecast(steps=horizon)
+        except Exception as e:
+            # If SARIMAX fails, fall back to Exponential Smoothing
+            try:
+                model = ExponentialSmoothing(train_values[:, i], trend='add', seasonal='add', seasonal_periods=4)
+                results = model.fit()
+                forecast[:, i] = results.forecast(steps=horizon)
+            except Exception as e:
+                # If both fail, use the most recent observed value
+                forecast[:, i] = train_values[-1, i]
+    
+    forecast = np.maximum(forecast, 0)
+    return forecast
+```
+
+This implementation attempts to use SARIMAX for forecasting, which is suitable for time series with trends and seasonal components. If SARIMAX fails due to various exceptions, it falls back to Exponential Smoothing, which is simpler but still capable of handling some temporal variations. If both methods fail, it defaults to using the most recent observed value for each region. This ensures that the forecast remains non-negative and has the required shape.

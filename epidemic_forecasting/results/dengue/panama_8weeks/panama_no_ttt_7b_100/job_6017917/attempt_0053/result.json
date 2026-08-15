@@ -1,0 +1,144 @@
+{
+  "attempt": 53,
+  "seed": 94,
+  "elapsed_seconds": 101.63541155599523,
+  "duplicate_valid_behavior": true,
+  "duplicate_of": "attempt_0031",
+  "evaluation": {
+    "ok": true,
+    "reward": -217.27272727272728,
+    "metrics": {
+      "smape": 177.27272727272728,
+      "mae": 26.818181818181817,
+      "rmse": 64.21448434738069,
+      "mase": 4.931575218543606
+    },
+    "error": null,
+    "behavior_signature": "2caea3954bbd19041b3cf9ea04ef462ac97f25e486b24eeca5ebfc1e03c66753",
+    "metadata": {
+      "dataset_id": "dengue_panama",
+      "forecast_horizon": 8,
+      "number_of_locations": 11,
+      "candidate_runtime_seconds": 82.30745122599183,
+      "total_runtime_seconds": 83.29597051203018,
+      "primary_metric": "smape",
+      "primary_metric_direction": "minimize",
+      "base_reward": -177.27272727272728,
+      "flat_forecast_penalty": 40.0,
+      "flat_penalty_per_series": 5.0,
+      "flat_series_count": 8,
+      "flat_series_indices": [
+        0,
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        9
+      ],
+      "flat_series_names": [
+        "BOCAS DEL TORO",
+        "CHIRIQUI",
+        "COCLE",
+        "COLON",
+        "HERRERA",
+        "KUNA YALA",
+        "LOS SANTOS",
+        "PANAMA"
+      ],
+      "flat_forecast_analysis": {
+        "recent_window": 28,
+        "flat_series_count": 8,
+        "flat_series_indices": [
+          0,
+          1,
+          2,
+          3,
+          5,
+          6,
+          7,
+          9
+        ],
+        "historically_variable": [
+          true,
+          true,
+          true,
+          true,
+          false,
+          true,
+          true,
+          true,
+          false,
+          true,
+          false
+        ],
+        "recent_mean_abs": [
+          23.857142857142858,
+          6.75,
+          3.357142857142857,
+          2.7857142857142856,
+          1.1071428571428572,
+          14.75,
+          2.0357142857142856,
+          3.5714285714285716,
+          0.32142857142857145,
+          196.85714285714286,
+          1.7857142857142858
+        ],
+        "recent_std": [
+          11.516182048734375,
+          3.225179950682708,
+          4.03745221744645,
+          3.0514299090419756,
+          1.263195655987671,
+          14.39897069734004,
+          3.5302988831091393,
+          3.5297568858873816,
+          0.7098073897982781,
+          157.15090888463007,
+          1.6335138037184673
+        ],
+        "recent_nonzero_fraction": [
+          1.0,
+          1.0,
+          0.7142857142857143,
+          0.7857142857142857,
+          0.5714285714285714,
+          0.8214285714285714,
+          0.6071428571428571,
+          0.8214285714285714,
+          0.21428571428571427,
+          1.0,
+          0.75
+        ],
+        "forecast_std": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "flat_threshold": [
+          1.1516182048734376,
+          0.32251799506827084,
+          0.40374522174464506,
+          0.3051429909041976,
+          0.1263195655987671,
+          1.439897069734004,
+          0.353029888310914,
+          0.3529756885887382,
+          0.0709807389798278,
+          15.715090888463008,
+          0.16335138037184674
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,27 @@
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import StandardScaler
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    for i in range(train_values.shape[1]):
+        try:
+            if np.allclose(train_values[:, i], train_values[-1, i]):
+                forecast[:, i] = train_values[-1, i]
+            else:
+                model = SARIMAX(train_values[:, i], order=(1, 1, 0), seasonal_order=(1, 1, 0, 4))
+                results = model.fit(disp=False)
+                forecast[:, i] = results.forecast(steps=horizon)
+                forecast[:, i] = np.maximum(forecast[:, i], 0)
+        except Exception as e:
+            scaler = StandardScaler()
+            X = np.arange(len(train_values)).reshape(-1, 1)
+            y = scaler.fit_transform(train_values[:, i].reshape(-1, 1))
+            model = LinearRegression()
+            model.fit(X, y)
+            X_forecast = np.arange(len(train_values), len(train_values) + horizon).reshape(-1, 1)
+            y_forecast = model.predict(X_forecast)
+            forecast[:, i] = scaler.inverse_transform(y_forecast)
+            forecast[:, i] = np.maximum(forecast[:, i], 0)
+    return forecast

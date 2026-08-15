@@ -1,0 +1,34 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+from statsmodels.tsa.stattools import adfuller
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    
+    for i in range(train_values.shape[1]):
+        try:
+            # Check stationarity and take differences if necessary
+            result = adfuller(train_values[:, i])
+            if result[1] > 0.05:
+                train_values[:, i] = np.diff(train_values[:, i])
+            
+            # Fit a SARIMAX model
+            model = SARIMAX(train_values[:, i], order=(1, 1, 0), seasonal_order=(1, 1, 0, 4))
+            results = model.fit(disp=False)
+            
+            # Forecast the next `horizon` steps
+            forecast[:, i] = results.get_forecast(steps=horizon).predicted_mean
+        except Exception as e:
+            # Fallback to simple mean if fitting fails
+            forecast[:, i] = np.mean(train_values[:, i]) * np.ones(horizon)
+    
+    # Ensure forecast is non-negative
+    forecast = np.maximum(forecast, 0)
+    return forecast
+```
+
+This implementation includes checks for stationarity using the Augmented Dickey-Fuller test and takes differences if the series is non-stationary. It then fits a SARIMAX model to each region's time series data and forecasts the next `horizon` steps. If fitting the model fails, it falls back to forecasting a simple mean of the historical data for each region. Finally, it ensures that all forecasted values are non-negative before returning the result.

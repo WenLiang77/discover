@@ -1,0 +1,31 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from sklearn.metrics import mean_absolute_error, mean_squared_error, symmetric_mean_absolute_percentage_error
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    # Ensure train_values is a NumPy array
+    train_values = np.array(train_values)
+    
+    # Initialize the forecasted values array
+    forecasted_values = np.zeros((horizon, train_values.shape[1]))
+    
+    # Fit a SARIMAX model for each region
+    for i in range(train_values.shape[1]):
+        try:
+            # Fit SARIMAX model
+            model = SARIMAX(train_values[:, i], order=(1, 1, 1), seasonal_order=(1, 1, 1, 52))
+            model_fit = model.fit(disp=False)
+            
+            # Forecast the next 'horizon' weeks
+            forecast = model_fit.forecast(steps=horizon)
+            forecasted_values[:, i] = forecast.clip(0)  # Clip negative values to zero
+        except Exception as e:
+            # If fitting fails, return zeros (last resort)
+            print(f"Failed to fit model for region {i}: {e}")
+            forecasted_values[:, i] = 0
+    
+    return forecasted_values
+```
+
+This forecasting function uses the SARIMAX model from `statsmodels.tsa.statespace.sarimax` to fit a time-series model for each region in the input data. The function then forecasts the next 8 weeks for each region, ensuring that the forecasted values are non-negative. If fitting a model fails for any reason, the function returns zeros for that region's forecast. This approach ensures that the forecast is generated from the historical data and models temporal evolution across the prediction horizon.

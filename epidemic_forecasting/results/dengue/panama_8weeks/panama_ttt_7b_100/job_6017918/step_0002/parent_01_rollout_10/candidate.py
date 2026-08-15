@@ -1,0 +1,35 @@
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+from statsmodels.tsa.stattools import adfuller
+from statsmodels.tsa.seasonal import seasonal_decompose
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics import mean_absolute_error, mean_squared_error, symmetric_mean_absolute_percentage_error
+
+def stationarity_test(timeseries):
+    result = adfuller(timeseries)
+    p_value = result[1]
+    return p_value < 0.05
+
+def make_stationary(timeseries):
+    decomposed = seasonal_decompose(timeseries, model='additive')
+    stationary_series = decomposed.trend + decomposed.resid
+    stationary_series.dropna(inplace=True)
+    return stationary_series
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    scaler = MinMaxScaler(feature_range=(0, 1))
+    for i in range(train_values.shape[1]):
+        try:
+            scaled_timeseries = scaler.fit_transform(train_values[:, i].reshape(-1, 1)).flatten()
+            if not stationarity_test(scaled_timeseries):
+                scaled_timeseries = make_stationary(scaled_timeseries)
+            model = SARIMAX(scaled_timeseries, order=(1, 1, 0), seasonal_order=(1, 1, 0, 4))
+            results = model.fit(disp=False)
+            forecast_scaled = results.forecast(steps=horizon)
+            forecast[i, :] = scaler.inverse_transform(forecast_scaled.reshape(-1, 1)).flatten()
+        except Exception as e:
+            forecast[i, :] = train_values[-1, i]
+    forecast = np.maximum(forecast, 0)
+    return forecast

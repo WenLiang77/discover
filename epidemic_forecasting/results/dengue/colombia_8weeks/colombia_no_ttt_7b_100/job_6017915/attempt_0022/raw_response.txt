@@ -1,0 +1,32 @@
+```python
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+
+def dengue_forecast(train_values, horizon, random_state=42):
+    # Ensure train_values is a NumPy array
+    train_values = np.array(train_values)
+    
+    # Initialize the forecast array
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    
+    # Set the random state for reproducibility
+    np.random.seed(random_state)
+    
+    # Fit an ARIMA model to each region's time series
+    for i in range(train_values.shape[1]):
+        try:
+            model = ARIMA(train_values[:, i], order=(5, 1, 0))  # Adjust the order as needed
+            model_fit = model.fit()
+            forecast[:model_fit.order[0], i] = np.nan  # Handle initial NaNs from ARIMA fit
+            forecast[model_fit.order[0]:, i] = model_fit.forecast(steps=horizon - model_fit.order[0])
+        except Exception as e:
+            # If fitting fails, fill with zeros (last observed value)
+            forecast[:, i] = np.nan_to_num(forecast[max(0, horizon - len(train_values)), i])
+    
+    # Ensure all forecasts are non-negative
+    forecast = np.maximum(forecast, 0)
+    
+    return forecast
+```
+
+This implementation uses an ARIMA model to forecast dengue cases for each region. The ARIMA model parameters are set to `(5, 1, 0)`, but these can be adjusted based on the specific characteristics of the data. The forecast for each region is handled separately, and if fitting the model fails, the forecast is filled with the last observed value. Finally, all forecasts are clipped to ensure they are non-negative.

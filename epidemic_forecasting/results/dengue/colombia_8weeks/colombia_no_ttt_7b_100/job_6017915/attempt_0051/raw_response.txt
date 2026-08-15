@@ -1,0 +1,61 @@
+```python
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.preprocessing import MinMaxScaler
+from typing import Any, Dict
+
+def preprocess_data(train_values: np.ndarray) -> np.ndarray:
+    scaler = MinMaxScaler()
+    return scaler.fit_transform(train_values)
+
+def postprocess_data(forecast: np.ndarray, scaler: MinMaxScaler) -> np.ndarray:
+    return scaler.inverse_transform(forecast)
+
+def dengue_forecast(train_values: np.ndarray, horizon: int, **kwargs: Any) -> np.ndarray:
+    if train_values.shape[1] == 0:
+        raise ValueError("Input data is empty.")
+    
+    if train_values.min() < 0:
+        raise ValueError("Input data contains negative values.")
+    
+    if not np.isfinite(train_values).all():
+        raise ValueError("Input data contains non-finite values.")
+    
+    num_regions = train_values.shape[1]
+    forecasts = np.zeros((horizon, num_regions))
+    scalers = [MinMaxScaler() for _ in range(num_regions)]
+    
+    for region in range(num_regions):
+        region_data = preprocess_data(train_values[:, region].reshape(-1, 1))
+        
+        try:
+            model = ARIMA(region_data, order=(5, 1, 0))  # Adjust the order based on your analysis
+            model_fit = model.fit(disp=0)
+            forecast_steps = model_fit.forecast(steps=horizon)
+            
+            forecasts[:, region] = postprocess_data(np.array([forecast_steps]).T, scalers[region])
+        except Exception as e:
+            # Fallback to simple scaling if model fails to fit
+            forecast_mean = np.mean(train_values[:, region], axis=0)
+            forecast_std = np.std(train_values[:, region], axis=0)
+            forecast_steps = forecast_mean + (np.random.randn(horizon) * forecast_std)
+            forecast_steps = np.clip(forecast_steps, 0, None)
+            forecasts[:, region] = forecast_steps
+    
+    return forecasts
+```
+
+### Explanation:
+1. **Data Preprocessing**: 
+   - The data is scaled using `MinMaxScaler` to ensure that all features are on a similar scale, which helps in better convergence during the training of the ARIMA model.
+
+2. **Model Training**:
+   - An ARIMA model is trained for each region. The parameters `(5, 1, 0)` can be adjusted based on the specific characteristics of the data. If the model fitting fails for some reason (e.g., insufficient data), the code falls back to a simpler approach.
+
+3. **Forecasting**:
+   - Forecasts are generated for each region using the trained ARIMA model. If the model fitting fails, a fallback approach is taken, which involves generating random forecasts based on the mean and standard deviation of the historical data.
+
+4. **Postprocessing**:
+   - The forecasts are inverse-transformed to get them back to their original scale.
+
+This approach ensures that the forecasts are both non-negative and have the correct shape. It also handles cases where the model might fail to fit due to insufficient data or other issues.

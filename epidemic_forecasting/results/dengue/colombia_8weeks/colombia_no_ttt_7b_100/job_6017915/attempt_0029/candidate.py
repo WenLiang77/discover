@@ -1,0 +1,23 @@
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+from statsmodels.stats.diagnostic import acorr_ljungbox
+from pmdarima.arima import auto_arima
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics import mean_absolute_error, mean_squared_error, symmetric_mean_absolute_percentage_error
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    scaler = MinMaxScaler(feature_range=(0, 1))
+    scaled_train_values = scaler.fit_transform(train_values)
+    for i in range(scaled_train_values.shape[1]):
+        try:
+            model = SARIMAX(scaled_train_values[:, i], order=(5, 1, 0), seasonal_order=(1, 1, 1, 7))
+            fitted_model = model.fit(disp=False)
+            forecast[:, i] = fitted_model.forecast(steps=horizon)
+        except Exception as e:
+            print(f'Failed to fit model for region {i}: {e}')
+            forecast[:, i] = np.nan
+    forecast = np.maximum(forecast, 0)
+    forecast = scaler.inverse_transform(forecast)
+    return forecast

@@ -1,0 +1,80 @@
+```python
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+from sklearn.preprocessing import StandardScaler
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    """
+    Forecast Dengue incidence for multiple regions over a given horizon.
+    
+    Parameters:
+        train_values (numpy.ndarray): A (T, N) array of historical dengue cases.
+        horizon (int): Number of future time steps to predict.
+        kwargs: Additional keyword arguments (not used).
+        
+    Returns:
+        numpy.ndarray: A (horizon, N) array of predicted dengue cases.
+    """
+    # Ensure train_values is a numpy array
+    train_values = np.array(train_values)
+    
+    # Initialize the forecast array
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    
+    # Loop through each region
+    for i in range(train_values.shape[1]):
+        region_data = train_values[:, i]
+        
+        # Check if the region has enough data to fit a model
+        if len(region_data) < 2:
+            continue
+        
+        # Scale the data
+        scaler = StandardScaler()
+        scaled_data = scaler.fit_transform(region_data.reshape(-1, 1))
+        
+        # Fit ARIMA model
+        try:
+            arima_model = ARIMA(scaled_data.flatten(), order=(5, 1, 0), seasonal_order=(1, 1, 0, 7))
+            arima_results = arima_model.fit(disp=False)
+        except Exception:
+            # If ARIMA fails, fall back to Exponential Smoothing
+            arima_results = None
+        
+        # If ARIMA failed, fit Exponential Smoothing model
+        if arima_results is None:
+            try:
+                es_model = ExponentialSmoothing(scaled_data.flatten(), trend='add', seasonal='add', seasonal_periods=7).fit(disp=False)
+            except Exception:
+                continue
+            else:
+                forecast[:horizon, i] = es_model.forecast(horizon)
+                forecast[:horizon, i] = np.clip(forecast[:horizon, i], 0, None)
+                forecast[:horizon, i] = scaler.inverse_transform(forecast[:horizon, i].reshape(-1, 1))[:, 0]
+                continue
+        
+        # Make predictions with ARIMA model
+        predictions = arima_results.forecast(steps=horizon)
+        predictions = np.clip(predictions, 0, None)
+        forecast[:horizon, i] = scaler.inverse_transform(predictions.reshape(-1, 1))[:, 0]
+    
+    return forecast
+```
+
+### Explanation:
+1. **Input Handling**: The function takes `train_values` and `horizon` as inputs and ensures `train_values` is a numpy array.
+2. **Initialization**: An empty forecast array of shape `(horizon, N)` is initialized.
+3. **Region-wise Processing**:
+   - For each region, the historical data is processed.
+   - The data is scaled using `StandardScaler`.
+4. **Model Fitting**:
+   - An ARIMA model is attempted to fit the scaled data.
+   - If ARIMA fails, an Exponential Smoothing model is used as a fallback.
+5. **Prediction and Scaling**:
+   - Predictions are made using the chosen model.
+   - The predictions are clipped to non-negative values.
+   - The inverse transformation is applied to convert the scaled predictions back to the original scale.
+6. **Output**: The forecasted values are returned as a numpy array.
+
+This approach ensures that each region's time series is modeled appropriately, and the forecast is robust against various characteristics of the data.

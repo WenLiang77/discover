@@ -1,0 +1,50 @@
+```python
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import StandardScaler
+
+def dengue_forecast(train_values, horizon, random_state=None):
+    # Ensure train_values is a NumPy array
+    train_values = np.array(train_values)
+    
+    # Initialize the scaler
+    scaler = StandardScaler()
+    
+    # Fit the scaler to the training data
+    scaler.fit(train_values)
+    
+    # Transform the training data
+    scaled_train_values = scaler.transform(train_values)
+    
+    # Prepare arrays to store forecasts
+    num_regions = scaled_train_values.shape[1]
+    forecast_shape = (horizon, num_regions)
+    forecasts = np.zeros(forecast_shape)
+    
+    # Create and fit a linear regression model for each region
+    for region in range(num_regions):
+        model = LinearRegression(random_state=random_state)
+        
+        try:
+            model.fit(np.arange(len(scaled_train_values)).reshape(-1, 1), scaled_train_values[:, region])
+            
+            # Generate future time points
+            future_time_points = np.arange(len(scaled_train_values), len(scaled_train_values) + horizon).reshape(-1, 1)
+            
+            # Predict future values
+            future_scaled_values = model.predict(future_time_points)
+            
+            # Inverse transform the predicted values
+            future_values = scaler.inverse_transform(future_scaled_values.reshape(1, -1))
+            
+            # Ensure non-negative forecasts
+            future_values = np.maximum(future_values, 0)
+            
+            # Store the forecast for the current region
+            forecasts[:, region] = future_values.flatten()
+        except Exception as e:
+            # If model fitting fails, fill with zeros
+            forecasts[:, region] = 0
+    
+    return forecasts
+```

@@ -1,0 +1,56 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import StandardScaler
+from sklearn.impute import KNNImputer
+from sklearn.pipeline import make_pipeline
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    
+    for i in range(train_values.shape[1]):
+        try:
+            # Replace non-positive values with NaN for modeling
+            train_values[:, i] = np.where(train_values[:, i] <= 0, np.nan, train_values[:, i])
+            
+            # Impute missing values using KNN imputation
+            imputer = KNNImputer(n_neighbors=2)
+            train_values_imputed = imputer.fit_transform(train_values[:, [i]])
+            
+            # Fit SARIMAX model
+            model = SARIMAX(train_values_imputed.flatten(), order=(1, 1, 0), seasonal_order=(1, 1, 0, 4), enforce_stationarity=False, enforce_invertibility=False)
+            results = model.fit(disp=False)
+            
+            # Get forecasted values
+            forecast[:, i] = results.get_forecast(steps=horizon).predicted_mean
+            
+        except Exception as e:
+            # If fitting fails, use a simple linear regression as a fallback
+            scaler = StandardScaler()
+            X_train = np.arange(len(train_values)).reshape(-1, 1)
+            y_train = train_values[:, i].reshape(-1, 1)
+            scaler.fit(X_train)
+            X_train_scaled = scaler.transform(X_train)
+            y_train_scaled = scaler.transform(y_train)
+            lin_reg = LinearRegression()
+            lin_reg.fit(X_train_scaled, y_train_scaled)
+            
+            X_forecast = np.arange(len(train_values), len(train_values) + horizon).reshape(-1, 1)
+            X_forecast_scaled = scaler.transform(X_forecast)
+            forecast_scaled = lin_reg.predict(X_forecast_scaled)
+            forecast[:, i] = scaler.inverse_transform(forecast_scaled)
+            
+        # Ensure forecasted values are non-negative
+        forecast[:, i] = np.maximum(forecast[:, i], 0)
+    
+    return forecast
+```
+
+This implementation includes several improvements over the initial attempt:
+1. **Imputation**: Non-positive values are replaced with NaN, and missing values are imputed using KNN imputation.
+2. **SARIMAX Model**: A more sophisticated SARIMAX model is used for forecasting, which can handle seasonal variations.
+3. **Fallback Mechanism**: If fitting the SARIMAX model fails, a simple linear regression is used as a fallback.
+4. **Non-Negative Forecasts**: Ensures that all forecasted values are non-negative.
+
+These modifications aim to improve the robustness and accuracy of the forecasting model while adhering to the requirements specified.

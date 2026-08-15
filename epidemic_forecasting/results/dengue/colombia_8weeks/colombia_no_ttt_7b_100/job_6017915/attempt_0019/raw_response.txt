@@ -1,0 +1,55 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+from statsmodels.tsa.stattools import adfuller
+
+def dengue_forecast(train_values, horizon, random_state=None):
+    # Ensure train_values is a NumPy array
+    train_values = np.array(train_values)
+    
+    # Initialize the forecast array with zeros
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    
+    # Loop through each region
+    for i in range(train_values.shape[1]):
+        # Extract the time series for the current region
+        ts = train_values[:, i]
+        
+        # Check if the series is stationary
+        result = adfuller(ts)
+        is_stationary = result[1] < 0.05
+        
+        # If the series is not stationary, difference it
+        if not is_stationary:
+            ts_diff = np.diff(ts)
+            ts_diff = np.insert(ts_diff, 0, 0)  # Reinsert the initial value
+        else:
+            ts_diff = ts
+        
+        # Fit a SARIMAX model to the differenced time series
+        try:
+            model = SARIMAX(ts_diff, order=(1, 1, 0), seasonal_order=(1, 1, 0, 4))
+            results = model.fit(disp=False)
+            
+            # Generate forecasts for the differenced series
+            forecast_diff = results.forecast(steps=horizon)
+            
+            # Integrate the forecasts back to the original scale
+            if not is_stationary:
+                forecast[i, :] = np.cumsum(forecast_diff) + ts[0]
+            else:
+                forecast[i, :] = forecast_diff
+        except Exception as e:
+            # If fitting fails, use a simple moving average as a fallback
+            forecast[i, :] = np.convolve(ts, np.ones(horizon)/horizon, mode='valid')
+            if len(forecast[i, :]) < horizon:
+                forecast[i, :] = np.mean(ts) * np.ones(horizon)
+    
+    # Clip negative predictions to zero
+    forecast = np.maximum(forecast, 0)
+    
+    return forecast
+```
+
+This forecasting implementation uses the SARIMAX model from the `statsmodels` library to fit a time-series model to each region's Dengue case count data. The model is then used to generate forecasts for the specified horizon. If the time series is found to be non-stationary, it is differenced before fitting the model. The forecasts are then integrated back to the original scale. If fitting the model fails, a simple moving average is used as a fallback. Negative predictions are clipped to zero to ensure the forecast remains non-negative.

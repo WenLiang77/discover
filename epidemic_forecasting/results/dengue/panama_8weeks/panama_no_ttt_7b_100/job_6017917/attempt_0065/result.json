@@ -1,0 +1,18 @@
+{
+  "attempt": 65,
+  "seed": 106,
+  "elapsed_seconds": 8.105235340015497,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "Static validation failed: Importing from 'statsmodels.graphics.tsaplots' is not allowed.",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_panama",
+      "stage": "static_validation"
+    }
+  }
+}

@@ -1,0 +1,51 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    """
+    Forecast dengue incidence using a SARIMAX model for each region.
+
+    Parameters:
+        train_values (np.ndarray): Training data with shape (T, N).
+        horizon (int): Number of future time steps to predict.
+        kwargs: Additional keyword arguments (not used).
+
+    Returns:
+        np.ndarray: Forecasted values with shape (horizon, N).
+    """
+    num_regions = train_values.shape[1]
+    forecasts = np.zeros((horizon, num_regions))
+
+    for region in range(num_regions):
+        try:
+            # Fit a SARIMAX model to the training data for the current region
+            model = SARIMAX(train_values[:, region], order=(1, 1, 1), seasonal_order=(1, 1, 1, 52))
+            results = model.fit(disp=False)
+
+            # Generate the forecast for the specified horizon
+            forecast = results.forecast(steps=horizon)
+            forecasts[:, region] = np.maximum(forecast, 0)  # Ensure non-negative values
+        except Exception as e:
+            # If fitting fails, use a simple moving average as a fallback
+            moving_avg = np.convolve(train_values[:, region], np.ones(horizon) / horizon, mode='valid')
+            padded_moving_avg = np.pad(moving_avg, ((0, horizon - len(moving_avg)), (0, 0)), mode='edge')
+            forecasts[:, region] = np.maximum(padded_moving_avg, 0)  # Ensure non-negative values
+
+    return forecasts
+```
+
+### Explanation:
+1. **Initialization**: We initialize an empty array `forecasts` to store the predicted values for each region over the specified horizon.
+2. **Loop through Regions**: For each region, we attempt to fit a SARIMAX model to the historical data.
+3. **SARIMAX Model**:
+   - We use a simple SARIMAX model with parameters `(1, 1, 1)` for both the non-seasonal and seasonal parts.
+   - The seasonal order `(1, 1, 1, 52)` assumes weekly seasonality (since there are 52 weeks in a year).
+4. **Forecast Generation**:
+   - After fitting the model, we generate the forecast for the specified horizon.
+   - Non-negative values are ensured by clipping any negative forecasts to zero.
+5. **Fallback Mechanism**:
+   - If the model fitting fails (e.g., due to insufficient data or model instability), a simple moving average is used as a fallback. This ensures that even if the model fails, some kind of prediction is made.
+6. **Return Forecasts**: Finally, the function returns the forecasted values for all regions over the specified horizon.
+
+This approach aims to provide a robust and flexible forecasting method that can handle various types of time series, including those with temporal variation, noise, and potential fitting issues.

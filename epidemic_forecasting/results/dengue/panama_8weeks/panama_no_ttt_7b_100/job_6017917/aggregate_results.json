@@ -1,0 +1,40 @@
+{
+  "runner": "qwen_only_baseline",
+  "task": {
+    "task_id": "dengue_panama_8weeks",
+    "disease_name": "Dengue",
+    "dataset_id": "dengue_panama",
+    "function_name": "dengue_forecast",
+    "prompt_path": "/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/dengue/prompt.txt",
+    "forecast_horizon": 8,
+    "frequency": "weekly",
+    "number_of_locations": 11,
+    "training_observations": 246,
+    "test_observations": 8,
+    "primary_metric": "smape",
+    "primary_metric_direction": "minimize",
+    "runtime_budget_seconds": 400.0
+  },
+  "total_generated_count": 100,
+  "valid_generated_count": 56,
+  "invalid_generated_count": 44,
+  "duplicate_behavior_count": 26,
+  "distinct_valid_count": 30,
+  "best_smape": 60.63368051895824,
+  "best_smape_source": "Attempt 28",
+  "median_smape_all_valid": 74.22389062951808,
+  "median_smape_distinct_valid": 80.04743650961925,
+  "flat_flagged_valid_count": 47,
+  "flat_flagged_distinct_valid_count": 22,
+  "best_selection_reward": -60.63368051895824,
+  "best_reward_source": "Attempt 28",
+  "best_reward_smape": 60.63368051895824,
+  "best_reward_base_reward": -60.63368051895824,
+  "best_reward_flat_series_count": 0,
+  "best_reward_flat_forecast_penalty": 0.0,
+  "ranking_files": {
+    "by_smape": "top10_by_smape.csv",
+    "by_reward": "top10_by_reward.csv",
+    "legacy_by_smape": "top10_distinct_results.csv"
+  }
+}

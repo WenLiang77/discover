@@ -1,0 +1,48 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    """
+    Forecast dengue cases using SARIMA model
+    
+    Parameters:
+    - train_values: (T, N) numpy array of historical dengue case counts
+    - horizon: int, number of future time steps to predict
+    
+    Returns:
+    - (horizon, N) numpy array of predicted dengue case counts
+    """
+    
+    T, N = train_values.shape
+    forecast = np.zeros((horizon, N))
+    
+    # Fit SARIMA model for each region
+    for region in range(N):
+        try:
+            model = SARIMAX(train_values[:, region], order=(1, 1, 1), seasonal_order=(1, 1, 0, 52))
+            results = model.fit(disp=False)
+            forecast[:, region] = results.forecast(steps=horizon)
+        except Exception as e:
+            print(f"Failed to fit model for region {region}: {e}")
+            forecast[:, region] = np.nanmean(train_values, axis=0)  # Fallback to mean value
+    
+    # Clip negative forecasts to zero
+    forecast = np.maximum(forecast, 0)
+    
+    return forecast
+```
+
+### Explanation:
+1. **Import Libraries**: We import necessary libraries including `numpy` and `SARIMAX` from `statsmodels.tsa.statespace`.
+2. **Function Definition**: The function `dengue_forecast` takes `train_values` and `horizon` as inputs.
+3. **Initialization**: Initialize the forecast array with zeros and get the dimensions of the training data.
+4. **Model Fitting Loop**: Loop through each region and attempt to fit a SARIMA model to the historical data.
+   - **Order**: `(1, 1, 1)` corresponds to ARIMA parameters, and `(1, 1, 0, 52)` accounts for yearly seasonality.
+   - **Fitting**: The model is fitted without displaying progress (`disp=False`).
+   - **Forecasting**: If successful, forecast the next `horizon` steps and store them.
+   - **Error Handling**: If fitting fails (due to insufficient data, structural breaks, etc.), capture the exception and fall back to using the mean of the historical data for that region.
+5. **Non-Negative Constraint**: Ensure that all forecasted values are non-negative by clipping any negative values to zero.
+6. **Return Forecast**: Return the completed forecast array.
+
+This approach leverages a simple yet effective statistical model (SARIMA) to handle multiple time series simultaneously and incorporates basic error handling to manage potential issues during model fitting.

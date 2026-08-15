@@ -1,0 +1,76 @@
+```python
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from sklearn.linear_model import Ridge
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import mean_squared_error
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    for i in range(train_values.shape[1]):
+        try:
+            # Check for non-positive values and replace them with NaN
+            if np.any(train_values[:, i] <= 0):
+                train_values[:, i] = np.where(train_values[:, i] <= 0, np.nan, train_values[:, i])
+
+            # Fit an ARIMA model to each region's time series
+            arima_model = ARIMA(train_values[:, i], order=(1, 1, 0))
+            arima_results = arima_model.fit()
+
+            # Get forecasts using the ARIMA model
+            forecast_arima = arima_results.forecast(steps=horizon)
+
+            # If ARIMA fails, try a SARIMAX model
+            if np.any(np.isnan(forecast_arima)):
+                sarimax_model = SARIMAX(train_values[:, i], order=(1, 1, 0), seasonal_order=(1, 1, 0, 4))
+                sarimax_results = sarimax_model.fit()
+                forecast_sarimax = sarimax_results.forecast(steps=horizon)
+                
+                # If both ARIMA and SARIMAX fail, use a linear regression model
+                if np.any(np.isnan(forecast_sarimax)):
+                    scaler = StandardScaler()
+                    X_train = np.arange(len(train_values)).reshape(-1, 1)
+                    y_train = train_values[:, i].reshape(-1, 1)
+                    scaler.fit(X_train)
+                    X_train_scaled = scaler.transform(X_train)
+                    y_train_scaled = scaler.transform(y_train)
+                    
+                    ridge_model = Ridge(alpha=1.0)
+                    ridge_model.fit(X_train_scaled, y_train_scaled)
+                    
+                    X_forecast = np.arange(len(train_values), len(train_values) + horizon).reshape(-1, 1)
+                    X_forecast_scaled = scaler.transform(X_forecast)
+                    forecast_ridge = ridge_model.predict(X_forecast_scaled)
+                    
+                    # Scale back the forecast
+                    forecast[:, i] = scaler.inverse_transform(forecast_ridge)
+                else:
+                    forecast[:, i] = forecast_sarimax
+            else:
+                forecast[:, i] = forecast_arima
+            
+            # Ensure forecast values are non-negative
+            forecast[:, i] = np.maximum(forecast[:, i], 0)
+        
+        except Exception as e:
+            print(f"Error during forecasting for region {i}: {e}")
+            # Fallback to a simple linear interpolation if everything fails
+            regional_means = np.nanmean(train_values[:, train_values[:, i] > 0], axis=1)
+            forecast[:, i] = np.interp(range(horizon), [0, len(regional_means) - 1], regional_means)
+    
+    return forecast
+```
+
+### Explanation:
+1. **Handling Non-Positive Values**: The code first replaces any non-positive values in the training data with NaN to handle potential issues with certain time-series models like ARIMA and SARIMAX.
+
+2. **ARIMA Model**: An ARIMA(1,1,0) model is fit to each region's time series. This model is chosen because it captures trends and seasonality well.
+
+3. **SARIMAX Model**: If the ARIMA model fails (due to issues like stationarity), a SARIMAX(1,1,0)(1,1,0,4) model is tried. This includes both seasonal and non-seasonal differencing.
+
+4. **Linear Regression Fallback**: If both ARIMA and SARIMAX fail, a linear regression model is used as a fallback. This ensures that even if more complex models don't work, the forecast will still be non-negative and reasonable.
+
+5. **Non-Negative Forecast**: Finally, any forecasted values are clipped to be non-negative to ensure the output meets the requirements.
+
+This approach ensures that the model handles various scenarios gracefully while producing non-negative forecasts.

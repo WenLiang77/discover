@@ -1,0 +1,28 @@
+{
+  "step": 3,
+  "parent_number": 1,
+  "parent_state_id": "a5394114-3fd8-434e-b644-238a995886ad",
+  "parent_reward": -78.58353849271481,
+  "rollout_number": 7,
+  "global_rollout_index": 27,
+  "seed": 69,
+  "elapsed_seconds": 38.41174383298494,
+  "raw_reward": null,
+  "adjusted_reward": -250.0,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "ValueError: index can't contain negative values",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_panama",
+      "stage": "execution",
+      "runtime_seconds": 8.803287472052034,
+      "traceback": "Traceback (most recent call last):\n  File \"<generated_forecaster>\", line 26, in dengue_forecast\nTypeError: ARIMA.fit() got an unexpected keyword argument 'disp'\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/dengue/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 35, in dengue_forecast\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/numpy/lib/_arraypad_impl.py\", line 792, in pad\n    pad_width = _as_pairs(pad_width, array.ndim, as_index=True)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/numpy/lib/_arraypad_impl.py\", line 527, in _as_pairs\n    raise ValueError(\"index can't contain negative values\")\nValueError: index can't contain negative values\n",
+      "timed_out": false
+    }
+  }
+}

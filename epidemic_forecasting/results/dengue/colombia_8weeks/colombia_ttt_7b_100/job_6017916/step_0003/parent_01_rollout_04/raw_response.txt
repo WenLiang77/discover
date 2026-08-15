@@ -1,0 +1,40 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    num_regions = train_values.shape[1]
+    forecasted_values = np.zeros((horizon, num_regions), dtype=float)
+    
+    for region in range(num_regions):
+        region_data = train_values[:, region]
+        
+        # Check if the region data is too short to fit a model
+        if len(region_data) < 2:
+            forecasted_values[:, region] = np.mean(region_data)
+            continue
+        
+        try:
+            # Fit an ARIMA model
+            model_arima = SARIMAX(region_data, order=(1, 1, 1), seasonal_order=(1, 1, 1, 52)).fit(disp=False)
+            forecast_arima = model_arima.get_forecast(steps=horizon)
+            
+            # Fit an Exponential Smoothing model
+            model_es = ExponentialSmoothing(region_data, trend='add', seasonal='add', seasonal_periods=52).fit(disp=False)
+            forecast_es = model_es.get_forecast(steps=horizon)
+            
+            # Combine forecasts using a weighted average
+            weights = [0.6, 0.4]
+            combined_forecast = weights[0] * forecast_arima.predicted_mean + weights[1] * forecast_es.predicted_mean
+            
+            # Ensure non-negative forecasts
+            forecasted_values[:, region] = np.maximum(combined_forecast, 0)
+        except Exception as e:
+            # Fallback to simple exponential smoothing if model fitting fails
+            forecasted_values[:, region] = ExponentialSmoothing(region_data, trend='add', seasonal='add', seasonal_periods=52).fit(disp=False).forecast(steps=horizon)
+    
+    return forecasted_values
+```
+
+This implementation uses both SARIMAX (an ARIMA model with exogenous variables) and Exponential Smoothing to forecast dengue cases for each region. It combines the forecasts from these two models using a weighted average to potentially improve performance. If either model fitting fails, it falls back to using simple exponential smoothing. The forecasts are ensured to be non-negative before being returned.

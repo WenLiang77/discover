@@ -1,0 +1,53 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+from statsmodels.tsa.stattools import adfuller
+from statsmodels.stats.diagnostic import acorr_ljungbox
+from statsmodels.tsa.seasonal import seasonal_decompose
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    num_regions = train_values.shape[1]
+    forecasted_values = np.zeros((horizon, num_regions), dtype=np.float64)
+
+    for region in range(num_regions):
+        region_data = train_values[:, region]
+
+        # Check if the time series is stationary
+        _, p_value, _, _, _ = adfuller(region_data)
+        is_stationary = p_value < 0.05
+
+        if is_stationary:
+            # If stationary, use SARIMA
+            order = (1, 1, 1)
+            seasonal_order = (1, 1, 1, 52)
+        else:
+            # If not stationary, decompose and fit ARIMA
+            decomposition = seasonal_decompose(region_data, model='additive')
+            trend = decomposition.trend
+            seasonal = decomposition.seasonal
+            residual = decomposition.resid
+
+            trend_order = (1, 1)
+            seasonal_order = (1, 1, 1, 52)
+            model = SARIMAX(trend, order=trend_order, seasonal_order=seasonal_order).fit(disp=False)
+            residual_order = model.order + model.seasonal_order
+            residual_model = SARIMAX(residual, order=residual_order, seasonal_order=(0, 0, 0, 0)).fit(disp=False)
+            fitted_resid = residual_model.predict(start=0, end=len(region_data)-1)
+
+            # Combine components
+            forecasted_region_data = trend[-1] * seasonal[-1] * fitted_resid[-1]
+            forecasted_values[:, region] = forecasted_region_data
+        else:
+            # Fit a SARIMAX model directly on the data
+            model = SARIMAX(region_data, order=(1, 1, 1), seasonal_order=(1, 1, 1, 52)).fit(disp=False)
+            forecasted_region_data = model.forecast(steps=horizon)
+            forecasted_values[:, region] = forecasted_region_data
+
+    # Ensure non-negative forecasts
+    forecasted_values = np.maximum(forecasted_values, 0)
+
+    return forecasted_values
+```
+
+This implementation uses the SARIMAX model to forecast dengue cases, which accounts for both trend and seasonality in the data. It checks if the time series is stationary before selecting the appropriate model. Non-negative forecasts are ensured by clipping any negative values to zero.

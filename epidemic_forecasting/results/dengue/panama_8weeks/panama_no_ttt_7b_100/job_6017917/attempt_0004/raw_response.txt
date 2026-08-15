@@ -1,0 +1,29 @@
+```python
+import numpy as np
+from sklearn.linear_model import ARIMA
+from sklearn.multioutput import MultiOutputRegressor
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    # Initialize the forecast array with zeros
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    
+    # Fit an ARIMA model for each region
+    for i in range(train_values.shape[1]):
+        try:
+            # Create an ARIMA model and fit it to the training data for the current region
+            model = ARIMA(train_values[:, i], order=(5, 1, 0))
+            model_fit = model.fit()
+            
+            # Forecast the next 'horizon' steps for the current region
+            forecast[:, i] = model_fit.forecast(steps=horizon)
+        except Exception as e:
+            # If fitting fails, fill the forecast with zeros for that region
+            forecast[:, i] = 0
+    
+    # Ensure the forecast is non-negative
+    forecast = np.maximum(forecast, 0)
+    
+    return forecast
+```
+
+This implementation uses the ARIMA model from `sklearn` to forecast dengue cases for each region separately. The ARIMA model is chosen because it is suitable for time-series forecasting and can handle both trend and seasonality. The forecast for each region is then combined into a single NumPy array and returned. If fitting the ARIMA model fails for any region (which might happen due to insufficient data or other reasons), the forecast for that region is filled with zeros. Finally, the forecast is clipped to ensure that all predicted values are non-negative.

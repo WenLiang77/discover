@@ -1,0 +1,38 @@
+```python
+import numpy as np
+from sklearn.preprocessing import MinMaxScaler
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    scaler = MinMaxScaler()
+    train_scaled = scaler.fit_transform(train_values)
+    
+    forecasts = []
+    for i in range(train_values.shape[1]):
+        region_data = train_scaled[:, i]
+        
+        try:
+            # Fit a SARIMA model to the region's data
+            model = SARIMAX(region_data, order=(1, 1, 0), seasonal_order=(1, 1, 0, 52))
+            results = model.fit(disp=False)
+            
+            # Generate forecasts
+            forecast = results.get_forecast(steps=horizon).predicted_mean
+            
+            # Scale back to original scale
+            forecast_original_scale = scaler.inverse_transform(forecast.reshape(-1, 1))[:, 0]
+            
+            # Ensure non-negativity
+            forecast_original_scale = np.maximum(forecast_original_scale, 0)
+            
+            forecasts.append(forecast_original_scale)
+        except Exception as e:
+            # Fallback: use a simple moving average if model fails
+            avg_value = np.mean(region_data)
+            forecast_original_scale = np.full(horizon, avg_value)
+            forecasts.append(np.maximum(forecast_original_scale, 0))
+    
+    return np.array(forecasts).reshape(horizon, -1)
+```
+
+This implementation uses the SARIMAX model from `statsmodels.tsa.statespace.sarimax` to fit a time-series model to each region's data. The forecasts are then scaled back to the original scale and clipped to ensure they are non-negative. If the model fitting fails for any reason (e.g., due to insufficient data), a simple moving average is used as a fallback. This ensures that the forecast is always valid and non-negative, even if the model-based approach does not work well for some regions.

@@ -1,0 +1,52 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from sklearn.preprocessing import StandardScaler
+from sklearn.impute import KNNImputer
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    # Parameters
+    random_state = kwargs.get('random_state', None)
+    frequency = kwargs.get('frequency', 'W')  # Weekly data
+    
+    # Prepare data
+    scaler = StandardScaler()
+    imputer = KNNImputer(n_neighbors=2)
+    
+    train_scaled = scaler.fit_transform(train_values)
+    train_imputed = imputer.fit_transform(train_scaled)
+    
+    forecasts = []
+    
+    for i in range(train_values.shape[1]):
+        # Fit SARIMAX model
+        try:
+            model = SARIMAX(train_imputed[:, i], order=(1, 1, 0), seasonal_order=(1, 1, 0, 52), enforce_stationarity=False, enforce_invertibility=False, random_state=random_state)
+            results = model.fit(disp=False)
+            
+            # Forecast
+            forecast = results.forecast(steps=horizon)
+            forecast = np.clip(scaler.inverse_transform(forecast.reshape(-1, 1)), 0, None).flatten()
+        except Exception as e:
+            print(f"Failed to fit model for region {i}: {e}")
+            forecast = np.zeros(horizon)
+        
+        forecasts.append(forecast)
+    
+    return np.array(forecasts).T
+```
+
+### Explanation:
+1. **Data Preparation**:
+   - **Standard Scaling**: Scales the data to have zero mean and unit variance.
+   - **KNN Imputation**: Fills missing values using the K-nearest neighbors method.
+
+2. **Model Training and Forecasting**:
+   - **SARIMAX Model**: A state-space approach to univariate time series modeling. It includes both ARIMA (Autoregressive Integrated Moving Average) and seasonal components.
+   - **Fitting and Forecasting**: For each region, the SARIMAX model is fitted to the historical data, and then used to forecast the next `horizon` weeks. If fitting fails, a zero-filled forecast is produced.
+
+3. **Post-Processing**:
+   - **Inverse Scaling**: Transforms the forecasted values back to their original scale.
+   - **Clipping**: Ensures that the forecasted values are non-negative.
+
+This implementation ensures that the forecast is non-negative and has the required shape. It handles potential errors during model fitting gracefully by providing a zero-filled forecast in case of failure. The use of SARIMAX allows for capturing temporal variations and seasonality in the time series data.

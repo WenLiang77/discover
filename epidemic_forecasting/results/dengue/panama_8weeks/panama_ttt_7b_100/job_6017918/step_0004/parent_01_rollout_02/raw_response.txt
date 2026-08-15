@@ -1,0 +1,38 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.tsa.arima.model import ARIMA
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+from scipy.stats import zscore
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    
+    for i in range(train_values.shape[1]):
+        try:
+            # Check if the series is stationary or needs differencing
+            diff_series = train_values[:, i].diff().dropna()
+            if len(diff_series) == 0:
+                continue
+            
+            # Try different models based on the characteristics of the series
+            if (np.abs(zscore(diff_series)) < 3).all():
+                # If the series is roughly stationary, use SARIMAX
+                model = SARIMAX(train_values[:, i], order=(1, 1, 0), seasonal_order=(1, 1, 0, 4))
+            else:
+                # Otherwise, use ARIMA
+                model = ARIMA(train_values[:, i], order=(1, 1, 0))
+            
+            results = model.fit(disp=False)
+            forecast[:, i] = results.forecast(steps=horizon)
+        except Exception as e:
+            # Fallback to Exponential Smoothing if model fitting fails
+            model = ExponentialSmoothing(train_values[:, i], trend='add', seasonal='mul', seasonal_periods=4)
+            results = model.fit(optimized=True)
+            forecast[:, i] = results.forecast(steps=horizon)
+    
+    forecast = np.maximum(forecast, 0)
+    return forecast
+```
+
+This implementation attempts to model the dengue incidence data using different time-series models depending on the stationarity of the series. It starts with SARIMAX if the differences of the series are roughly stationary, otherwise it falls back to ARIMA. If both models fail to fit, it resorts to Exponential Smoothing with additive trend and multiplicative seasonal component. This approach ensures that the forecast is non-negative and models temporal evolution rather than simply outputting a constant sequence.

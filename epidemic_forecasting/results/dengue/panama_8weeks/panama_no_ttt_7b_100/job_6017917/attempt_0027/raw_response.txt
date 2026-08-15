@@ -1,0 +1,43 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from sklearn.preprocessing import StandardScaler
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    # Initialize the scaler
+    scaler = StandardScaler()
+    
+    # Scale the training data
+    scaled_train = scaler.fit_transform(train_values)
+    
+    # Prepare forecasts
+    forecasts = []
+    
+    # Loop over each region (column in the dataset)
+    for region in range(scaled_train.shape[1]):
+        # Fit SARIMAX model to the historical data for this region
+        try:
+            model = SARIMAX(scaled_train[:, region], order=(1, 1, 1), seasonal_order=(1, 1, 1, 52))
+            model_fit = model.fit(disp=False)
+            
+            # Generate the forecast for the specified horizon
+            forecast = model_fit.forecast(steps=horizon)
+            
+            # Reverse scale the forecast
+            forecast_unscaled = scaler.inverse_transform(np.array([forecast]).T)
+            
+            # Ensure non-negativity and finite values
+            forecast_unscaled = np.maximum(forecast_unscaled, 0)
+            
+            forecasts.append(forecast_unscaled.flatten())
+        except Exception as e:
+            # Fallback: use a simple average forecast
+            avg_value = np.mean(train_values[-1, region])
+            forecast_unscaled = np.full(horizon, avg_value).reshape(-1, 1)
+            forecasts.append(np.maximum(forecast_unscaled, 0).flatten())
+    
+    # Combine all region forecasts into a single array
+    return np.vstack(forecasts).reshape(horizon, train_values.shape[1])
+```
+
+This code defines a forecasting function `dengue_forecast` that uses the SARIMAX model from `statsmodels.tsa.statespace.sarimax` to fit a time-series model to each region's historical dengue incidence data. It then generates forecasts for the specified horizon and ensures that the predictions are non-negative and finite. If fitting the SARIMAX model fails due to exceptions, it falls back to a simpler approach of using a constant forecast based on the last observed value.

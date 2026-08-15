@@ -1,0 +1,18 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    for i in range(train_values.shape[1]):
+        try:
+            # Fit SARIMAX model with a simple seasonal component
+            model = SARIMAX(train_values[:, i], order=(1, 1, 0), seasonal_order=(1, 1, 0, 4))
+            results = model.fit(disp=False)
+            forecast[:, i] = results.forecast(steps=horizon)
+            forecast[:, i] = np.maximum(forecast[:, i], 0)
+        except Exception as e:
+            # Fallback to a simple moving average if model fitting fails
+            forecast[:, i] = np.mean(train_values[:, i]) * np.ones(horizon)
+    return forecast
+```

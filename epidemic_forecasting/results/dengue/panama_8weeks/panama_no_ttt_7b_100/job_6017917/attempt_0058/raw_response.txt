@@ -1,0 +1,35 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+from statsmodels.tools.eval_measures import smape, mae, rmse, mase
+from pmdarima import auto_arima
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    # Initialize the forecasted values array
+    forecasts = np.zeros((horizon, train_values.shape[1]))
+    
+    # Loop through each region to fit and make predictions
+    for i in range(train_values.shape[1]):
+        try:
+            # Fit an ARIMA model to the historical data
+            model = auto_arima(train_values[:, i], seasonal=True, m=52)
+            
+            # Forecast the next 'horizon' steps
+            forecast = model.predict(n_periods=horizon)
+            
+            # Ensure the forecast is non-negative
+            forecast = np.maximum(forecast, 0)
+            
+            # Store the forecast
+            forecasts[:, i] = forecast
+        
+        except Exception as e:
+            # If fitting fails, use a simple moving average as a fallback
+            ma_value = np.mean(train_values[:, i])
+            forecasts[:, i] = ma_value
+    
+    return forecasts
+```
+
+This code defines a `dengue_forecast` function that fits an ARIMA model to the historical dengue case count data for each region and makes predictions for the next 8 weeks. If fitting the ARIMA model fails for any reason (e.g., due to insufficient data), a simple moving average is used as a fallback. This approach ensures that the forecast is always non-negative and has the required shape.

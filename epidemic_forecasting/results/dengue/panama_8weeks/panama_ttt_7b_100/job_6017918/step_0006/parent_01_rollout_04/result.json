@@ -1,0 +1,28 @@
+{
+  "step": 6,
+  "parent_number": 1,
+  "parent_state_id": "87669bfa-1c4e-4314-8738-1aaca3ecf97d",
+  "parent_reward": -64.41066650530689,
+  "rollout_number": 4,
+  "global_rollout_index": 54,
+  "seed": 96,
+  "elapsed_seconds": 33.432649233029224,
+  "raw_reward": null,
+  "adjusted_reward": -250.0,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "LinAlgError: SVD did not converge in Linear Least Squares",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_panama",
+      "stage": "execution",
+      "runtime_seconds": 4.565542447031476,
+      "traceback": "Traceback (most recent call last):\n  File \"<generated_forecaster>\", line 11, in dengue_forecast\nTypeError: ARIMA.fit() got an unexpected keyword argument 'disp'\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/dengue/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 24, in dengue_forecast\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/numpy/lib/_polynomial_impl.py\", line 675, in polyfit\n    c, resids, rank, s = lstsq(lhs, rhs, rcond)\n                         ^^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/numpy/linalg/_linalg.py\", line 2540, in lstsq\n    x, resids, rank, s = _umath_linalg.lstsq(a, b, rcond,\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/numpy/linalg/_linalg.py\", line 156, in _raise_linalgerror_lstsq\n    raise LinAlgError(\"SVD did not converge in Linear Least Squares\")\nnumpy.linalg.LinAlgError: SVD did not converge in Linear Least Squares\n",
+      "timed_out": false
+    }
+  }
+}

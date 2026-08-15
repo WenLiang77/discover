@@ -1,0 +1,24 @@
+```python
+import numpy as np
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    num_regions = train_values.shape[1]
+    forecasted_values = np.zeros((horizon, num_regions))
+    
+    for region in range(num_regions):
+        # Fit an Exponential Smoothing model to the historical data
+        try:
+            model = ExponentialSmoothing(train_values[:, region], trend='add', seasonal='add', seasonal_periods=52).fit(disp=False)
+            forecasted_values[:, region] = model.forecast(horizon)
+        except Exception as e:
+            # If fitting fails, use a simple moving average as a fallback
+            moving_avg = np.convolve(train_values[:, region], np.ones(4)/4, mode='valid')
+            forecasted_values[:len(moving_avg), region] = moving_avg
+            forecasted_values[len(moving_avg):, region] = moving_avg[-1]
+    
+    # Ensure the forecast is non-negative
+    forecasted_values = np.maximum(forecasted_values, 0)
+    
+    return forecasted_values
+```

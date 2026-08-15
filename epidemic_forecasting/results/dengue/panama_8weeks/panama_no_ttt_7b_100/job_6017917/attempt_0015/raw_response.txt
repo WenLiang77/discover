@@ -1,0 +1,34 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    num_regions, _ = train_values.shape
+    forecast = np.zeros((horizon, num_regions))
+    
+    for region in range(num_regions):
+        region_data = train_values[:, region]
+        
+        # Check if the region's data is sparse or approximately constant
+        if len(region_data[region_data > 0]) < 10 or np.allclose(region_data, region_data[0]):
+            forecast[:, region] = np.mean(region_data)
+        else:
+            try:
+                # Fit a SARIMA model
+                sarima_model = SARIMAX(region_data, order=(1, 1, 1), seasonal_order=(1, 1, 1, 52))
+                sarima_fit = sarima_model.fit(disp=False)
+                
+                # Forecast the next 'horizon' steps
+                forecast[:, region] = sarima_fit.forecast(steps=horizon)
+            except Exception as e:
+                # If fitting fails, fall back to exponential smoothing
+                try:
+                    exponential_smoothed = ExponentialSmoothing(region_data, seasonal_periods=52).fit()
+                    forecast[:, region] = exponential_smoothed.forecast(steps=horizon)
+                except Exception as e:
+                    # If everything fails, use the mean of the region's data
+                    forecast[:, region] = np.mean(region_data)
+                    
+    return np.maximum(forecast, 0)
+```

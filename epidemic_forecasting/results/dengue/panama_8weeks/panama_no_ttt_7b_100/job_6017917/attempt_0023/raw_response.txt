@@ -1,0 +1,43 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from sklearn.preprocessing import StandardScaler
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    # Initialize the scaler
+    scaler = StandardScaler()
+    
+    # Fit the scaler on the training data
+    scaled_train = scaler.fit_transform(train_values)
+    
+    # Prepare forecasts
+    forecasts = []
+    
+    # Loop over each region
+    for i in range(scaled_train.shape[1]):
+        # Extract the series for the current region
+        series = scaled_train[:, i]
+        
+        # Fit a SARIMAX model
+        try:
+            model = SARIMAX(series, order=(1, 1, 0), seasonal_order=(1, 1, 0, 52))
+            results = model.fit(disp=False)
+            
+            # Generate forecasts for the specified horizon
+            forecast = results.forecast(steps=horizon)
+        except Exception as e:
+            # If the model fails, use a simple moving average
+            forecast = np.mean(series[-10:], axis=0) * np.ones(horizon)
+        
+        # Scale back the forecast
+        unscaled_forecast = scaler.inverse_transform(np.array(forecast).reshape(-1, 1))[:, 0]
+        
+        # Ensure the forecast is non-negative
+        unscaled_forecast = np.maximum(unscaled_forecast, 0)
+        
+        # Append the forecast to the list
+        forecasts.append(unscaled_forecast)
+    
+    # Convert the list of forecasts to a NumPy array
+    return np.array(forecasts).reshape(horizon, -1)
+```

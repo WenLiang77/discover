@@ -1,0 +1,33 @@
+```python
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    # Ensure the train_values are non-negative
+    train_values = np.maximum(train_values, 0)
+    
+    # Initialize the forecast array
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    
+    # Iterate over each region
+    for i in range(train_values.shape[1]):
+        # Fit an ARIMA model to the historical data
+        try:
+            model = ARIMA(train_values[:, i], order=(5, 1, 0))  # You can adjust the order based on your data
+            model_fit = model.fit()
+            
+            # Generate the forecast for the specified horizon
+            forecast[:, i] = model_fit.forecast(steps=horizon)
+        except Exception as e:
+            # If fitting fails, use a simple moving average as a fallback
+            forecast[:, i] = np.convolve(train_values[:, i], np.ones(horizon)/horizon, mode='valid')
+            forecast = np.pad(forecast, ((0, horizon - forecast.shape[0]), (0, 0)), mode='constant', constant_values=np.nan)
+            forecast = np.nan_to_num(forecast, nan=0.0)
+    
+    # Ensure the forecast is non-negative
+    forecast = np.maximum(forecast, 0)
+    
+    return forecast
+```
+
+This forecasting function uses an ARIMA model to fit the historical data for each region and generates forecasts for the specified horizon. If fitting the ARIMA model fails, it falls back to a simple moving average. The forecast is then ensured to be non-negative before being returned.

@@ -1,0 +1,37 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+from statsmodels.stats.diagnostic import acorr_ljungbox
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    # Ensure train_values is a NumPy array
+    train_values = np.array(train_values)
+    
+    # Initialize the forecast array with zeros
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    
+    # Iterate over each region
+    for i in range(train_values.shape[1]):
+        # Extract the time series for the current region
+        ts = train_values[:, i]
+        
+        # Fit a SARIMA model to the time series
+        try:
+            model = SARIMAX(ts, order=(1, 1, 1), seasonal_order=(1, 1, 1, 52))
+            results = model.fit(disp=False)
+            
+            # Forecast the next 'horizon' steps
+            forecast[:, i] = results.forecast(steps=horizon)
+        except Exception as e:
+            # If fitting fails, use a simple moving average as a fallback
+            moving_avg = np.convolve(ts, np.ones(horizon)/horizon, mode='valid')
+            forecast[:len(moving_avg), i] = moving_avg
+        
+        # Ensure all predictions are non-negative
+        forecast[:, i] = np.maximum(forecast[:, i], 0)
+    
+    return forecast
+```
+
+This forecasting implementation uses the Seasonal AutoRegressive Integrated Moving Average (SARIMA) model from `statsmodels`. The model is trained on the historical dengue case-count time series for each region and then used to forecast the next 8 weeks. If the model fitting fails for any region, a simple moving average is used as a fallback. The resulting forecast is clipped to ensure all predicted values are non-negative.

@@ -1,0 +1,46 @@
+```python
+import numpy as np
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+from sklearn.linear_model import Ridge
+from sklearn.multioutput import MultiOutputRegressor
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    
+    for i in range(train_values.shape[1]):
+        try:
+            # Check if the series has any non-positive values
+            if np.any(train_values[:, i] <= 0):
+                train_values[:, i] = np.where(train_values[:, i] <= 0, np.nan, train_values[:, i])
+            
+            # Fit an exponential smoothing model
+            model = ExponentialSmoothing(train_values[:, i], trend='add', seasonal='mul', seasonal_periods=52)
+            fit_model = model.fit(use_boxcox=True)
+            forecast[:, i] = fit_model.forecast(steps=horizon)
+        
+        except Exception as e:
+            # If fitting fails, fall back to a ridge regression model
+            if np.all(np.isnan(train_values[:, i])):
+                regional_means = np.nanmean(train_values[:, train_values[:, i] > 0], axis=1)
+                forecast[:, i] = np.interp(range(horizon), [0, len(regional_means) - 1], regional_means)
+            else:
+                scaler = StandardScaler()
+                X_train = np.arange(len(train_values)).reshape(-1, 1)
+                y_train = train_values[:, i].reshape(-1, 1)
+                scaler.fit(X_train)
+                X_train_scaled = scaler.transform(X_train)
+                y_train_scaled = scaler.transform(y_train)
+                
+                ridge_regressor = Ridge(alpha=0.5)
+                ridge_regressor.fit(X_train_scaled, y_train_scaled)
+                
+                X_forecast = np.arange(len(train_values), len(train_values) + horizon).reshape(-1, 1)
+                X_forecast_scaled = scaler.transform(X_forecast)
+                forecast_scaled = ridge_regressor.predict(X_forecast_scaled)
+                forecast[:, i] = scaler.inverse_transform(forecast_scaled)
+        
+        # Ensure the forecast is non-negative
+        forecast[:, i] = np.maximum(forecast[:, i], 0)
+    
+    return forecast
+```

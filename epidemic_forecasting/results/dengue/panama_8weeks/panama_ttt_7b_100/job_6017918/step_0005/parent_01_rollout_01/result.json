@@ -1,0 +1,25 @@
+{
+  "step": 5,
+  "parent_number": 1,
+  "parent_state_id": "87669bfa-1c4e-4314-8738-1aaca3ecf97d",
+  "parent_reward": -64.41066650530689,
+  "rollout_number": 1,
+  "global_rollout_index": 41,
+  "seed": 83,
+  "elapsed_seconds": 33.44528832600918,
+  "raw_reward": null,
+  "adjusted_reward": -250.0,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "Static validation failed: Importing from 'statsmodels.graphics.tsaplots' is not allowed.",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_panama",
+      "stage": "static_validation"
+    }
+  }
+}

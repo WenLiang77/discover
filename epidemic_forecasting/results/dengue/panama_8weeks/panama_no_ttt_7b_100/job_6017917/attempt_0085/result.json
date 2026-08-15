@@ -1,0 +1,21 @@
+{
+  "attempt": 85,
+  "seed": 126,
+  "elapsed_seconds": 15.893322110990994,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "ValueError: non-broadcastable output operand with shape (8,1) doesn't match the broadcast shape (8,11)",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_panama",
+      "stage": "execution",
+      "runtime_seconds": 1.27746269403724,
+      "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/dengue/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 27, in dengue_forecast\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/preprocessing/_data.py\", line 613, in inverse_transform\n    X -= self.min_\nValueError: non-broadcastable output operand with shape (8,1) doesn't match the broadcast shape (8,11)\n",
+      "timed_out": false
+    }
+  }
+}

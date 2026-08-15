@@ -1,0 +1,933 @@
+Job ID: 6017917
+Node: nid010727
+Start: 2026-08-15T07:09:48+00:00
+Python: /scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/bin/python
+Python 3.11.7
+torch: 2.11.0+cu126
+CUDA available: True
+GPU: NVIDIA GH200 120GB
+BF16 supported: True
+GPU 0: NVIDIA GH200 120GB (UUID: GPU-b77df8b2-9ff9-0a1d-c07a-f2fec120990d)
+================================================================================
+Dengue Qwen-only baseline
+================================================================================
+Output directory: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/results/dengue/panama_8weeks/panama_no_ttt_7b_100/job_6017917
+Task: {'task_id': 'dengue_panama_8weeks', 'disease_name': 'Dengue', 'dataset_id': 'dengue_panama', 'function_name': 'dengue_forecast', 'prompt_path': '/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/dengue/prompt.txt', 'forecast_horizon': 8, 'frequency': 'weekly', 'number_of_locations': 11, 'training_observations': 246, 'test_observations': 8, 'primary_metric': 'smape', 'primary_metric_direction': 'minimize', 'runtime_budget_seconds': 400.0}
+================================================================================
+Loading inference-only baseline model
+================================================================================
+Model: Qwen/Qwen2.5-Coder-7B-Instruct
+Compute dtype: torch.bfloat16
+
+--------------------------------------------------------------------------------
+Attempt 1/100 (seed=42)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: Static validation failed: Importing from 'statsmodels.graphics.tsaplots' is not allowed.
+
+--------------------------------------------------------------------------------
+Attempt 2/100 (seed=43)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: TypeError: SARIMAX.__init__() missing 1 required positional argument: 'endog'
+
+--------------------------------------------------------------------------------
+Attempt 3/100 (seed=44)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: Evaluation failed: Forecast contains negative values. Minimum prediction: -0.26048768920932774.
+
+--------------------------------------------------------------------------------
+Attempt 4/100 (seed=45)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: ImportError: cannot import name 'ARIMA' from 'sklearn.linear_model' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/linear_model/__init__.py)
+
+--------------------------------------------------------------------------------
+Attempt 5/100 (seed=46)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -105.61874280840212
+Metrics: {'smape': 65.61874280840212, 'mae': 11.34806523837366, 'rmse': 29.01469897313243, 'mase': 2.592140551624507}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 6/100 (seed=47)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -65.54088781265483
+Metrics: {'smape': 65.54088781265483, 'mae': 12.70696995594734, 'rmse': 31.322287423215002, 'mase': 3.227826503931892}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 7/100 (seed=48)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: ValueError: could not broadcast input array from shape (243,) into shape (8,)
+
+--------------------------------------------------------------------------------
+Attempt 8/100 (seed=49)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -84.22389062951808
+Metrics: {'smape': 74.22389062951808, 'mae': 16.294825008862055, 'rmse': 47.943607795147805, 'mase': 2.8310228884185635}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 9/100 (seed=50)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: TypeError: ARIMA.fit() got an unexpected keyword argument 'disp'
+
+--------------------------------------------------------------------------------
+Attempt 10/100 (seed=51)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -84.22389062951808
+Metrics: {'smape': 74.22389062951808, 'mae': 16.294825008862055, 'rmse': 47.943607795147805, 'mase': 2.8310228884185635}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 11/100 (seed=52)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -78.58353849271481
+Metrics: {'smape': 68.58353849271481, 'mae': 15.966845265676001, 'rmse': 46.52513138637153, 'mase': 2.982395847882795}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 12/100 (seed=53)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -84.22389062951808
+Metrics: {'smape': 74.22389062951808, 'mae': 16.294825008862055, 'rmse': 47.943607795147805, 'mase': 2.8310228884185635}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 13/100 (seed=54)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -85.56438655297117
+Metrics: {'smape': 65.56438655297117, 'mae': 13.076385605561903, 'rmse': 35.7480319514333, 'mase': 2.628931743635891}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 14/100 (seed=55)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -99.68498053675663
+Metrics: {'smape': 84.68498053675663, 'mae': 15.753382361620565, 'rmse': 43.12774748875679, 'mase': 3.026940697596096}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 15/100 (seed=56)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: IndexError: index 11 is out of bounds for axis 1 with size 11
+
+--------------------------------------------------------------------------------
+Attempt 16/100 (seed=57)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: ValueError: non-broadcastable output operand with shape (8,1) doesn't match the broadcast shape (8,11)
+
+--------------------------------------------------------------------------------
+Attempt 17/100 (seed=58)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -85.56438655297117
+Metrics: {'smape': 65.56438655297117, 'mae': 13.076385605561903, 'rmse': 35.7480319514333, 'mase': 2.628931743635891}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 18/100 (seed=59)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -225.4027251059829
+Metrics: {'smape': 185.4027251059829, 'mae': 26.546782190327995, 'rmse': 63.93473993082896, 'mase': 4.847788176934141}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 19/100 (seed=60)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: Static validation failed: Importing from 'statsmodels.graphics.tsaplots' is not allowed.
+
+--------------------------------------------------------------------------------
+Attempt 20/100 (seed=61)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -84.2198620057655
+Metrics: {'smape': 74.2198620057655, 'mae': 16.2954131593861, 'rmse': 47.94567819095966, 'mase': 2.8311782702359354}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 21/100 (seed=62)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: ImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)
+
+--------------------------------------------------------------------------------
+Attempt 22/100 (seed=63)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: TypeError: dengue_forecast() got an unexpected keyword argument 'budget_s'
+
+--------------------------------------------------------------------------------
+Attempt 23/100 (seed=64)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: ValueError: non-broadcastable output operand with shape (8,1) doesn't match the broadcast shape (8,11)
+
+--------------------------------------------------------------------------------
+Attempt 24/100 (seed=65)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: IndexError: index 11 is out of bounds for axis 1 with size 11
+
+--------------------------------------------------------------------------------
+Attempt 25/100 (seed=66)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: ImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)
+
+--------------------------------------------------------------------------------
+Attempt 26/100 (seed=67)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -78.58353849271481
+Metrics: {'smape': 68.58353849271481, 'mae': 15.966845265676001, 'rmse': 46.52513138637153, 'mase': 2.982395847882795}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 27/100 (seed=68)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -135.77133515700913
+Metrics: {'smape': 135.77133515700913, 'mae': 51.45454545454545, 'rmse': 108.6032186028991, 'mase': 32.72362632951632}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 28/100 (seed=69)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -60.63368051895824
+Metrics: {'smape': 60.63368051895824, 'mae': 14.650842700052744, 'rmse': 37.38332880445568, 'mase': 3.2842205872511183}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 29/100 (seed=70)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: Static validation failed: Importing from 'statsmodels.graphics.tsaplots' is not allowed.
+
+--------------------------------------------------------------------------------
+Attempt 30/100 (seed=71)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -92.77458734891572
+Metrics: {'smape': 67.77458734891572, 'mae': 16.26134475481319, 'rmse': 46.00316021899161, 'mase': 3.158674005664172}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 31/100 (seed=72)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -217.27272727272728
+Metrics: {'smape': 177.27272727272728, 'mae': 26.818181818181817, 'rmse': 64.21448434738069, 'mase': 4.931575218543606}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 32/100 (seed=73)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -126.73740977953688
+Metrics: {'smape': 126.73740977953688, 'mae': 52.84428206382854, 'rmse': 112.70131732357852, 'mase': 33.636743627097864}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 33/100 (seed=74)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -131.6354905481192
+Metrics: {'smape': 91.63549054811921, 'mae': 17.06559497413156, 'rmse': 41.4971581135312, 'mase': 3.3695930303338133}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 34/100 (seed=75)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -84.22389062951808
+Metrics: {'smape': 74.22389062951808, 'mae': 16.294825008862055, 'rmse': 47.943607795147805, 'mase': 2.8310228884185635}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 35/100 (seed=76)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -85.76905152928089
+Metrics: {'smape': 70.76905152928089, 'mae': 15.326591207476504, 'rmse': 43.935305543242904, 'mase': 2.76928665346528}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 36/100 (seed=77)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: TypeError: dengue_forecast() got an unexpected keyword argument 'budget_s'
+
+--------------------------------------------------------------------------------
+Attempt 37/100 (seed=78)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: NameError: name 'print' is not defined
+
+--------------------------------------------------------------------------------
+Attempt 38/100 (seed=79)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -97.93404228511747
+Metrics: {'smape': 77.93404228511747, 'mae': 15.539016633064081, 'rmse': 44.02568414340223, 'mase': 2.8345008662021893}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 39/100 (seed=80)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: ImportError: cannot import name 'inv_boxcox' from 'scipy.stats' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/scipy/stats/__init__.py)
+
+--------------------------------------------------------------------------------
+Attempt 40/100 (seed=81)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -163.15014445623538
+Metrics: {'smape': 123.15014445623538, 'mae': 16.444032652963514, 'rmse': 37.08550490299861, 'mase': 3.875596611063159}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 41/100 (seed=82)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -88.04173703640609
+Metrics: {'smape': 73.04173703640609, 'mae': 15.326555356845796, 'rmse': 43.935104505887296, 'mase': 2.769289587536932}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 42/100 (seed=83)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -88.04173703640609
+Metrics: {'smape': 73.04173703640609, 'mae': 15.326555356845796, 'rmse': 43.935104505887296, 'mase': 2.769289587536932}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 43/100 (seed=84)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -85.56438655297117
+Metrics: {'smape': 65.56438655297117, 'mae': 13.076385605561903, 'rmse': 35.7480319514333, 'mase': 2.628931743635891}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 44/100 (seed=85)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -88.04173703640609
+Metrics: {'smape': 73.04173703640609, 'mae': 15.326555356845796, 'rmse': 43.935104505887296, 'mase': 2.769289587536932}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 45/100 (seed=86)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -126.1968408604307
+Metrics: {'smape': 126.1968408604307, 'mae': 50.022204266002625, 'rmse': 104.8237771068664, 'mase': 31.501393198046888}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 46/100 (seed=87)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: ValueError: could not broadcast input array from shape (8,1) into shape (8,)
+
+--------------------------------------------------------------------------------
+Attempt 47/100 (seed=88)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -122.16083073412102
+Metrics: {'smape': 82.16083073412102, 'mae': 15.756818181818181, 'rmse': 37.668554524961536, 'mase': 3.204703681112204}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 48/100 (seed=89)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -84.22389062951808
+Metrics: {'smape': 74.22389062951808, 'mae': 16.294825008862055, 'rmse': 47.943607795147805, 'mase': 2.8310228884185635}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 49/100 (seed=90)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: ValueError: X has 5 features, but StandardScaler is expecting 1 features as input.
+
+--------------------------------------------------------------------------------
+Attempt 50/100 (seed=91)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: Static validation failed: Importing from 'statsmodels.graphics.tsaplots' is not allowed.
+
+--------------------------------------------------------------------------------
+Attempt 51/100 (seed=92)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -120.9660944075039
+Metrics: {'smape': 120.9660944075039, 'mae': 17.793711620122714, 'rmse': 41.60246329665167, 'mase': 3.9498834484565575}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 52/100 (seed=93)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -88.04173703640609
+Metrics: {'smape': 73.04173703640609, 'mae': 15.326555356845796, 'rmse': 43.935104505887296, 'mase': 2.769289587536932}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 53/100 (seed=94)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -217.27272727272728
+Metrics: {'smape': 177.27272727272728, 'mae': 26.818181818181817, 'rmse': 64.21448434738069, 'mase': 4.931575218543606}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 54/100 (seed=95)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: Static validation failed: Importing from 'statsmodels.graphics.tsaplots' is not allowed.
+
+--------------------------------------------------------------------------------
+Attempt 55/100 (seed=96)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: NameError: name 'print' is not defined
+
+--------------------------------------------------------------------------------
+Attempt 56/100 (seed=97)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -85.56323998051884
+Metrics: {'smape': 65.56323998051884, 'mae': 13.076323247582707, 'rmse': 35.748115349533585, 'mase': 2.628912934755273}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 57/100 (seed=98)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -131.6354905481192
+Metrics: {'smape': 91.63549054811921, 'mae': 17.06559497413156, 'rmse': 41.4971581135312, 'mase': 3.3695930303338133}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 58/100 (seed=99)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: Static validation failed: Importing from 'statsmodels.graphics.tsaplots' is not allowed.
+
+--------------------------------------------------------------------------------
+Attempt 59/100 (seed=100)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: ValueError: operands could not be broadcast together with shapes (11,8) (11,) (11,8) 
+
+--------------------------------------------------------------------------------
+Attempt 60/100 (seed=101)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -229.34661490582948
+Metrics: {'smape': 189.34661490582948, 'mae': 26.72723238674791, 'rmse': 64.1636218878981, 'mase': 4.914725283927458}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 61/100 (seed=102)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -105.61874280840212
+Metrics: {'smape': 65.61874280840212, 'mae': 11.34806523837366, 'rmse': 29.01469897313243, 'mase': 2.592140551624507}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 62/100 (seed=103)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: Static validation failed: Importing from 'statsmodels.tools.eval_measures' is not allowed.
+
+--------------------------------------------------------------------------------
+Attempt 63/100 (seed=104)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -84.2198620057655
+Metrics: {'smape': 74.2198620057655, 'mae': 16.2954131593861, 'rmse': 47.94567819095966, 'mase': 2.8311782702359354}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 64/100 (seed=105)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -84.22389062951808
+Metrics: {'smape': 74.22389062951808, 'mae': 16.294825008862055, 'rmse': 47.943607795147805, 'mase': 2.8310228884185635}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 65/100 (seed=106)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: Static validation failed: Importing from 'statsmodels.graphics.tsaplots' is not allowed.
+
+--------------------------------------------------------------------------------
+Attempt 66/100 (seed=107)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -84.22389062951808
+Metrics: {'smape': 74.22389062951808, 'mae': 16.294825008862055, 'rmse': 47.943607795147805, 'mase': 2.8310228884185635}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 67/100 (seed=108)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -84.22389062951808
+Metrics: {'smape': 74.22389062951808, 'mae': 16.294825008862055, 'rmse': 47.943607795147805, 'mase': 2.8310228884185635}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 68/100 (seed=109)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -131.6354905481192
+Metrics: {'smape': 91.63549054811921, 'mae': 17.06559497413156, 'rmse': 41.4971581135312, 'mase': 3.3695930303338133}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 69/100 (seed=110)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: Static validation failed: Importing from 'statsmodels.graphics.tsaplots' is not allowed.
+
+--------------------------------------------------------------------------------
+Attempt 70/100 (seed=111)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -84.22389062951808
+Metrics: {'smape': 74.22389062951808, 'mae': 16.294825008862055, 'rmse': 47.943607795147805, 'mase': 2.8310228884185635}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 71/100 (seed=112)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -104.87935874748318
+Metrics: {'smape': 69.87935874748318, 'mae': 16.679492349383455, 'rmse': 48.038121970278354, 'mase': 3.0208436649293393}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 72/100 (seed=113)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: ImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)
+
+--------------------------------------------------------------------------------
+Attempt 73/100 (seed=114)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -89.26609590988602
+Metrics: {'smape': 84.26609590988602, 'mae': 14.730971885227614, 'rmse': 34.42798177627816, 'mase': 3.187850870688176}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 74/100 (seed=115)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: TypeError: ARIMA.fit() got an unexpected keyword argument 'disp'
+
+--------------------------------------------------------------------------------
+Attempt 75/100 (seed=116)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: TypeError: ExponentialSmoothing.fit() got an unexpected keyword argument 'disp'
+
+--------------------------------------------------------------------------------
+Attempt 76/100 (seed=117)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -85.56438655297117
+Metrics: {'smape': 65.56438655297117, 'mae': 13.076385605561903, 'rmse': 35.7480319514333, 'mase': 2.628931743635891}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 77/100 (seed=118)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: Static validation failed: Importing from 'statsmodels.graphics.tsaplots' is not allowed.
+
+--------------------------------------------------------------------------------
+Attempt 78/100 (seed=119)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -88.04173703640609
+Metrics: {'smape': 73.04173703640609, 'mae': 15.326555356845796, 'rmse': 43.935104505887296, 'mase': 2.769289587536932}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 79/100 (seed=120)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: Evaluation failed: Forecast contains negative values. Minimum prediction: -0.5679967033181259.
+
+--------------------------------------------------------------------------------
+Attempt 80/100 (seed=121)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: ValueError: index can't contain negative values
+
+--------------------------------------------------------------------------------
+Attempt 81/100 (seed=122)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: Static validation failed: Importing from 'statsmodels.graphics.tsaplots' is not allowed.
+
+--------------------------------------------------------------------------------
+Attempt 82/100 (seed=123)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: Static validation failed: Importing from 'statsmodels.graphics.tsaplots' is not allowed.
+
+--------------------------------------------------------------------------------
+Attempt 83/100 (seed=124)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -230.36881706506318
+Metrics: {'smape': 190.36881706506318, 'mae': 26.7079808306501, 'rmse': 64.14778990302025, 'mase': 4.896059479812971}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 84/100 (seed=125)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: ValueError: could not broadcast input array from shape (227,) into shape (8,)
+
+--------------------------------------------------------------------------------
+Attempt 85/100 (seed=126)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: ValueError: non-broadcastable output operand with shape (8,1) doesn't match the broadcast shape (8,11)
+
+--------------------------------------------------------------------------------
+Attempt 86/100 (seed=127)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -87.10301898382235
+Metrics: {'smape': 72.10301898382235, 'mae': 15.420975251612752, 'rmse': 44.220908820038545, 'mase': 2.8419024339538663}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 87/100 (seed=128)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: TypeError: dengue_forecast() got an unexpected keyword argument 'budget_s'
+
+--------------------------------------------------------------------------------
+Attempt 88/100 (seed=129)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -147.62789726706944
+Metrics: {'smape': 142.62789726706944, 'mae': 60.591784661501265, 'rmse': 69.71097193654036, 'mase': 44.20278349686648}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 89/100 (seed=130)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -84.22389062951808
+Metrics: {'smape': 74.22389062951808, 'mae': 16.294825008862055, 'rmse': 47.943607795147805, 'mase': 2.8310228884185635}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 90/100 (seed=131)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: IndexError: index 11 is out of bounds for axis 1 with size 11
+
+--------------------------------------------------------------------------------
+Attempt 91/100 (seed=132)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: TypeError: dengue_forecast() got an unexpected keyword argument 'budget_s'
+
+--------------------------------------------------------------------------------
+Attempt 92/100 (seed=133)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -229.34661490582948
+Metrics: {'smape': 189.34661490582948, 'mae': 26.72723238674791, 'rmse': 64.1636218878981, 'mase': 4.914725283927458}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 93/100 (seed=134)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -97.93404228511747
+Metrics: {'smape': 77.93404228511747, 'mae': 15.539016633064081, 'rmse': 44.02568414340223, 'mase': 2.8345008662021893}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 94/100 (seed=135)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: TypeError: dengue_forecast() got an unexpected keyword argument 'budget_s'
+
+--------------------------------------------------------------------------------
+Attempt 95/100 (seed=136)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -88.04173703640609
+Metrics: {'smape': 73.04173703640609, 'mae': 15.326555356845796, 'rmse': 43.935104505887296, 'mase': 2.769289587536932}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 96/100 (seed=137)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: ValueError: use_boxcox was set at model initialization and cannot be changed
+
+--------------------------------------------------------------------------------
+Attempt 97/100 (seed=138)
+--------------------------------------------------------------------------------
+Valid: False
+Reward: None
+Metrics: {}
+Duplicate behavior: False
+Error: ImportError: cannot import name 'symmetric_mean_absolute_percentage_error' from 'sklearn.metrics' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/metrics/__init__.py)
+
+--------------------------------------------------------------------------------
+Attempt 98/100 (seed=139)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -60.63368051895824
+Metrics: {'smape': 60.63368051895824, 'mae': 14.650842700052744, 'rmse': 37.38332880445568, 'mase': 3.2842205872511183}
+Duplicate behavior: True
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 99/100 (seed=140)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -62.059533089655616
+Metrics: {'smape': 62.059533089655616, 'mae': 13.471402669826984, 'rmse': 33.85268605815479, 'mase': 3.269407675433003}
+Duplicate behavior: False
+Error: None
+
+--------------------------------------------------------------------------------
+Attempt 100/100 (seed=141)
+--------------------------------------------------------------------------------
+Valid: True
+Reward: -127.83777674219323
+Metrics: {'smape': 127.83777674219323, 'mae': 56.26988636363637, 'rmse': 121.50997200005664, 'mase': 36.40777067045894}
+Duplicate behavior: False
+Error: None
+
+================================================================================
+Baseline experiment complete
+================================================================================
+Valid generated attempts: 56
+Invalid generated attempts: 44
+Duplicate behaviours: 26
+Best generated: {'attempt': 28, 'reward': -60.63368051895824, 'metrics': {'smape': 60.63368051895824, 'mae': 14.650842700052744, 'rmse': 37.38332880445568, 'mase': 3.2842205872511183}, 'duplicate_valid_behavior': False, 'candidate_path': '/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/results/dengue/panama_8weeks/panama_no_ttt_7b_100/job_6017917/attempt_0028/candidate.py'}
+Best model-generated result: {'attempt': 28, 'reward': -60.63368051895824, 'metrics': {'smape': 60.63368051895824, 'mae': 14.650842700052744, 'rmse': 37.38332880445568, 'mase': 3.2842205872511183}, 'duplicate_valid_behavior': False, 'candidate_path': '/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/results/dengue/panama_8weeks/panama_no_ttt_7b_100/job_6017917/attempt_0028/candidate.py'}
+Results: /lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/results/dengue/panama_8weeks/panama_no_ttt_7b_100/job_6017917
+Exported experiment artifacts to:
+/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/results/dengue/panama_8weeks/panama_no_ttt_7b_100/job_6017917
+End: 2026-08-15T08:04:42+00:00

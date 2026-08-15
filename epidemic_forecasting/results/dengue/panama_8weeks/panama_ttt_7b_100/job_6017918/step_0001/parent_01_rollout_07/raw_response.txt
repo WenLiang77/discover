@@ -1,0 +1,26 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    n_regions = train_values.shape[1]
+    forecasts = np.zeros((horizon, n_regions))
+    
+    for region in range(n_regions):
+        try:
+            # Fit a SARIMAX model to the historical data for the region
+            model = SARIMAX(train_values[:, region], order=(1, 1, 1), seasonal_order=(1, 1, 1, 52))
+            results = model.fit(disp=False)
+            
+            # Generate forecasts for the specified horizon
+            forecast = results.get_forecast(steps=horizon).predicted_mean
+            forecasts[:, region] = forecast.clip(0)  # Ensure non-negative predictions
+        except Exception as e:
+            # If fitting fails, use a simple moving average as a fallback
+            rolling_mean = np.convolve(train_values[:, region], np.ones(horizon)/horizon, mode='valid')
+            forecasts[:len(rolling_mean), region] = np.pad(rolling_mean, (0, horizon - len(rolling_mean)), 'edge').clip(0)
+    
+    return forecasts
+```
+
+This implementation uses the SARIMAX model from the `statsmodels` library to fit each region's historical data and generate forecasts. If fitting fails for any region, it falls back to a simple moving average as a basic forecast. The forecasts are clipped to ensure they are non-negative and have the required shape.

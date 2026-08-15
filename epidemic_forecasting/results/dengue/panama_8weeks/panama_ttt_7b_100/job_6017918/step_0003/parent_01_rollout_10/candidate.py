@@ -1,0 +1,28 @@
+import numpy as np
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    """
+    Forecast Dengue incidence using an Exponential Smoothing model for each region.
+    
+    Parameters:
+        train_values (np.ndarray): Historical dengue incidence data with shape (T, N).
+        horizon (int): Number of future time steps to predict.
+        kwargs: Additional keyword arguments (not used).
+        
+    Returns:
+        np.ndarray: Forecasted dengue incidence data with shape (horizon, N).
+    """
+    num_regions = train_values.shape[1]
+    forecasted_values = np.zeros((horizon, num_regions))
+    for region in range(num_regions):
+        try:
+            model = ExponentialSmoothing(train_values[:, region], trend='add', seasonal='mul', seasonal_periods=52)
+            model_fit = model.fit(use_boxcox=True, remove_bias=False)
+            forecast = model_fit.forecast(steps=horizon)
+            forecasted_values[:, region] = forecast.clip(min=0)
+        except Exception as e:
+            rolling_mean = np.convolve(train_values[:, region], np.ones(horizon) / horizon, mode='valid')
+            padded_rolling_mean = np.pad(rolling_mean, (0, horizon - len(rolling_mean)), mode='constant', constant_values=np.nan)
+            forecasted_values[:, region] = padded_rolling_mean.clip(min=0)
+    return forecasted_values

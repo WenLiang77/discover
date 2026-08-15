@@ -1,0 +1,19 @@
+{
+  "attempt": 3,
+  "seed": 44,
+  "elapsed_seconds": 10.207210885011591,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "Evaluation failed: Forecast contains negative values. Minimum prediction: -0.26048768920932774.",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_panama",
+      "stage": "prediction_validation_or_metrics",
+      "runtime_seconds": 3.436942883010488
+    }
+  }
+}

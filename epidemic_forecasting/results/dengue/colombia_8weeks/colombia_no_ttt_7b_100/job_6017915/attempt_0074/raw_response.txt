@@ -1,0 +1,39 @@
+```python
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.exceptions import NotFittedError
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    """
+    Forecast Dengue incidence using ARIMA models for each region.
+    
+    :param train_values: np.ndarray of shape (T, N), where T is the number of historical time steps and N is the number of regions.
+    :param horizon: int, the number of future time steps to predict.
+    :return: np.ndarray of shape (horizon, N), containing the predicted Dengue incidences.
+    """
+    N = train_values.shape[1]
+    forecasts = np.zeros((horizon, N))
+    
+    scaler = MinMaxScaler()
+    train_scaled = scaler.fit_transform(train_values)
+    
+    for i in range(N):
+        try:
+            arima_model = ARIMA(train_scaled[:, i], order=(5,1,0))  # Adjust the order based on your data analysis
+            arima_model_fit = arima_model.fit(disp=False)
+            forecast_scaled = arima_model_fit.forecast(steps=horizon)
+            forecast = scaler.inverse_transform(forecast_scaled.reshape(-1, 1)).flatten()
+            
+            # Ensure forecast is non-negative
+            forecast = np.maximum(forecast, 0)
+            forecasts[:, i] = forecast
+        except NotFittedError:
+            # Fallback to a simple moving average if ARIMA fails
+            ma_value = np.mean(train_values[-10:, i])  # Use the last 10 weeks as a fallback
+            forecasts[:, i] = ma_value
+    
+    return forecasts
+```
+
+This implementation uses ARIMA models to forecast Dengue incidences for each region. It scales the data to improve the performance of the ARIMA model and ensures that the forecasts are non-negative. If the ARIMA model fails to fit, it falls back to a simple moving average forecast. This approach ensures that the forecast is both temporally evolving and non-negative, adhering to the problem requirements.

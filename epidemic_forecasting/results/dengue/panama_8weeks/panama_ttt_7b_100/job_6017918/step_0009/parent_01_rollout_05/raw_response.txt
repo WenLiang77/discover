@@ -1,0 +1,66 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    for i in range(train_values.shape[1]):
+        try:
+            # Ensure the training data does not contain non-positive values
+            if np.any(train_values[:, i] <= 0):
+                train_values[:, i] = np.where(train_values[:, i] <= 0, np.nan, train_values[:, i])
+            
+            # Fit a SARIMAX model to the data
+            model = SARIMAX(train_values[:, i], order=(1, 1, 0), seasonal_order=(1, 1, 0, 4), enforce_stationarity=False, enforce_invertibility=False)
+            results = model.fit(disp=False)
+            
+            # Get the forecasted values
+            forecast[:, i] = results.get_forecast(steps=horizon).predicted_mean
+            
+        except Exception as e:
+            # If fitting fails, use a simple linear regression as a fallback
+            if np.all(np.isnan(train_values[:, i])):
+                regional_means = np.nanmean(train_values[:, train_values[:, i] > 0], axis=1)
+                forecast[:, i] = np.interp(range(horizon), [0, len(regional_means) - 1], regional_means)
+            else:
+                # Perform linear regression on scaled data
+                scaler = StandardScaler()
+                X_train = np.arange(len(train_values)).reshape(-1, 1)
+                y_train = train_values[:, i].reshape(-1, 1)
+                scaler.fit(X_train)
+                X_train_scaled = scaler.transform(X_train)
+                y_train_scaled = scaler.transform(y_train)
+                lin_reg = LinearRegression()
+                lin_reg.fit(X_train_scaled, y_train_scaled)
+                
+                # Generate forecast and scale back
+                X_forecast = np.arange(len(train_values), len(train_values) + horizon).reshape(-1, 1)
+                X_forecast_scaled = scaler.transform(X_forecast)
+                forecast_scaled = lin_reg.predict(X_forecast_scaled)
+                forecast[:, i] = scaler.inverse_transform(forecast_scaled)
+    
+    # Ensure the forecast values are non-negative
+    forecast = np.maximum(forecast, 0)
+    return forecast
+```
+
+### Explanation:
+1. **Data Preprocessing**:
+   - The function iterates over each region's time series.
+   - Non-positive values in the training data are replaced with NaNs to handle zero-inflated series.
+   
+2. **Model Fitting**:
+   - A `SARIMAX` model is fit to the historical data for each region.
+   - The model parameters `(1, 1, 0)` and seasonal parameters `(1, 1, 0, 4)` are chosen based on typical characteristics of time series forecasting.
+   - The model is fit without enforcing stationarity to allow for more flexibility in capturing trends and seasonality.
+   
+3. **Forecast Generation**:
+   - If the model fitting succeeds, the forecasted values are obtained using `results.get_forecast(steps=horizon).predicted_mean`.
+   - If the model fitting fails due to issues like convergence problems or other exceptions, a simple linear regression model is used as a fallback.
+   - Linear regression is applied on scaled data (`X_train_scaled` and `y_train_scaled`) to ensure better performance on non-stationary and noisy series.
+   
+4. **Output Handling**:
+   - The forecasted values are clipped to ensure they are non-negative before being returned.
+   - The function ensures the returned forecast has the correct shape `(horizon, N)`.
+
+This approach aims to provide a robust and flexible solution that can handle various types of time series data while ensuring non-negativity and the required shape of the output.

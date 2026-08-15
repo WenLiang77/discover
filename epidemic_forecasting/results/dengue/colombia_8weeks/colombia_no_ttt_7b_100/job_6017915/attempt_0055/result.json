@@ -1,0 +1,21 @@
+{
+  "attempt": 55,
+  "seed": 96,
+  "elapsed_seconds": 8.081094266031869,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "NameError: name 'print' is not defined",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_colombia",
+      "stage": "execution",
+      "runtime_seconds": 0.9899385640164837,
+      "traceback": "Traceback (most recent call last):\n  File \"<generated_forecaster>\", line 10, in dengue_forecast\nTypeError: ARIMA.fit() got an unexpected keyword argument 'disp'\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/dengue/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 13, in dengue_forecast\nNameError: name 'print' is not defined\n",
+      "timed_out": false
+    }
+  }
+}

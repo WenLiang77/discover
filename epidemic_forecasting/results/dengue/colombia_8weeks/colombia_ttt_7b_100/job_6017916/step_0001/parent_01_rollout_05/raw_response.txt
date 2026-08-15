@@ -1,0 +1,37 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    # Initialize the forecast array with zeros
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    
+    # Loop through each region
+    for i in range(train_values.shape[1]):
+        try:
+            # Fit a SARIMA model to the historical data for the current region
+            model = SARIMAX(train_values[:, i], order=(1, 1, 0), seasonal_order=(1, 1, 0, 4))
+            results = model.fit(disp=False)
+            
+            # Use the fitted model to make forecasts
+            forecast[:, i] = results.forecast(steps=horizon)
+        except Exception as e:
+            # If model fitting fails, fill the forecast with the most recent observed value
+            forecast[:, i] = train_values[-1, i]
+    
+    # Ensure the forecast is non-negative
+    forecast = np.maximum(forecast, 0)
+    
+    return forecast
+```
+
+### Explanation:
+1. **Initialization**: We initialize a forecast array filled with zeros, which will store the predicted values for each region over the specified horizon.
+2. **Loop Through Regions**: For each region (column in the `train_values` array), we attempt to fit a SARIMA model.
+   - **SARIMA Model**: The SARIMA model is chosen because it is versatile and can handle both trend and seasonality in time series data. The parameters `(1, 1, 0)` and `(1, 1, 0, 4)` are typical choices for weekly data.
+3. **Model Fitting**: We fit the SARIMA model to the historical data for the current region.
+4. **Forecasting**: Using the fitted model, we predict the next `horizon` steps for the current region.
+5. **Exception Handling**: If fitting the model fails for any reason, we catch the exception and set the forecast for that region to the most recent observed value.
+6. **Non-Negative Constraint**: Finally, we ensure that all forecasted values are non-negative by applying the `np.maximum` function.
+
+This approach ensures that the forecast is generated based on the historical data and handles cases where model fitting might fail gracefully.

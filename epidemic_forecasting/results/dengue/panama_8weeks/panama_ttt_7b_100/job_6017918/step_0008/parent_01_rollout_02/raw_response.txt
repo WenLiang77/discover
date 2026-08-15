@@ -1,0 +1,50 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    for i in range(train_values.shape[1]):
+        try:
+            # Ensure there are no non-positive values in the training data
+            train_values[:, i] = np.maximum(train_values[:, i], 1e-6)
+            
+            # Fit a SARIMA model to the time series
+            model = SARIMAX(train_values[:, i], order=(1, 1, 0), seasonal_order=(1, 1, 0, 4), enforce_stationarity=False, enforce_invertibility=False)
+            results = model.fit(disp=False)
+            
+            # Get the forecast for the specified horizon
+            forecast[:, i] = results.get_forecast(steps=horizon).predicted_mean
+            
+            # Ensure the forecast is non-negative
+            forecast[:, i] = np.maximum(forecast[:, i], 0)
+        
+        except Exception as e:
+            # If fitting fails, use a simple linear regression as a fallback
+            if np.all(np.isnan(train_values[:, i])):
+                regional_means = np.nanmean(train_values[:, train_values[:, i] > 0], axis=1)
+                forecast[:, i] = np.interp(range(horizon), [0, len(regional_means) - 1], regional_means)
+            else:
+                # Fit a linear regression model to the scaled data
+                scaler = StandardScaler()
+                X_train = np.arange(len(train_values)).reshape(-1, 1)
+                y_train = train_values[:, i].reshape(-1, 1)
+                scaler.fit(X_train)
+                X_train_scaled = scaler.transform(X_train)
+                y_train_scaled = scaler.transform(y_train)
+                lin_reg = LinearRegression()
+                lin_reg.fit(X_train_scaled, y_train_scaled)
+                
+                # Generate forecast and transform back
+                X_forecast = np.arange(len(train_values), len(train_values) + horizon).reshape(-1, 1)
+                X_forecast_scaled = scaler.transform(X_forecast)
+                forecast_scaled = lin_reg.predict(X_forecast_scaled)
+                forecast[:, i] = scaler.inverse_transform(forecast_scaled)
+                
+                # Ensure the forecast is non-negative
+                forecast[:, i] = np.maximum(forecast[:, i], 0)
+    
+    return forecast
+```
+
+This implementation ensures that the forecast is non-negative and follows the requirements specified in the problem statement. It uses a SARIMA model for most regions and falls back to linear regression if the SARIMA model cannot be fit. The forecast is adjusted to be non-negative at each step.

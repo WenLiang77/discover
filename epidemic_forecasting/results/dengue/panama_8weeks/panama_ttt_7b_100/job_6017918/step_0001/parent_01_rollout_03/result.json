@@ -1,0 +1,28 @@
+{
+  "step": 1,
+  "parent_number": 1,
+  "parent_state_id": "a1abdb30-9e67-468f-8167-b79593066c7b",
+  "parent_reward": null,
+  "rollout_number": 3,
+  "global_rollout_index": 3,
+  "seed": 45,
+  "elapsed_seconds": 23.586599229020067,
+  "raw_reward": null,
+  "adjusted_reward": -250.0,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "ImportError: cannot import name 'ARIMA' from 'sklearn.linear_model' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/linear_model/__init__.py)",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_panama",
+      "stage": "execution",
+      "runtime_seconds": 5.828810263017658,
+      "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/dengue/evaluator.py\", line 380, in _candidate_worker\n    exec(compiled, namespace, namespace)\n  File \"<generated_forecaster>\", line 2, in <module>\nImportError: cannot import name 'ARIMA' from 'sklearn.linear_model' (/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/sklearn/linear_model/__init__.py)\n",
+      "timed_out": false
+    }
+  }
+}

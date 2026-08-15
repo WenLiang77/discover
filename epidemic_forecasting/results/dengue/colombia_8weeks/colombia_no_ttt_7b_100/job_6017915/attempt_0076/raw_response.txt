@@ -1,0 +1,37 @@
+```python
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    """
+    Forecast dengue incidence for multiple regions over a given horizon.
+    
+    Parameters:
+    - train_values: numpy.ndarray, shape (T, N), historical dengue cases
+    - horizon: int, number of future weeks to forecast
+    
+    Returns:
+    - numpy.ndarray, shape (horizon, N), forecasted dengue cases
+    """
+    num_regions = train_values.shape[1]
+    forecasts = np.zeros((horizon, num_regions))
+    
+    for region in range(num_regions):
+        # Fit an ARIMA model to the historical data for each region
+        try:
+            arima_model = ARIMA(train_values[:, region], order=(5,1,0))  # Example order, adjust as needed
+            arima_model_fit = arima_model.fit()
+            forecast_steps = arima_model_fit.forecast(steps=horizon)
+            forecasts[:, region] = forecast_steps
+        except Exception as e:
+            # If model fitting fails, return zeros for that region
+            print(f"Failed to fit ARIMA model for region {region}: {e}")
+            forecasts[:, region] = 0
+    
+    # Ensure the forecast is non-negative
+    forecasts = np.maximum(forecasts, 0)
+    
+    return forecasts
+```
+
+This implementation fits an ARIMA model to the historical dengue case data for each region and then uses these models to forecast the next 8 weeks. If a model fitting fails (which could happen due to various reasons like insufficient data or model instability), it returns zeros for that region. Finally, it ensures that all forecasted values are non-negative before returning them.

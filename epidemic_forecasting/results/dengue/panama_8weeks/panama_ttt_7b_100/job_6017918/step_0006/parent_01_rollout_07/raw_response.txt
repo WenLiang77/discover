@@ -1,0 +1,49 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from sklearn.linear_model import RidgeCV
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    
+    for i in range(train_values.shape[1]):
+        if np.any(train_values[:, i] <= 0):
+            train_values[:, i] = np.where(train_values[:, i] <= 0, np.nan, train_values[:, i])
+        
+        try:
+            # Fit SARIMA model
+            model = SARIMAX(train_values[:, i], order=(1, 1, 0), seasonal_order=(1, 1, 0, 4), enforce_stationarity=False, enforce_invertibility=False)
+            results = model.fit(disp=False)
+            
+            # Get forecasted values
+            forecast[:, i] = results.get_forecast(steps=horizon).predicted_mean
+        except Exception as e:
+            # If SARIMA fails, try Ridge regression with time as feature
+            if np.all(np.isnan(train_values[:, i])):
+                regional_means = np.nanmean(train_values[:, train_values[:, i] > 0], axis=1)
+                forecast[:, i] = np.interp(range(horizon), [0, len(regional_means) - 1], regional_means)
+            else:
+                X_train = np.arange(len(train_values)).reshape(-1, 1)
+                y_train = train_values[:, i].reshape(-1, 1)
+                
+                # Fit Ridge regression model
+                ridge_cv = RidgeCV(cv=5)
+                ridge_cv.fit(X_train, y_train.ravel())
+                
+                # Generate forecast
+                X_forecast = np.arange(len(train_values), len(train_values) + horizon).reshape(-1, 1)
+                forecast[:, i] = ridge_cv.predict(X_forecast)
+    
+    # Ensure forecast is non-negative
+    forecast = np.maximum(forecast, 0)
+    return forecast
+```
+
+### Explanation of Changes
+1. **SARIMAX Model**: The initial approach uses a SARIMAX model to capture both trend and seasonality. This model is more suitable for time series with significant temporal patterns.
+  
+2. **Ridge Regression Fallback**: If the SARIMAX model fails (e.g., due to insufficient data or instability), a Ridge regression model is used. This model is simpler but can handle linear relationships well.
+
+3. **Non-Negative Constraint**: The final step ensures that all forecasts are non-negative, which is crucial for count data like dengue cases.
+
+This implementation aims to provide a robust and flexible approach to forecasting dengue incidence across multiple regions while handling potential issues gracefully.

@@ -1,0 +1,21 @@
+{
+  "attempt": 24,
+  "seed": 65,
+  "elapsed_seconds": 14.411588488030247,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "IndexError: index 11 is out of bounds for axis 1 with size 11",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_panama",
+      "stage": "execution",
+      "runtime_seconds": 1.6356748859980144,
+      "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/dengue/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 28, in dengue_forecast\n  File \"<generated_forecaster>\", line 16, in fit_arima_models\n  File \"<generated_forecaster>\", line 16, in <listcomp>\nIndexError: index 11 is out of bounds for axis 1 with size 11\n",
+      "timed_out": false
+    }
+  }
+}

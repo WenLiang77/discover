@@ -1,0 +1,53 @@
+```python
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.preprocessing import MinMaxScaler
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    # Ensure train_values is a NumPy array
+    train_values = np.array(train_values)
+    
+    # Initialize the scaler
+    scaler = MinMaxScaler(feature_range=(0, 1))
+    scaled_train_values = scaler.fit_transform(train_values)
+    
+    # Prepare forecasts
+    forecasts = []
+    for region in range(scaled_train_values.shape[1]):
+        region_data = scaled_train_values[:, region]
+        
+        # Fit ARIMA model
+        try:
+            model = ARIMA(region_data, order=(5,1,0))  # Adjust order as needed
+            model_fit = model.fit()
+            
+            # Forecast
+            forecast = model_fit.forecast(steps=horizon)
+            forecast = scaler.inverse_transform(np.array([forecast]).T).flatten()
+            
+            # Ensure non-negative forecast
+            forecast = np.maximum(forecast, 0)
+        except Exception as e:
+            # Fallback to simple moving average if model fails
+            avg_value = np.mean(region_data)
+            forecast = np.full(horizon, avg_value)
+        
+        forecasts.append(forecast)
+    
+    # Return forecasts as a 2D NumPy array
+    return np.array(forecasts).reshape((horizon, -1))
+```
+
+### Explanation
+1. **Input Handling**: The input `train_values` is converted to a NumPy array for processing.
+2. **Scaling**: A `MinMaxScaler` is used to normalize the data between 0 and 1, which helps in stabilizing the performance of the ARIMA model.
+3. **ARIMA Modeling**:
+   - For each region, an ARIMA model is fit to the historical data.
+   - If the model fitting fails (e.g., due to insufficient data), a fallback mechanism is implemented to use a simple moving average.
+4. **Forecasting**:
+   - The fitted model predicts the next `horizon` steps.
+   - The predicted values are then inverse-transformed back to their original scale.
+   - Negative values are clipped to zero to ensure the forecast remains non-negative.
+5. **Output**: The forecasts for all regions are collected into a 2D NumPy array with shape `(horizon, N)` and returned.
+
+This approach ensures that the forecast is both temporally evolving and adheres to the constraints provided, including handling potential errors during model fitting and ensuring non-negative predictions.

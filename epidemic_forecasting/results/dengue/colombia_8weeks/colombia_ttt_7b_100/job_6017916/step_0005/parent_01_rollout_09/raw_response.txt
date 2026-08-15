@@ -1,0 +1,36 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from sklearn.preprocessing import StandardScaler
+from sklearn.impute import SimpleImputer
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    scaler = StandardScaler()
+    imputer = SimpleImputer(strategy='mean')
+    
+    for i in range(train_values.shape[1]):
+        # Impute missing values with the mean of the region
+        train_imputed = imputer.fit_transform(train_values[:, i].reshape(-1, 1))
+        
+        # Scale the data
+        scaled_train = scaler.fit_transform(train_imputed)
+        
+        # Fit the SARIMAX model
+        try:
+            model = SARIMAX(scaled_train, order=(1, 1, 0), seasonal_order=(1, 1, 0, 4))
+            results = model.fit(disp=False)
+            
+            # Forecast the next `horizon` steps
+            scaled_forecast = results.forecast(steps=horizon)
+            
+            # Inverse transform and clip negative values to zero
+            forecast[:, i] = scaler.inverse_transform(scaled_forecast.reshape(-1, 1)).flatten()
+            forecast[:, i] = np.maximum(forecast[:, i], 0)
+        except Exception as e:
+            # If fitting fails, use a simple moving average as a fallback
+            forecast[:, i] = np.convolve(train_values[:, i], np.ones(horizon)/horizon, mode='valid')
+            forecast = np.pad(forecast, ((0, horizon - forecast.shape[0]), (0, 0)), mode='constant', constant_values=0)[:horizon]
+    
+    return forecast
+```

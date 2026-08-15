@@ -1,0 +1,40 @@
+```python
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+from statsmodels.tools.eval_measures import smape, mae, rmse, mase
+import matplotlib.pyplot as plt
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    # Define the forecasting function
+    def forecast_region(region_data, horizon):
+        try:
+            # Fit the SARIMAX model
+            model = SARIMAX(region_data, order=(1, 0, 1), seasonal_order=(1, 0, 1, 52))
+            model_fit = model.fit(disp=False)
+            
+            # Make predictions
+            forecast = model_fit.forecast(steps=horizon)
+            return forecast
+        except Exception as e:
+            # Handle exceptions and return zeros if fitting fails
+            print(f"Error fitting model: {e}")
+            return np.zeros(horizon)
+    
+    # Initialize the forecast array
+    forecast_array = np.zeros((horizon, train_values.shape[1]))
+    
+    # Loop through each region and make forecasts
+    for region in range(train_values.shape[1]):
+        region_data = train_values[:, region]
+        region_forecast = forecast_region(region_data, horizon)
+        forecast_array[:, region] = region_forecast
+    
+    # Ensure the forecast is non-negative
+    forecast_array = np.maximum(forecast_array, 0)
+    
+    return forecast_array
+```
+
+This implementation defines a `dengue_forecast` function that fits a SARIMAX model to each region's historical data and makes predictions for the specified horizon. If fitting fails, it returns a zero-filled array for that region. The forecast array is then clipped to ensure non-negativity before being returned.

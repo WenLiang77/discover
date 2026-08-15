@@ -1,0 +1,28 @@
+{
+  "step": 7,
+  "parent_number": 1,
+  "parent_state_id": "fce8db86-970a-4cb7-816e-a9a9a15898bd",
+  "parent_reward": -56.69353518744506,
+  "rollout_number": 3,
+  "global_rollout_index": 63,
+  "seed": 105,
+  "elapsed_seconds": 44.96323998901062,
+  "raw_reward": null,
+  "adjusted_reward": -250.0,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "NameError: name 'type' is not defined",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_colombia",
+      "stage": "execution",
+      "runtime_seconds": 22.171436298987828,
+      "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/dengue/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 18, in dengue_forecast\nNameError: name 'type' is not defined\n",
+      "timed_out": false
+    }
+  }
+}

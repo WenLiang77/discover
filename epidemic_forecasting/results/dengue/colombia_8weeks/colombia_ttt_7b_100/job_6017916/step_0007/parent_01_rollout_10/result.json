@@ -1,0 +1,28 @@
+{
+  "step": 7,
+  "parent_number": 1,
+  "parent_state_id": "fce8db86-970a-4cb7-816e-a9a9a15898bd",
+  "parent_reward": -56.69353518744506,
+  "rollout_number": 10,
+  "global_rollout_index": 70,
+  "seed": 112,
+  "elapsed_seconds": 417.7950332519831,
+  "raw_reward": null,
+  "adjusted_reward": -250.0,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "TimeoutError: candidate exceeded the runtime budget of 400.000 seconds.",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_colombia",
+      "stage": "execution",
+      "runtime_seconds": 400.1147199330153,
+      "traceback": null,
+      "timed_out": true
+    }
+  }
+}

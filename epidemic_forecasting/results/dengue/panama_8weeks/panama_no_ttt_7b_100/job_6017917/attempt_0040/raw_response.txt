@@ -1,0 +1,46 @@
+```python
+import numpy as np
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+from sklearn.linear_model import LinearRegression
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    """
+    Forecast dengue incidence using Holt-Winters exponential smoothing and linear regression.
+    
+    :param train_values: A NumPy array of shape (T, N) containing historical dengue case counts.
+    :param horizon: An integer representing the number of future time steps to predict.
+    :return: A NumPy array of shape (horizon, N) containing the predicted dengue cases.
+    """
+    n_regions = train_values.shape[1]
+    forecasts = np.zeros((horizon, n_regions))
+    
+    for region in range(n_regions):
+        # Fit Holt-Winters exponential smoothing model
+        try:
+            model = ExponentialSmoothing(train_values[:, region], trend='add', seasonal='mul', seasonal_periods=52)
+            fit_model = model.fit(disp=False)
+            forecast = fit_model.forecast(steps=horizon)
+            forecasts[:, region] = forecast.clip(0)
+        except Exception as e:
+            # Fallback to linear regression if Holt-Winters fails
+            try:
+                model = LinearRegression()
+                model.fit(np.arange(len(train_values)).reshape(-1, 1), train_values[:, region])
+                forecast = model.predict(np.arange(len(train_values), len(train_values) + horizon).reshape(-1, 1))
+                forecasts[:, region] = forecast.clip(0)
+            except Exception as e:
+                # If both models fail, return a constant forecast
+                mean_value = np.mean(train_values[:, region])
+                forecasts[:, region] = np.full(horizon, max(mean_value, 0))
+                
+    return forecasts
+```
+
+This forecasting algorithm combines two approaches:
+1. **Holt-Winters Exponential Smoothing**: This model is particularly useful for time series with trend and seasonality. It fits a model to the historical data and then predicts future values based on this model. The `ExponentialSmoothing` class from `statsmodels` is used here with additive trend and multiplicative seasonality.
+
+2. **Linear Regression**: As a fallback, a linear regression model is trained on the historical data. This model is simple but effective for capturing linear relationships between time and dengue case counts. It is used when the Holt-Winters model fails to fit the data.
+
+3. **Constant Forecast**: If both the Holt-Winters model and linear regression fail, a constant forecast is returned. The constant value is the mean of the historical data for the region, ensuring that the forecast is non-negative.
+
+This approach ensures that the forecast is both flexible and robust, capable of handling various types of time series data. The forecast is also ensured to be non-negative, as required.

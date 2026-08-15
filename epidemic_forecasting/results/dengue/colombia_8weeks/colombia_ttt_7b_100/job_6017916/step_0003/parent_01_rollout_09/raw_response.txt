@@ -1,0 +1,44 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    num_regions = train_values.shape[1]
+    forecasted_values = np.zeros((horizon, num_regions))
+    
+    for region in range(num_regions):
+        region_data = train_values[:, region]
+        
+        # Fit a SARIMA model to the regional data
+        try:
+            model = SARIMAX(region_data, order=(1, 1, 1), seasonal_order=(1, 1, 1, 52)).fit(disp=False)
+        except Exception as e:
+            forecasted_values[:, region] = np.mean(region_data)
+            continue
+        
+        # Forecast the next 'horizon' steps
+        forecasted_region_data = model.forecast(steps=horizon)
+        forecasted_values[:, region] = forecasted_region_data
+    
+    return forecasted_values
+```
+
+### Explanation:
+
+1. **Import Statements**: The necessary libraries (`numpy` and `SARIMAX` from `statsmodels`) are imported.
+
+2. **Function Definition**: The `dengue_forecast` function is defined with the required signature.
+
+3. **Initialization**: 
+   - `num_regions` is determined based on the input shape.
+   - A zero-filled array `forecasted_values` of shape `(horizon, num_regions)` is initialized to store the forecasts.
+
+4. **Forecasting Loop**:
+   - For each region, the historical data is extracted.
+   - A `SARIMAX` model is fitted to the regional data. The model parameters `(1, 1, 1)` and `(1, 1, 1, 52)` are chosen to capture both trend and seasonality, assuming the data is weekly.
+   - If fitting fails due to exceptions, a simple moving average of the region's data is used as a fallback forecast.
+   - The model is then used to forecast the next `horizon` steps, and these forecasts are stored in `forecasted_values`.
+
+5. **Return Statement**: The completed forecast array is returned.
+
+This implementation aims to provide a more sophisticated and temporally varying forecast compared to the exponential smoothing approach used in the initial candidate. The SARIMA model allows capturing both trend and seasonality, which is crucial for accurate forecasting of dengue cases over multiple weeks.

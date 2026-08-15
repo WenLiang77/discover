@@ -1,0 +1,33 @@
+```python
+import numpy as np
+from statsmodels.tsa.seasonal import seasonal_decompose
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    n_regions = train_values.shape[1]
+    forecast = np.zeros((horizon, n_regions))
+
+    for i in range(n_regions):
+        region_data = train_values[:, i]
+        
+        # Decompose the time series into trend, seasonal, and residual components
+        decomposition = seasonal_decompose(region_data, period=4, model='additive')
+        
+        # Fit an exponential smoothing model to the decomposed components
+        trend_model = ExponentialSmoothing(decomposition.trend, trend='add', seasonal=None).fit()
+        seasonal_model = ExponentialSmoothing(decomposition.seasonal, trend=None, seasonal='mul').fit()
+        residual_model = ExponentialSmoothing(decomposition.resid, trend=None, seasonal=None).fit()
+        
+        # Forecast each component separately
+        trend_forecast = trend_model.forecast(steps=horizon)
+        seasonal_forecast = seasonal_model.forecast(steps=horizon)
+        residual_forecast = residual_model.forecast(steps=horizon)
+        
+        # Combine the forecasts
+        combined_forecast = trend_forecast + seasonal_forecast + residual_forecast
+        
+        # Ensure the forecast is non-negative
+        forecast[:, i] = np.maximum(combined_forecast, 0)
+
+    return forecast
+```

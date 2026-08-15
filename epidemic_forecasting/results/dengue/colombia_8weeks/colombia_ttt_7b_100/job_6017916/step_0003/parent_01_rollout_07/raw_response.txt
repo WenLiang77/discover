@@ -1,0 +1,58 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.linear_model import LinearRegression
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    num_regions = train_values.shape[1]
+    forecasted_values = np.zeros((horizon, num_regions))
+    
+    for region in range(num_regions):
+        region_data = train_values[:, region]
+        
+        # Check for zero-inflation or sparsity
+        if np.sum(region_data) == 0:
+            forecasted_values[:, region] = 0
+            continue
+        
+        # Fit a SARIMAX model
+        try:
+            model = SARIMAX(region_data, order=(1, 1, 1), seasonal_order=(1, 1, 1, 52)).fit(disp=False)
+            forecasted_region_data = model.get_forecast(steps=horizon).predicted_mean
+        except Exception as e:
+            # If SARIMAX fails, fit an ARIMA model
+            try:
+                model = ARIMA(region_data, order=(1, 1, 1)).fit(disp=False)
+                forecasted_region_data = model.forecast(steps=horizon)
+            except Exception as e:
+                # If ARIMA also fails, fit a simple linear regression model
+                try:
+                    model = LinearRegression().fit(np.arange(len(region_data)).reshape(-1, 1), region_data)
+                    forecasted_region_data = model.predict(np.arange(len(region_data), len(region_data) + horizon).reshape(-1, 1))
+                except Exception as e:
+                    # Fallback to mean imputation if all else fails
+                    forecasted_region_data = np.mean(region_data) * np.ones(horizon)
+        
+        # Ensure non-negative forecasts
+        forecasted_region_data = np.maximum(forecasted_region_data, 0)
+        
+        # Assign forecasted values
+        forecasted_values[:, region] = forecasted_region_data
+    
+    return forecasted_values
+```
+
+### Explanation:
+1. **Initialization**: We initialize the forecast matrix with zeros and determine the number of regions.
+2. **Loop Through Regions**: For each region, we extract the historical data.
+3. **Zero-Inflation/Sparsity Handling**: If the sum of the historical data is zero, we set the forecast to zero.
+4. **Model Selection**:
+   - **SARIMAX**: We attempt to fit a Seasonal AutoRegressive Integrated Moving Average with eXogenous factors (SARIMAX) model. This model is suitable for time series with both trend and seasonality.
+   - **ARIMA**: If SARIMAX fails, we fall back to an Autoregressive Integrated Moving Average (ARIMA) model.
+   - **Linear Regression**: If both SARIMAX and ARIMA fail, we use a simple linear regression model.
+   - **Fallback Mean Imputation**: If all previous attempts fail, we use the mean of the historical data as a fallback.
+5. **Non-Negative Forecasts**: We ensure that all forecasted values are non-negative.
+6. **Assign Forecasts**: We assign the forecasted values to the corresponding positions in the forecast matrix.
+
+This approach ensures that the forecasting model is robust and can handle various types of time series data, providing non-negative forecasts for each region over the specified horizon.

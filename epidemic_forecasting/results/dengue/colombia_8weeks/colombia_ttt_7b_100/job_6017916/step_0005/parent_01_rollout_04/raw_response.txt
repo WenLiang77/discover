@@ -1,0 +1,51 @@
+```python
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.preprocessing import MinMaxScaler
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    scaler = MinMaxScaler(feature_range=(-1, 1))
+    
+    for i in range(train_values.shape[1]):
+        try:
+            scaled_train = scaler.fit_transform(train_values[:, i].reshape(-1, 1))
+            
+            # Fit ARIMA model
+            model = ARIMA(scaled_train, order=(1, 1, 0))
+            results = model.fit(disp=False)
+            
+            # Generate forecast
+            scaled_forecast = results.forecast(steps=horizon).reshape(-1, 1)
+            
+            # Inverse transform forecast
+            forecast[:, i] = scaler.inverse_transform(scaled_forecast)
+            
+            # Ensure non-negative predictions
+            forecast[:, i] = np.maximum(forecast[:, i], 0)
+        
+        except Exception as e:
+            print(f"Failed to fit model for region {i}: {e}")
+            forecast[:, i] = np.full(horizon, train_values[-1, i])
+    
+    return forecast
+```
+
+### Explanation:
+
+1. **Normalization**:
+   - We use `MinMaxScaler` to normalize the training data between -1 and 1. This helps improve the performance of the ARIMA model and ensures that the forecasted values are within a reasonable range.
+
+2. **Model Fitting**:
+   - For each region, we fit an `ARIMA(1,1,0)` model. This model assumes a first-order differencing (to handle trend), but no seasonal component. Adjustments can be made based on specific characteristics of the data.
+
+3. **Forecast Generation**:
+   - After fitting the model, we generate forecasts for the specified horizon. These forecasts are then inversely transformed back to the original scale using the `MinMaxScaler`.
+
+4. **Non-Negative Constraints**:
+   - To ensure the forecast remains non-negative, we apply the `np.maximum(forecast[:, i], 0)` operation. This prevents any negative values from appearing in the forecast.
+
+5. **Exception Handling**:
+   - If an exception occurs during model fitting, we catch it and set the forecast for that region to the last observed value. This ensures that the function always returns a valid forecast array even if some regions fail to fit the model.
+
+This approach should provide a good balance between simplicity and effectiveness for forecasting dengue cases over multiple weeks while adhering to the constraints and requirements provided.

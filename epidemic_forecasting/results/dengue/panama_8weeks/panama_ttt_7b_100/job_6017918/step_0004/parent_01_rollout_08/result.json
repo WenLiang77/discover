@@ -1,0 +1,28 @@
+{
+  "step": 4,
+  "parent_number": 1,
+  "parent_state_id": "a90b4a99-2d50-4b18-8955-f74faa944d19",
+  "parent_reward": -65.54088781265483,
+  "rollout_number": 8,
+  "global_rollout_index": 38,
+  "seed": 80,
+  "elapsed_seconds": 48.0681631010375,
+  "raw_reward": null,
+  "adjusted_reward": -250.0,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "TypeError: dengue_forecast() got an unexpected keyword argument 'budget_s'",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_panama",
+      "stage": "execution",
+      "runtime_seconds": 4.692483204999007,
+      "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/dengue/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\nTypeError: dengue_forecast() got an unexpected keyword argument 'budget_s'\n",
+      "timed_out": false
+    }
+  }
+}

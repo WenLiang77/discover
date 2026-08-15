@@ -1,0 +1,21 @@
+{
+  "attempt": 79,
+  "seed": 120,
+  "elapsed_seconds": 410.2632570450078,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "TimeoutError: candidate exceeded the runtime budget of 400.000 seconds.",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_colombia",
+      "stage": "execution",
+      "runtime_seconds": 400.1064785910421,
+      "traceback": null,
+      "timed_out": true
+    }
+  }
+}

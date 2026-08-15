@@ -1,0 +1,28 @@
+{
+  "step": 5,
+  "parent_number": 1,
+  "parent_state_id": "87669bfa-1c4e-4314-8738-1aaca3ecf97d",
+  "parent_reward": -64.41066650530689,
+  "rollout_number": 6,
+  "global_rollout_index": 46,
+  "seed": 88,
+  "elapsed_seconds": 28.899639313982334,
+  "raw_reward": null,
+  "adjusted_reward": -250.0,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "NameError: name 'StandardScaler' is not defined",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_panama",
+      "stage": "execution",
+      "runtime_seconds": 4.495681057975162,
+      "traceback": "Traceback (most recent call last):\n  File \"<generated_forecaster>\", line 12, in dengue_forecast\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/pandas/util/_decorators.py\", line 220, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py\", line 247, in __init__\n    raise ValueError(\nValueError: endog must be strictly positive when usingmultiplicative trend or seasonal components.\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/dengue/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 20, in dengue_forecast\nNameError: name 'StandardScaler' is not defined\n",
+      "timed_out": false
+    }
+  }
+}

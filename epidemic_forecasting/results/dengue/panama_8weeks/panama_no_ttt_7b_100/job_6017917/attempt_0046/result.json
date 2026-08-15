@@ -1,0 +1,21 @@
+{
+  "attempt": 46,
+  "seed": 87,
+  "elapsed_seconds": 13.473168060998432,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "ValueError: could not broadcast input array from shape (8,1) into shape (8,)",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_panama",
+      "stage": "execution",
+      "runtime_seconds": 1.1984281089971773,
+      "traceback": "Traceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/dengue/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 18, in dengue_forecast\nValueError: could not broadcast input array from shape (8,1) into shape (8,)\n",
+      "timed_out": false
+    }
+  }
+}

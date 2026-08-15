@@ -1,0 +1,28 @@
+{
+  "step": 2,
+  "parent_number": 1,
+  "parent_state_id": "0b0d990e-29ae-4495-b47f-e4ccec50c97c",
+  "parent_reward": -56.389813631307256,
+  "rollout_number": 2,
+  "global_rollout_index": 12,
+  "seed": 54,
+  "elapsed_seconds": 18.531730803952087,
+  "raw_reward": null,
+  "adjusted_reward": -250.0,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "ValueError: could not broadcast input array from shape (820,) into shape (8,)",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_colombia",
+      "stage": "execution",
+      "runtime_seconds": 4.694258167000953,
+      "traceback": "Traceback (most recent call last):\n  File \"<generated_forecaster>\", line 9, in dengue_forecast\nTypeError: ARIMA.fit() got an unexpected keyword argument 'disp'\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/dengue/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 12, in dengue_forecast\nValueError: could not broadcast input array from shape (820,) into shape (8,)\n",
+      "timed_out": false
+    }
+  }
+}

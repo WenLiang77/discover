@@ -1,0 +1,47 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from sklearn.preprocessing import MinMaxScaler
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    # Initialize the forecast array with zeros
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    
+    # Define the scaler to normalize the data
+    scaler = MinMaxScaler(feature_range=(0, 1))
+    
+    # Loop through each region's time series
+    for i in range(train_values.shape[1]):
+        try:
+            # Scale the training data for the current region
+            scaled_train = scaler.fit_transform(train_values[:, i].reshape(-1, 1))
+            
+            # Fit the SARIMAX model to the scaled training data
+            model = SARIMAX(scaled_train, order=(1, 1, 0), seasonal_order=(1, 1, 0, 4))
+            results = model.fit(disp=False)
+            
+            # Forecast the next 'horizon' steps for the scaled data
+            scaled_forecast = results.get_forecast(steps=horizon).predicted_mean
+            
+            # Inverse transform the forecasted values back to the original scale
+            forecast[:, i] = scaler.inverse_transform(scaled_forecast.reshape(-1, 1)).flatten()
+            
+            # Ensure the forecasted values are non-negative
+            forecast[:, i] = np.maximum(forecast[:, i], 0)
+        
+        except Exception as e:
+            # If fitting fails, use the most recent observed value for forecasting
+            forecast[:, i] = np.full(horizon, train_values[-1, i])
+    
+    return forecast
+```
+
+### Explanation:
+1. **Initialization**: We initialize a zero-filled array `forecast` with the shape `(horizon, N)` to store the predicted values for each region.
+2. **Scalering**: We use `MinMaxScaler` to normalize the time series data between 0 and 1, which helps in stabilizing the variance and making the data suitable for modeling.
+3. **Model Fitting**: For each region, we fit a `SARIMAX` model. The parameters `(1, 1, 0)` for the ARIMA part and `(1, 1, 0, 4)` for the seasonal part are chosen based on typical characteristics of weekly time series data.
+4. **Forecasting**: After fitting the model, we make forecasts for the specified `horizon`.
+5. **Inverse Transformation**: The forecasted values are inverse transformed back to the original scale.
+6. **Non-Negative Check**: Finally, we ensure that all forecasted values are non-negative by taking the maximum of each forecasted value and zero.
+
+This approach ensures that the forecast adapts to the temporal evolution of the data and provides reasonable predictions even for shorter and sparser time series.

@@ -1,0 +1,35 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from sklearn.preprocessing import StandardScaler
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    scaler = StandardScaler()
+    
+    for i in range(train_values.shape[1]):
+        try:
+            # Scale the training data
+            scaled_train = scaler.fit_transform(train_values[:, i].reshape(-1, 1))
+            
+            # Fit a SARIMAX model to the scaled data
+            model = SARIMAX(scaled_train, order=(1, 1, 0), seasonal_order=(1, 1, 0, 4))
+            results = model.fit(disp=False)
+            
+            # Forecast the scaled data
+            scaled_forecast = results.get_prediction(start=train_values.shape[0], end=train_values.shape[0] + horizon - 1).predicted_mean
+            
+            # Inverse transform the forecasted values
+            forecast[:, i] = scaler.inverse_transform(scaled_forecast.reshape(-1, 1)).flatten()
+            
+            # Ensure non-negative forecasts
+            forecast[:, i] = np.maximum(forecast[:, i], 0)
+        
+        except Exception as e:
+            # If fitting fails, use the last observed value as a fallback
+            forecast[:, i] = np.full(horizon, train_values[-1, i])
+    
+    return forecast
+```
+
+This implementation uses the SARIMAX (Seasonal AutoRegressive Integrated Moving Average with eXogenous factors) model from the `statsmodels` library to forecast the dengue incidence data. The model is trained on the scaled historical data and used to forecast the next `horizon` weeks. The forecasted values are then inverse-transformed back to their original scale and clipped to ensure they are non-negative. If the model fitting process encounters an exception, the last observed value is used as a fallback forecast for each region. This approach ensures that the forecast is both accurate and robust to potential modeling failures.

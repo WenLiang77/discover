@@ -1,0 +1,26 @@
+{
+  "step": 1,
+  "parent_number": 1,
+  "parent_state_id": "802e91d2-40ed-443a-a241-6fdfae1c66a9",
+  "parent_reward": null,
+  "rollout_number": 4,
+  "global_rollout_index": 4,
+  "seed": 46,
+  "elapsed_seconds": 26.300647822965402,
+  "raw_reward": null,
+  "adjusted_reward": -250.0,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "Evaluation failed: Forecast contains negative values. Minimum prediction: -5.283766193238486.",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_colombia",
+      "stage": "prediction_validation_or_metrics",
+      "runtime_seconds": 5.889124663954135
+    }
+  }
+}

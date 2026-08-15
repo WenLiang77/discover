@@ -1,0 +1,36 @@
+```python
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    # Initialize the forecasted values array
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    
+    # Iterate over each region
+    for i in range(train_values.shape[1]):
+        # Fit an ARIMA model to the historical data for this region
+        try:
+            model = ARIMA(train_values[:, i], order=(5,1,0))
+            model_fit = model.fit()
+            
+            # Forecast the next 'horizon' steps
+            forecast[:, i] = model_fit.forecast(steps=horizon)
+            
+            # Ensure the forecasted values are non-negative
+            forecast[:, i] = np.maximum(forecast[:, i], 0)
+        except Exception as e:
+            # If fitting fails, fill the forecast with zeros (last resort)
+            print(f"Failed to fit ARIMA model for region {i}: {e}")
+            forecast[:, i] = 0
+    
+    return forecast
+```
+
+### Explanation:
+1. **Initialization**: We initialize an array `forecast` of zeros with shape `(horizon, N)` to store the predicted values for each region.
+2. **ARIMA Model**: For each region, we attempt to fit an ARIMA model. The parameters `(5,1,0)` are chosen arbitrarily but can be tuned based on the specific characteristics of the data.
+3. **Forecasting**: Once the model is fitted, we use it to forecast the next `horizon` steps.
+4. **Non-Negative Constraint**: To ensure the forecasted values are non-negative, we use `np.maximum` to clip any negative values to zero.
+5. **Error Handling**: If fitting the model fails due to exceptions (e.g., insufficient data), we catch the exception and set the forecast for that region to zero. This ensures that the function always returns a valid non-negative forecast array.
+
+This approach leverages a simple yet effective time-series forecasting technique (ARIMA) to handle the multivariate nature of the problem. It aims to capture temporal dynamics and provide a non-negative forecast, which is crucial for disease incidence data.

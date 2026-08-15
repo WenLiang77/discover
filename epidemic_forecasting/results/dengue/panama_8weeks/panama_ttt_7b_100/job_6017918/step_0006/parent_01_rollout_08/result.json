@@ -1,0 +1,26 @@
+{
+  "step": 6,
+  "parent_number": 1,
+  "parent_state_id": "87669bfa-1c4e-4314-8738-1aaca3ecf97d",
+  "parent_reward": -64.41066650530689,
+  "rollout_number": 8,
+  "global_rollout_index": 58,
+  "seed": 100,
+  "elapsed_seconds": 28.153704412980005,
+  "raw_reward": null,
+  "adjusted_reward": -250.0,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "Evaluation failed: Forecast contains NaN or infinite values.",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_panama",
+      "stage": "prediction_validation_or_metrics",
+      "runtime_seconds": 4.579434080980718
+    }
+  }
+}

@@ -1,0 +1,66 @@
+```python
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
+
+def dengue_forecast(train_values, horizon, random_state=None):
+    """
+    Forecast Dengue incidence using an ARIMA model for each region.
+
+    Parameters:
+    train_values (np.ndarray): Shape (T, N), where T is the number of historical time steps
+                              and N is the number of geographical regions.
+    horizon (int): Number of future time steps to predict.
+    random_state (int, optional): Seed for reproducibility.
+
+    Returns:
+    np.ndarray: Forecasted values with shape (horizon, N).
+    """
+    # Initialize the scaler
+    scaler = StandardScaler()
+
+    # Fit the scaler to the training data
+    scaler.fit(train_values)
+
+    # Scale the training data
+    scaled_train = scaler.transform(train_values)
+
+    # Initialize an empty list to store forecasts
+    forecasts = []
+
+    # Iterate over each region
+    for region_data in scaled_train.T:
+        try:
+            # Fit an ARIMA model to the region's data
+            model = ARIMA(region_data, order=(1, 1, 0))
+            model_fit = model.fit()
+
+            # Forecast the next `horizon` steps
+            forecast = model_fit.forecast(steps=horizon)
+
+            # Inverse transform the forecast
+            inverse_forecast = scaler.inverse_transform(forecast.reshape(-1, 1))
+
+            # Ensure non-negative values
+            inverse_forecast = np.maximum(inverse_forecast, 0)
+
+            # Append the forecast to the list
+            forecasts.append(inverse_forecast)
+        except Exception as e:
+            # If the model fails to fit, use a simple moving average as a fallback
+            moving_avg = np.convolve(region_data, np.ones(horizon)/horizon, mode='valid')
+            padded_avg = np.pad(moving_avg, (0, horizon - len(moving_avg)), 'edge')
+            inverse_forecast = scaler.inverse_transform(padded_avg.reshape(-1, 1))
+
+            # Ensure non-negative values
+            inverse_forecast = np.maximum(inverse_forecast, 0)
+
+            # Append the forecast to the list
+            forecasts.append(inverse_forecast)
+
+    # Convert the list of forecasts to a NumPy array
+    forecast_array = np.array(forecasts).T
+
+    return forecast_array
+```

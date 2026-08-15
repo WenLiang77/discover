@@ -1,0 +1,26 @@
+{
+  "step": 1,
+  "parent_number": 1,
+  "parent_state_id": "a1abdb30-9e67-468f-8167-b79593066c7b",
+  "parent_reward": null,
+  "rollout_number": 2,
+  "global_rollout_index": 2,
+  "seed": 44,
+  "elapsed_seconds": 18.119446147989947,
+  "raw_reward": null,
+  "adjusted_reward": -250.0,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "Evaluation failed: Forecast contains negative values. Minimum prediction: -0.26048768920932774.",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_panama",
+      "stage": "prediction_validation_or_metrics",
+      "runtime_seconds": 7.883493759029079
+    }
+  }
+}

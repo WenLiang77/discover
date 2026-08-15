@@ -1,0 +1,43 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    """
+    Forecast Dengue incidence using a SARIMA model.
+
+    Parameters:
+    - train_values: np.array of shape (T, N)
+    - horizon: int, number of future time steps to predict
+
+    Returns:
+    - np.array of shape (horizon, N) containing the forecasted values
+    """
+    
+    N = train_values.shape[1]
+    forecast = np.zeros((horizon, N))
+    
+    for region in range(N):
+        # Fit a SARIMA model to each region's time series
+        try:
+            model = SARIMAX(train_values[:, region], order=(1, 1, 0), seasonal_order=(1, 1, 0, 52)).fit(disp=False)
+            forecast[:, region] = model.forecast(steps=horizon)
+        except Exception as e:
+            # Fallback to a simple moving average if model fitting fails
+            forecast[:, region] = np.convolve(train_values[:, region], np.ones(4)/4, mode='valid')[-horizon:]
+            forecast[:, region] = np.pad(forecast[:, region], (0, max(0, horizon - len(forecast[:, region]))), 'constant', constant_values=np.nan)
+    
+    # Ensure the forecast is non-negative
+    forecast = np.maximum(forecast, 0)
+    
+    return forecast
+```
+
+### Explanation:
+1. **Model Selection**: The SARIMAX model is chosen due to its flexibility in capturing both trend and seasonality, which are common in disease incidence data.
+2. **Fitting**: For each region, a SARIMAX model is fit using the training data. The parameters `(1, 1, 0)` for the ARIMA part and `(1, 1, 0, 52)` for the seasonal part are chosen based on typical characteristics of weekly data (assuming annual seasonality).
+3. **Forecasting**: The fitted model is then used to forecast the next `horizon` steps.
+4. **Fallback Mechanism**: If model fitting fails for any reason, a simple moving average over the last few weeks is used as a fallback.
+5. **Non-Negative Constraints**: Finally, the forecast is clipped to ensure all values are non-negative.
+
+This approach ensures that the forecast respects the temporal dynamics of the data while handling potential fitting issues gracefully.

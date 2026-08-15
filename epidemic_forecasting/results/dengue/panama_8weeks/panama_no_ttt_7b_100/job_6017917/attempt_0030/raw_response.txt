@@ -1,0 +1,50 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    # Extract parameters from kwargs
+    random_state = kwargs.get('random_state', None)
+    
+    # Initialize the forecast array with zeros
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    
+    # Iterate over each region
+    for i in range(train_values.shape[1]):
+        # Fit a SARIMA model to the historical data for the current region
+        try:
+            model = SARIMAX(train_values[:, i], order=(1, 1, 1), seasonal_order=(1, 1, 1, 52), enforce_stationarity=False, enforce_invertibility=False)
+            model_fit = model.fit(disp=False)
+            
+            # Forecast the next 'horizon' steps for the current region
+            forecast[:, i] = model_fit.forecast(steps=horizon)
+        except Exception as e:
+            # If fitting fails, use a simple linear trend predictor as a fallback
+            if train_values.shape[0] > 1:
+                slope = (train_values[-1, i] - train_values[0, i]) / (train_values.shape[0] - 1)
+                forecast[:, i] = np.arange(1, horizon + 1) * slope + train_values[-1, i]
+            else:
+                forecast[:, i] = train_values[-1, i]
+    
+    # Ensure the forecast is non-negative
+    forecast = np.maximum(forecast, 0)
+    
+    return forecast
+```
+
+### Explanation:
+
+1. **Initialization**:
+   - We initialize a zero matrix `forecast` with shape `(horizon, N)` where `N` is the number of regions.
+   
+2. **Loop through Regions**:
+   - For each region, we fit a SARIMA model to the historical data. SARIMA (Seasonal AutoRegressive Integrated Moving Average) is chosen because it can handle both trend and seasonality.
+
+3. **Model Fitting and Forecasting**:
+   - If the model fits successfully, we use it to forecast the next `horizon` steps.
+   - If the model fitting fails (e.g., due to insufficient data or other issues), we fall back to a simple linear trend predictor. This ensures that even if individual models fail, the overall forecast will still provide some reasonable estimates.
+
+4. **Non-Negative Forecasts**:
+   - Finally, we ensure that all predicted values are non-negative by clipping any negative values to zero.
+
+This approach ensures that the forecasting function is robust, handles various types of time series data, and produces non-negative forecasts as required.

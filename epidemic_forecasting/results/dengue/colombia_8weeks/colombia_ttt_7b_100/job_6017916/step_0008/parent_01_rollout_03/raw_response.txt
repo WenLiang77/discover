@@ -1,0 +1,44 @@
+```python
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.preprocessing import MinMaxScaler
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    scaler = MinMaxScaler(feature_range=(0, 1))
+    
+    for i in range(train_values.shape[1]):
+        try:
+            scaled_train = scaler.fit_transform(train_values[:, i].reshape(-1, 1))
+            
+            # Fit ARIMA model
+            model = ARIMA(scaled_train, order=(1, 1, 0))
+            model_fit = model.fit()
+            
+            # Generate forecast
+            scaled_forecast = model_fit.forecast(steps=horizon)
+            forecast[:, i] = scaler.inverse_transform(scaled_forecast.reshape(-1, 1)).flatten()
+            
+            # Ensure non-negative forecasts
+            forecast[:, i] = np.maximum(forecast[:, i], 0)
+        except Exception as e:
+            forecast[:, i] = np.full(horizon, train_values[-1, i])
+    
+    return forecast
+```
+
+### Explanation:
+1. **Import Statements**: The necessary libraries are imported.
+2. **Function Definition**: The `dengue_forecast` function is defined with the specified parameters.
+3. **Initialization**: A zero-filled array `forecast` is initialized to store the predicted values. A `MinMaxScaler` is created to normalize the data between 0 and 1.
+4. **Loop Through Regions**: The function iterates over each region (column in the input array).
+5. **Scaling and Model Fitting**:
+   - The training data for the current region is scaled using `MinMaxScaler`.
+   - An `ARIMA(1, 1, 0)` model is fitted to the scaled training data.
+6. **Forecast Generation**:
+   - The model generates a forecast for the specified horizon.
+   - The scaled forecast is inverse-transformed back to the original scale.
+   - Non-negative values are ensured by clipping any negative predictions to zero.
+7. **Exception Handling**: If any exception occurs during the process (e.g., due to issues with model fitting), the function falls back to predicting a constant value based on the last observation in the training data.
+
+This approach ensures that the forecast is both temporally evolving and non-negative, leveraging the strengths of the ARIMA model for time-series forecasting.

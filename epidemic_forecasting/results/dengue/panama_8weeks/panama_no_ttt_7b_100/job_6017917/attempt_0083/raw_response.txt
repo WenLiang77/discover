@@ -1,0 +1,49 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from sklearn.preprocessing import MinMaxScaler
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    # Initialize the scaler
+    scaler = MinMaxScaler()
+    
+    # Fit the scaler on the training data
+    scaled_train = scaler.fit_transform(train_values)
+    
+    # Initialize the forecasts list
+    forecasts = []
+    
+    # Iterate over each region
+    for i in range(scaled_train.shape[1]):
+        # Extract the series for the current region
+        region_series = scaled_train[:, i]
+        
+        # Fit the SARIMAX model
+        try:
+            model = SARIMAX(region_series, order=(1, 1, 1), seasonal_order=(1, 1, 1, 52))
+            results = model.fit(disp=False)
+            
+            # Generate the forecast
+            forecast = results.get_forecast(steps=horizon).predicted_mean
+            
+            # Scale back to the original scale
+            forecast_original_scale = scaler.inverse_transform(forecast.reshape(-1, 1))[:, 0]
+            
+            # Ensure non-negative forecast
+            forecast_original_scale = np.maximum(forecast_original_scale, 0)
+            
+            # Append the forecast to the list
+            forecasts.append(forecast_original_scale)
+        except Exception as e:
+            # Fallback: constant forecast if model fitting fails
+            constant_forecast = np.full(horizon, np.mean(region_series, axis=0))
+            forecast_original_scale = np.maximum(constant_forecast, 0)
+            forecasts.append(forecast_original_scale)
+    
+    # Convert the list of forecasts to a numpy array
+    forecasts_array = np.array(forecasts).T
+    
+    return forecasts_array
+```
+
+This implementation uses the SARIMAX model from `statsmodels` to fit a seasonal ARIMA model to each region's time series data. The model is then used to forecast the next `horizon` weeks. If the model fitting fails, a constant forecast based on the mean of the historical data is used as a fallback. The forecasts are scaled back to the original scale using the same min-max scaler and clipped to ensure they are non-negative.

@@ -1,0 +1,26 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    n_regions = train_values.shape[1]
+    forecast_values = np.zeros((horizon, n_regions))
+    
+    for region in range(n_regions):
+        # Fit a SARIMAX model to the historical data for each region
+        try:
+            model = SARIMAX(train_values[:, region], order=(1, 1, 0), seasonal_order=(1, 1, 0, 52))
+            results = model.fit(disp=False)
+            
+            # Forecast the next 'horizon' steps
+            forecast = results.forecast(steps=horizon)
+            forecast_values[:, region] = forecast
+        except Exception as e:
+            # If fitting fails, return zeros for that region
+            pass
+    
+    # Ensure the forecast values are non-negative
+    forecast_values = np.maximum(forecast_values, 0)
+    
+    return forecast_values
+```

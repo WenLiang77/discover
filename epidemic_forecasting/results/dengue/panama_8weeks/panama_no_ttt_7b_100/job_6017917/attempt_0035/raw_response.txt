@@ -1,0 +1,38 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from sklearn.preprocessing import StandardScaler
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    n_regions = train_values.shape[1]
+    forecasted_values = np.zeros((horizon, n_regions), dtype=np.float32)
+    
+    for i in range(n_regions):
+        region_data = train_values[:, i]
+        scaler = StandardScaler()
+        scaled_data = scaler.fit_transform(region_data.reshape(-1, 1))
+        
+        try:
+            # Fit SARIMA model
+            model = SARIMAX(scaled_data.flatten(), order=(1, 1, 0), seasonal_order=(1, 1, 0, 52))
+            model_fit = model.fit(disp=False)
+            
+            # Forecast
+            forecast = model_fit.forecast(steps=horizon)
+            forecast_scaled = scaler.inverse_transform(forecast.reshape(-1, 1))
+            forecasted_values[:, i] = np.clip(forecast_scaled.flatten(), 0, None)
+        except Exception as e:
+            # Fallback: Constant forecast if model fitting fails
+            forecasted_values[:, i] = np.mean(region_data) * np.ones(horizon)
+    
+    return forecasted_values
+```
+
+### Explanation:
+1. **Standardization**: Each region's data is standardized to have zero mean and unit variance using `StandardScaler`.
+2. **SARIMA Model**: A SARIMA(1,1,0)(1,1,0,52) model is fit to each region's data. This model accounts for both non-seasonal and seasonal components.
+3. **Forecasting**: The model is used to forecast the next `horizon` weeks for each region.
+4. **Inversion and Clipping**: The forecasted values are inverted back to their original scale and clipped to ensure they are non-negative.
+5. **Fallback Mechanism**: If the model fitting fails (e.g., due to insufficient data or numerical issues), a constant forecast based on the mean of the historical data is used instead.
+
+This approach ensures that the forecast is tailored to each region's specific characteristics while handling potential fitting failures gracefully.

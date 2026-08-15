@@ -1,0 +1,40 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    """
+    Forecasts dengue incidence based on historical data.
+    
+    :param train_values: A (T, N) numpy array of historical dengue case counts.
+    :param horizon: An integer indicating the number of future time steps to predict.
+    :return: A (horizon, N) numpy array containing the predicted dengue case counts.
+    """
+    num_regions = train_values.shape[1]
+    predictions = np.zeros((horizon, num_regions))
+    
+    for region in range(num_regions):
+        try:
+            # Fit a SARIMAX model to the historical data for the current region
+            model = SARIMAX(train_values[:, region], order=(1, 1, 1), seasonal_order=(1, 1, 1, 52))
+            results = model.fit(disp=False)
+            
+            # Forecast the next 'horizon' time steps
+            forecast = results.get_forecast(steps=horizon).predicted_mean
+            
+            # Ensure the forecast values are non-negative
+            forecast = np.maximum(forecast, 0)
+            
+            # Store the forecast in the results array
+            predictions[:, region] = forecast
+        except Exception as e:
+            # If the model fails to fit, use a simple exponential smoothing approach
+            alpha = 0.1
+            smoothed_values = np.convolve(train_values[:, region], [alpha] * len(train_values[:, region]), mode='valid')
+            smoothed_values = np.pad(smoothed_values, (0, len(train_values[:, region]) - len(smoothed_values)), mode='constant', constant_values=(smoothed_values[-1],))
+            predictions[:, region] = smoothed_values[-horizon:]
+    
+    return predictions
+```
+
+This implementation uses the SARIMAX model from `statsmodels.tsa.statespace.sarimax` to forecast dengue incidence for each region. It fits a SARIMAX model to the historical data and then forecasts the next `horizon` time steps. If the model fails to fit, it falls back to a simple exponential smoothing approach. This ensures that the forecast is non-negative and has the required shape.

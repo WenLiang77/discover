@@ -1,0 +1,28 @@
+{
+  "step": 6,
+  "parent_number": 1,
+  "parent_state_id": "87669bfa-1c4e-4314-8738-1aaca3ecf97d",
+  "parent_reward": -64.41066650530689,
+  "rollout_number": 5,
+  "global_rollout_index": 55,
+  "seed": 97,
+  "elapsed_seconds": 28.429039247042965,
+  "raw_reward": null,
+  "adjusted_reward": -250.0,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "ValueError: could not broadcast input array from shape (8,) into shape (11,)",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_panama",
+      "stage": "execution",
+      "runtime_seconds": 4.560515214980114,
+      "traceback": "Traceback (most recent call last):\n  File \"<generated_forecaster>\", line 18, in dengue_forecast\nValueError: could not broadcast input array from shape (8,) into shape (11,)\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/lus/lfs1aip2/scratch/b6ao/wenliang.b6ao/discover/epidemic_forecasting/tasks/dengue/evaluator.py\", line 396, in _candidate_worker\n    output = function(\n             ^^^^^^^^^\n  File \"<generated_forecaster>\", line 30, in dengue_forecast\nValueError: could not broadcast input array from shape (8,) into shape (11,)\n",
+      "timed_out": false
+    }
+  }
+}

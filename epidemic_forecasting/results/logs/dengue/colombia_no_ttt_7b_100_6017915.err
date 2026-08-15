@@ -1,0 +1,89 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   1%|▏         | 5/339 [00:00<00:08, 40.13it/s]Loading weights:   4%|▍         | 14/339 [00:00<00:04, 66.06it/s]Loading weights:   6%|▌         | 21/339 [00:00<00:06, 46.06it/s]Loading weights:   8%|▊         | 28/339 [00:00<00:12, 25.44it/s]Loading weights:  12%|█▏        | 41/339 [00:01<00:07, 39.02it/s]Loading weights:  15%|█▌        | 51/339 [00:01<00:06, 41.24it/s]Loading weights:  17%|█▋        | 58/339 [00:01<00:06, 44.84it/s]Loading weights:  19%|█▉        | 65/339 [00:01<00:05, 46.73it/s]Loading weights:  22%|██▏       | 76/339 [00:01<00:04, 54.03it/s]Loading weights:  24%|██▍       | 82/339 [00:01<00:05, 50.84it/s]Loading weights:  26%|██▋       | 89/339 [00:01<00:04, 50.42it/s]Loading weights:  28%|██▊       | 95/339 [00:02<00:04, 51.86it/s]Loading weights:  30%|██▉       | 101/339 [00:02<00:05, 46.95it/s]Loading weights:  31%|███▏      | 106/339 [00:02<00:05, 45.96it/s]Loading weights:  33%|███▎      | 113/339 [00:02<00:04, 47.05it/s]Loading weights:  35%|███▌      | 119/339 [00:02<00:04, 49.49it/s]Loading weights:  37%|███▋      | 125/339 [00:02<00:04, 45.11it/s]Loading weights:  39%|███▊      | 131/339 [00:02<00:04, 47.22it/s]Loading weights:  40%|████      | 137/339 [00:03<00:05, 37.62it/s]Loading weights:  44%|████▍     | 149/339 [00:03<00:03, 47.53it/s]Loading weights:  46%|████▌     | 156/339 [00:03<00:03, 51.66it/s]Loading weights:  48%|████▊     | 162/339 [00:03<00:04, 39.66it/s]Loading weights:  51%|█████     | 172/339 [00:03<00:03, 50.73it/s]Loading weights:  53%|█████▎    | 179/339 [00:03<00:03, 48.90it/s]Loading weights:  55%|█████▍    | 185/339 [00:04<00:03, 45.62it/s]Loading weights:  56%|█████▋    | 191/339 [00:04<00:03, 48.13it/s]Loading weights:  58%|█████▊    | 197/339 [00:04<00:03, 44.82it/s]Loading weights:  60%|█████▉    | 203/339 [00:04<00:02, 47.90it/s]Loading weights:  62%|██████▏   | 209/339 [00:04<00:02, 45.76it/s]Loading weights:  64%|██████▍   | 218/339 [00:04<00:02, 55.54it/s]Loading weights:  66%|██████▌   | 224/339 [00:04<00:02, 43.89it/s]Loading weights:  68%|██████▊   | 232/339 [00:05<00:02, 50.52it/s]Loading weights:  70%|███████   | 238/339 [00:05<00:02, 41.28it/s]Loading weights:  72%|███████▏  | 245/339 [00:05<00:02, 42.22it/s]Loading weights:  74%|███████▍  | 252/339 [00:05<00:01, 46.26it/s]Loading weights:  76%|███████▌  | 258/339 [00:05<00:02, 37.56it/s]Loading weights:  79%|███████▉  | 268/339 [00:05<00:01, 47.46it/s]Loading weights:  81%|████████  | 274/339 [00:06<00:01, 41.98it/s]Loading weights:  82%|████████▏ | 279/339 [00:06<00:01, 43.40it/s]Loading weights:  84%|████████▍ | 284/339 [00:06<00:01, 39.14it/s]Loading weights:  86%|████████▌ | 292/339 [00:06<00:01, 46.75it/s]Loading weights:  88%|████████▊ | 298/339 [00:06<00:00, 43.04it/s]Loading weights:  90%|████████▉ | 304/339 [00:06<00:00, 46.71it/s]Loading weights:  91%|█████████▏| 310/339 [00:06<00:00, 42.46it/s]Loading weights:  93%|█████████▎| 316/339 [00:07<00:00, 38.35it/s]Loading weights:  95%|█████████▌| 323/339 [00:07<00:00, 44.65it/s]Loading weights:  97%|█████████▋| 329/339 [00:07<00:00, 41.74it/s]Loading weights:  99%|█████████▉| 336/339 [00:07<00:00, 46.53it/s]Loading weights: 100%|██████████| 339/339 [00:07<00:00, 45.42it/s]
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/base/model.py:607: ConvergenceWarning: Maximum Likelihood optimization failed to converge. Check mle_retvals
+  warnings.warn("Maximum Likelihood optimization failed to "
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:966: UserWarning: Non-stationary starting autoregressive parameters found. Using zeros as starting parameters.
+  warn('Non-stationary starting autoregressive parameters'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:978: UserWarning: Non-invertible starting MA parameters found. Using zeros as starting parameters.
+  warn('Non-invertible starting MA parameters found.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/representation.py:374: FutureWarning: Unknown keyword arguments: dict_keys(['random_state']).Passing unknown keyword arguments will raise a TypeError beginning in version 0.15.
+  warnings.warn(msg, FutureWarning)
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:966: UserWarning: Non-stationary starting autoregressive parameters found. Using zeros as starting parameters.
+  warn('Non-stationary starting autoregressive parameters'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:978: UserWarning: Non-invertible starting MA parameters found. Using zeros as starting parameters.
+  warn('Non-invertible starting MA parameters found.'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/base/model.py:607: ConvergenceWarning: Maximum Likelihood optimization failed to converge. Check mle_retvals
+  warnings.warn("Maximum Likelihood optimization failed to "
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/base/model.py:607: ConvergenceWarning: Maximum Likelihood optimization failed to converge. Check mle_retvals
+  warnings.warn("Maximum Likelihood optimization failed to "
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/holtwinters/model.py:903: ConvergenceWarning: Optimization failed to converge. Check mle_retvals.
+  warnings.warn(
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/base/model.py:607: ConvergenceWarning: Maximum Likelihood optimization failed to converge. Check mle_retvals
+  warnings.warn("Maximum Likelihood optimization failed to "
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/base/model.py:607: ConvergenceWarning: Maximum Likelihood optimization failed to converge. Check mle_retvals
+  warnings.warn("Maximum Likelihood optimization failed to "
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/base/model.py:607: ConvergenceWarning: Maximum Likelihood optimization failed to converge. Check mle_retvals
+  warnings.warn("Maximum Likelihood optimization failed to "
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:966: UserWarning: Non-stationary starting autoregressive parameters found. Using zeros as starting parameters.
+  warn('Non-stationary starting autoregressive parameters'
+/scratch/b6ao/wenliang.b6ao/discover/.venv_epidemic/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:978: UserWarning: Non-invertible starting MA parameters found. Using zeros as starting parameters.
+  warn('Non-invertible starting MA parameters found.'

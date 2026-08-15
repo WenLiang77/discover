@@ -1,0 +1,41 @@
+```python
+import numpy as np
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from sklearn.preprocessing import StandardScaler
+
+def dengue_forecast(train_values, horizon, **kwargs):
+    forecast = np.zeros((horizon, train_values.shape[1]))
+    scaler = StandardScaler()
+    for i in range(train_values.shape[1]):
+        try:
+            # Scale the training data
+            scaled_train = scaler.fit_transform(train_values[:, i].reshape(-1, 1))
+            
+            # Fit the SARIMAX model
+            model = SARIMAX(scaled_train, order=(1, 1, 0), seasonal_order=(1, 1, 0, 4))
+            results = model.fit(disp=False)
+            
+            # Forecast the next 'horizon' steps
+            scaled_forecast = results.get_forecast(steps=horizon).predicted_mean
+            
+            # Inverse transform the forecast
+            forecast[:, i] = scaler.inverse_transform(scaled_forecast.reshape(-1, 1)).flatten()
+            
+            # Ensure non-negative forecasts
+            forecast[:, i] = np.maximum(forecast[:, i], 0)
+        except Exception as e:
+            # Fallback to a simple constant forecast if model fails
+            forecast[:, i] = np.full(horizon, train_values[-1, i])
+    
+    return forecast
+```
+
+### Explanation:
+1. **Scaling**: The data is scaled using `StandardScaler` to stabilize the variance and improve the performance of the SARIMAX model.
+2. **Model Fitting**: A SARIMAX model is fit to each region's data. The parameters `(1, 1, 0)` specify the ARIMA part (1, 1, 0) and `(1, 1, 0, 4)` specifies the seasonal part.
+3. **Forecasting**: The model predicts the next `horizon` steps using the `get_forecast` method.
+4. **Inverse Transformation**: The scaled forecast is inverse transformed back to the original scale.
+5. **Non-Negative Constraint**: Negative values are clipped to zero to ensure the forecast is non-negative.
+6. **Fallback Mechanism**: If the model fitting fails, a constant forecast equal to the last observed value is used.
+
+This approach ensures that the forecast is both temporally evolving and robust against potential fitting issues.

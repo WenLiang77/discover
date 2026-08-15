@@ -1,0 +1,19 @@
+{
+  "attempt": 5,
+  "seed": 46,
+  "elapsed_seconds": 10.054302352946252,
+  "duplicate_valid_behavior": false,
+  "duplicate_of": null,
+  "evaluation": {
+    "ok": false,
+    "reward": null,
+    "metrics": {},
+    "error": "Evaluation failed: Forecast contains negative values. Minimum prediction: -5.283766193238486.",
+    "behavior_signature": null,
+    "metadata": {
+      "dataset_id": "dengue_colombia",
+      "stage": "prediction_validation_or_metrics",
+      "runtime_seconds": 1.5294278129586019
+    }
+  }
+}
