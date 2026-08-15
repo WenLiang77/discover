@@ -156,20 +156,6 @@ TTT achieved a lower best SMAPE than No-TTT on both Dengue datasets and also pro
 
 For Colombia, the reproduced TimesFM baseline achieved the lowest SMAPE overall (30.03), closely followed by TTT (30.31). For Panama, TTT achieved the lowest SMAPE (49.98), outperforming both No-TTT (60.63) and TimesFM (70.82).
 
-### EpiCastBench TimesFM Baseline
-
-TimesFM was reproduced locally using the EpiCastBench implementation with the same 8-week forecasting horizon.
-
-| Dataset | Reproduced TimesFM SMAPE |
-|---|---:|
-| Colombia | 30.031 |
-| Panama | 70.822 |
-
-The reproduced values match the published EpiCastBench results.
-
-Reproduction scripts and saved predictions are stored in:
-
-`epidemic_forecasting/baselines/timesfm/`
 
 ### Forecast Comparison Figures
 
@@ -202,3 +188,17 @@ The final results are stored in:
 - `epidemic_forecasting/results/dengue/panama_8weeks/panama_no_ttt_7b_100/job_6017917/`
 - `epidemic_forecasting/results/dengue/panama_8weeks/panama_ttt_7b_100/job_6017918/`
 
+### EpiCastBench TimesFM Baseline
+
+TimesFM was reproduced locally using the EpiCastBench implementation with the same 8-week forecasting horizon.
+
+| Dataset | Reproduced TimesFM SMAPE |
+|---|---:|
+| Colombia | 30.031 |
+| Panama | 70.822 |
+
+The reproduced values match the published EpiCastBench results.
+
+Reproduction scripts and saved predictions are stored in:
+
+`epidemic_forecasting/baselines/timesfm/`
