@@ -23,11 +23,18 @@ def plot_four_series(
 ):
     df = pd.read_csv(csv_path)
 
-    fig, axes = plt.subplots(
-        2,
-        2,
-        figsize=(16, 10),
-    )
+    if len(series_names) == 3:
+        fig, axes = plt.subplots(
+            1,
+            3,
+            figsize=(18, 5),
+        )
+    else:
+        fig, axes = plt.subplots(
+            2,
+            2,
+            figsize=(16, 10),
+        )
 
     axes = axes.flatten()
 
@@ -103,7 +110,6 @@ def plot_four_series(
 
 uk_series = [
     "England",
-    "Northern Ireland",
     "Scotland",
     "Wales",
 ]
