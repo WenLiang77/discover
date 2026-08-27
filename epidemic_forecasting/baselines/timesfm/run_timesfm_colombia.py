@@ -1,4 +1,4 @@
-﻿from pathlib import Path
+from pathlib import Path
 import pandas as pd
 
 from darts.models import TimesFM2p5Model
@@ -61,20 +61,9 @@ model = TimesFM2p5Model(
     random_state=RANDOM_STATE,
 )
 
-print()
-print("Fitting TimesFM...")
+model.fit(train, verbose=True)
 
-model.fit(
-    train,
-    verbose=True,
-)
-
-print()
-print("Forecasting 8 weeks...")
-
-prediction = model.predict(
-    n=FORECAST_HORIZON,
-)
+prediction = model.predict(n=FORECAST_HORIZON)
 
 
 # ------------------------------------------------------------
@@ -89,7 +78,7 @@ metrics = evaluate(
 
 print()
 print("=" * 60)
-print("EpiCastBench TimesFM — COVID-19 UK — 14 days")
+print("EpiCastBench TimesFM - Dengue Colombia - 8 weeks")
 print("=" * 60)
 
 for name, value in metrics.items():
